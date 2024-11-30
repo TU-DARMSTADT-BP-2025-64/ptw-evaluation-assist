@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Card, { Content } from '@smui/card';
+	import Ripple from '@smui/ripple';
 </script>
 
 <svelte:head>
@@ -7,7 +9,51 @@
 </svelte:head>
 
 <section>
+	<div class="card-btn mdc-elevation--z2"  use:Ripple={{ surface: true }}>
+		<div class="icon">
+			<i class="material-icons">manage_search</i>
+		</div>
+		<div class="lable">
+			Neuen Befund starten
+		</div>
+	</div>
+
+	<div class="card-btn mdc-elevation--z2"  use:Ripple={{ surface: true }}>
+		<div class="icon">
+			<i class="material-icons">settings</i>
+		</div>
+		<div class="lable">
+			Konfiguration
+		</div>
+	</div>
 </section>
 
 <style>
+
+	section {
+		padding-top: 24px;
+	}
+
+	.card-btn {
+		display: flex;
+		border-radius: 8px;
+		background: white;
+		padding: 12px;
+		align-items: center;
+		cursor: pointer;
+		margin: 32px 0;
+	}
+
+	.card-btn .icon i {
+		font-size: 60px;
+		height: 60px;
+		width: 60px;
+		color: #b81018;
+	}
+
+	.card-btn .lable {
+		font-size: 28px;
+		margin-left: 28px;
+		
+	}
 </style>
