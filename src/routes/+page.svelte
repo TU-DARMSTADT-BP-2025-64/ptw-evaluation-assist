@@ -13,7 +13,7 @@
 		<div class="icon">
 			<i class="material-icons">manage_search</i>
 		</div>
-		<div class="lable">
+		<div class="label">
 			Neuen Befund starten
 		</div>
 	</div>
@@ -22,7 +22,7 @@
 		<div class="icon">
 			<i class="material-icons">settings</i>
 		</div>
-		<div class="lable">
+		<div class="label">
 			Konfiguration
 		</div>
 	</div>
@@ -51,7 +51,7 @@
 		color: #b81018;
 	}
 
-	.card-btn .lable {
+	.card-btn .label {
 		font-size: 28px;
 		margin-left: 28px;
 		
