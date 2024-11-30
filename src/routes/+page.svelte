@@ -5,7 +5,7 @@
 
 <svelte:head>
 	<title>Homepage</title>
-	<meta name="description" content="PTW evalutation assist" />
+	<meta name="description" content="PTW evaluation assist" />
 </svelte:head>
 
 <section>
