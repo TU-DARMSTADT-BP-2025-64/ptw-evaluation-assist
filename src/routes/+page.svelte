@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Card, { Content } from '@smui/card';
 	import Ripple from '@smui/ripple';
 </script>
 
