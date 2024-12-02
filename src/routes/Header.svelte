@@ -1,6 +1,7 @@
 <script lang="ts">
 	import logo from '$lib/images/ptw-logo.png';
 	import IconButton from '@smui/icon-button'
+	import { HeaderService } from './HeaderService.svelte';
 </script>
 
 <header>
@@ -10,7 +11,7 @@
 
 	<div class="triangle"></div>
 	<div class="toolbar">
-		<div class="title">Startseite</div>
+		<div class="title">{HeaderService.Instance.getTitle()}</div>
 		<div class="actions">
 			<IconButton class="material-icons">dark_mode</IconButton>
 			<IconButton class="material-icons">language</IconButton>
