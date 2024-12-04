@@ -13,7 +13,7 @@
 	<meta name="description" content="PTW evaluation assist" />
 </svelte:head>
 
-<section>
+<section style="max-width: 60%; width: 100%;">
 	<a href="/assistant">
 		<div class="assistant-button card-btn mdc-elevation--z2" use:Ripple={{ surface: true }}>
 			<div class="icon">
