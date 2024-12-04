@@ -35,7 +35,7 @@
         border-radius: 8px;
         background: white;
         cursor: pointer;
-        margin-right: 1500px;
+        margin-right: 1300px;
         position: relative; /* Necessary for absolute positioning of label */
         width: 48px; /* Adjust width to fit the button */
         height: 48px; /* Adjust height to fit the button */
