@@ -23,4 +23,4 @@ jobs:
       # SSH into server and run deploy script
       - name: Deploy via SSH
         run: |
-          ssh ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST  }} 'bash -s' < ./deploy.sh
+          ssh ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST  }} './deploy.sh' 
