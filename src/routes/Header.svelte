@@ -1,13 +1,15 @@
 <script lang="ts">
 	import logo from '$lib/images/ptw-logo.png';
-	import IconButton from '@smui/icon-button'
+	import IconButton from '@smui/icon-button';
 	import { HeaderService } from './HeaderService.svelte';
 </script>
 
 <header>
-	<div class="logo">
-		<img src={logo} alt="PTW" />
-	</div>
+	<a href="/">
+		<div class="logo">
+			<img src={logo} alt="PTW" />
+		</div>
+	</a>
 
 	<div class="triangle"></div>
 	<div class="toolbar">
