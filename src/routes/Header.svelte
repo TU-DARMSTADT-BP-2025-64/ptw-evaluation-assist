@@ -1,25 +1,28 @@
 <script lang="ts">
 	import logo from '$lib/images/ptw-logo.png';
+	import logoDark from '$lib/images/ptw-logo_Dark.png';
 	import IconButton from '@smui/icon-button';
 	import { HeaderService } from './HeaderService.svelte';
 	import { afterNavigate } from '$app/navigation';
 
 	// Store to hold the current path
 	let currentPath = $state('');
+	let isDarkMode = $state(false);
 
 	afterNavigate(() => {
 		currentPath = window.location.pathname;
 	});
 
 	function toggleDarkMode() {
-		document.body.classList.toggle('dark');
+		isDarkMode = !isDarkMode;
+		document.body.classList.toggle('dark', isDarkMode);
 	}
 </script>
 
 <header>
 	<a href="/">
 		<div class="logo">
-			<img src={logo} alt="PTW" />
+			<img src={isDarkMode ? logoDark : logo} alt="PTW Logo" />
 		</div>
 	</a>
 
