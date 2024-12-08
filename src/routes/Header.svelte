@@ -2,6 +2,18 @@
 	import logo from '$lib/images/ptw-logo.png';
 	import IconButton from '@smui/icon-button';
 	import { HeaderService } from './HeaderService.svelte';
+	import { afterNavigate } from '$app/navigation';
+
+	// Store to hold the current path
+	let currentPath = $state('');
+
+	afterNavigate(() => {
+		currentPath = window.location.pathname;
+	});
+
+	function toggleDarkMode() {
+		document.body.classList.toggle('dark');
+	}
 </script>
 
 <header>
@@ -13,9 +25,18 @@
 
 	<div class="triangle"></div>
 	<div class="toolbar">
-		<div class="title">{HeaderService.Instance.getTitle()}</div>
+		<div class="title">
+			<IconButton
+				style={currentPath === '/' ? 'display: none' : 'display: inline'}
+				class="material-icons"
+				onclick={() => window.history.back()}>arrow_back</IconButton
+			>
+			<p>
+				{HeaderService.Instance.getTitle()}
+			</p>
+		</div>
 		<div class="actions">
-			<IconButton class="material-icons">dark_mode</IconButton>
+			<IconButton class="material-icons" onclick={() => toggleDarkMode()}>dark_mode</IconButton>
 			<IconButton class="material-icons">language</IconButton>
 		</div>
 	</div>
@@ -41,14 +62,14 @@
 		width: 0;
 		height: 0;
 		border-left: 24px solid transparent;
-		border-right: 0px solid #b81018;
-		border-bottom: 80px solid #b81018;
+		border-right: 0px solid var(--mdc-theme-primary);
+		border-bottom: 80px solid var(--mdc-theme-primary);
 	}
 
 	.toolbar {
 		height: 80px;
 		width: 100%;
-		background-color: #b81018;
+		background-color: var(--mdc-theme-primary);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -56,15 +77,17 @@
 	}
 
 	.toolbar .actions {
-		color: white;
+		color: var(--mdc-theme-on-primary);
 		display: flex;
 		gap: 24px;
 	}
 
 	.toolbar .title {
 		padding-left: 8px;
-		color: white;
+		color: var(--mdc-theme-on-primary);
 		font-size: 1.5rem;
 		font-weight: 600;
+		display: flex;
+		align-items: center;
 	}
 </style>
