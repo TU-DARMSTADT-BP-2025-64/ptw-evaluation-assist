@@ -48,7 +48,7 @@
 	.card-btn {
 		display: flex;
 		border-radius: 8px;
-		background: white;
+		background: var(--mdc-theme-surface);
 		padding: 12px;
 		align-items: center;
 		cursor: pointer;

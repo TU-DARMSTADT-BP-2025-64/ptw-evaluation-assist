@@ -19,3 +19,14 @@ test('clicking Konfiguration opens login dialog', async ({ page }) => {
 	await page.locator('.configuration-button').click();
 	await expect(page.locator('.login-dialog')).toBeVisible();
 });
+
+test('logo updates correctly when toggling dark mode', async ({ page }) => {
+	await page.goto('/');
+	const logoSelector = 'header .logo img';
+	const initialLogoSrc = await page.locator(logoSelector).getAttribute('src');
+	expect(initialLogoSrc).toMatch(/ptw-logo/);
+	expect(initialLogoSrc).not.toMatch(/dark|Dark/);
+	await page.locator('button.material-icons:has-text("dark_mode")').click();
+	const darkModeLogoSrc = await page.locator(logoSelector).getAttribute('src');
+	expect(darkModeLogoSrc).toMatch(/ptw-logo_Dark/);
+});
