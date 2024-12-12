@@ -29,14 +29,14 @@
 </script>
 
 <Dialog bind:open class="login-dialog">
-	<Title>Login Konfiguration</Title>
+	<Title><span data-testid="dialog-title">Login Konfiguration</span></Title>
 	<Content>
 		<Textfield
 			required
 			invalid={invalidPassword}
 			style="width: 100%;"
 			bind:value={password}
-            onkeydown={(e) => e.key === 'Enter' && login()}
+			onkeydown={(e) => e.key === 'Enter' && login()}
 			type="password"
 			label="Password"
 		></Textfield>
