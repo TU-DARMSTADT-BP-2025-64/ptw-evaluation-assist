@@ -70,7 +70,6 @@
 				</div>
 			</div>
 		{/each}
-		
 	</div>
 </section>
 
