@@ -16,8 +16,8 @@
 		level
 	}: { assemblyGroup: AssemblyGroupTreeViewModel; level: number } = $props();
 
-	let name = $state('');
-	let children: (AssemblyComponentTreeViewModel | AssemblyGroupTreeViewModel)[]= $state([]);
+	let name = $state(assemblyGroup.name);
+	let children = $state(assemblyGroup.children);
 
 	let newName = $state('');
 
