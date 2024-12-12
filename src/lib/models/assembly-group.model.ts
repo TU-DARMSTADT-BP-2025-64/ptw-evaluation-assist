@@ -1,5 +1,6 @@
 import type { AssemblyComponentTreeViewModel } from './assembly-component.model';
 import { DatabaseModel } from './database.model';
+import type { ProductTreeViewModel } from './product.model';
 
 export class AssemblyGroupDatabaseModel extends DatabaseModel {
 	name: string | undefined;
@@ -9,9 +10,10 @@ export class AssemblyGroupDatabaseModel extends DatabaseModel {
 
 
 export class AssemblyGroupTreeViewModel {
-	id: string | undefined;
-	name: string | undefined;
-	parent : AssemblyGroupTreeViewModel | undefined;
+	id: number | undefined;
+	type: string = 'assembly-group';
+	name: string = '';
+	parent : AssemblyGroupTreeViewModel | ProductTreeViewModel | undefined;
 	children: (AssemblyGroupTreeViewModel | AssemblyComponentTreeViewModel)[];
 
 	constructor() {
