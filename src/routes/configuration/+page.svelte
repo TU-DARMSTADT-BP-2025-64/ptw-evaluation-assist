@@ -5,7 +5,6 @@
     
     HeaderService.Instance.setTitle('Konfiguration');
     let props: { data: {products: ProductViewModel[]} } = $props();
-    console.log('data', props.data);
 
 
     function addProduct() {
