@@ -2,9 +2,14 @@
 import { Logger } from './logger';
 import { Repository } from './repository';
 
-console.log('Initializing application');
-
+let initialized = false;
 export function init() {
+    if (initialized) {
+        return;
+    }
+
+    console.log('Initializing application');
+    initialized = true;
     Logger.Instance;
     Repository.Instance;
 }

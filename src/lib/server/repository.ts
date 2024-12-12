@@ -64,12 +64,32 @@ export class Repository {
 
 	private _initTables() {
 		const db = this._getDatabase();
+		// Products table
 		db.prepare(
 			'CREATE TABLE products (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL)'
 		).run();
+		// Assembly group table
+		db.prepare(
+			'CREATE TABLE assembly_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER NOT NULL, parent_id INTEGER, name TEXT NOT NULL, FOREIGN KEY(product_id) REFERENCES products(id), FOREIGN KEY(parent_id) REFERENCES assembly_groups(id))'
+		).run();
+		// Assembly component table
+		db.prepare(
+			'CREATE TABLE assembly_components (id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER NOT NULL, assembly_group_id INTEGER NOT NULL, name TEXT NOT NULL, FOREIGN KEY(product_id) REFERENCES products(id), FOREIGN KEY(assembly_group_id) REFERENCES assembly_groups(id))'
+		).run();
+		// Wear criterion table
+		db.prepare(
+			'CREATE TABLE wear_criteria (id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER NOT NULL, assembly_component_id INTEGER NOT NULL, question TEXT NOT NULL, FOREIGN KEY(product_id) REFERENCES products(id), FOREIGN KEY(assembly_component_id) REFERENCES assembly_components(id))'
+		).run();
+		// Wear threshold table
+		db.prepare(
+			'CREATE TABLE wear_thresholds (id INTEGER PRIMARY KEY AUTOINCREMENT, wear_criterion_id INTEGER NOT NULL, label TEXT NOT NULL, type TEXT NOT NULL, FOREIGN KEY(wear_criterion_id) REFERENCES wear_criteria(id))'
+		).run();
+		
+		// Users table
 		db.prepare(
 			'CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, password TEXT NOT NULL)'
 		).run();
+
 	}
 
 	private _initAdminUser() {
