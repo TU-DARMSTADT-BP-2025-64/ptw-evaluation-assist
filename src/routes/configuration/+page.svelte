@@ -1,6 +1,6 @@
 <script lang="ts">
     import { HeaderService } from '../HeaderService.svelte';
-    import ProductTable from '$lib/ProductTable.svelte';
+    import ProductTable from '$lib/components/ProductTable/ProductTable.svelte';
     import type { ProductViewModel } from '$lib/models/product.model';
     
     HeaderService.Instance.setTitle('Konfiguration');
