@@ -16,8 +16,12 @@
 	function toggleDarkMode() {
 		isDarkMode = !isDarkMode;
 		document.body.classList.toggle('dark', isDarkMode);
-	}
-</script>
+		
+		// einstellungsbutton
+		function toggleSettings() {
+		alert("Einstellungen öffnen!"); 
+	}}
+	</script>
 
 <header>
 	<a href="/">
@@ -41,6 +45,10 @@
 		<div class="actions">
 			<IconButton class="material-icons" onclick={() => toggleDarkMode()}>dark_mode</IconButton>
 			<IconButton class="material-icons">language</IconButton>
+			<IconButton 
+		class="material-icons" 
+		onclick={() => toggleSettings()}
+	>settings</IconButton>
 		</div>
 	</div>
 </header>
