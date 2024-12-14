@@ -2,11 +2,11 @@ import envPaths from 'env-paths';
 import winston from 'winston';
 
 export class Logger {
-	public static readonly Instance = new Logger();
+	public static Instance: Logger;
 
 	private logger: winston.Logger;
 
-	private constructor() {
+	public constructor() {
         const paths = envPaths('ptw-evaluation-assist');
         const logPath = paths.log;
 		this.logger = winston.createLogger({
@@ -21,10 +21,10 @@ export class Logger {
 	}
 
     public info(message: string, ...meta: unknown[]) {
-        this.logger.info(message, meta);
+        this.logger.info(message, ...meta);
     }
 
     public error(message: string, ...meta: unknown[]) {
-        this.logger.error(message, meta);
+        this.logger.error(message, ...meta);
     }
 }
