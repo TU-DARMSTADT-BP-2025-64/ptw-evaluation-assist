@@ -25,34 +25,35 @@
 	</a>
 
 	<div
-		class="configuration-button card-btn mdc-elevation--z2"
-		use:Ripple={{ surface: true }}
-		onkeydown={() => {}}
-		role="button"
-		tabindex="0"
-		onclick={() => (configurationLoginDialogOpen = true)}
-	>
-		<div class="icon">
-			<i class="material-icons">settings</i>
-		</div>
-		<div class="label">Konfiguration</div>
+	class="configuration-button card-btn mdc-elevation--z2"
+	use:Ripple={{ surface: true }}
+	onkeydown={() => {}}
+	role="button"
+	tabindex="0"
+	onclick={() => (configurationLoginDialogOpen = true)}
+>
+	<div class="icon">
+		<i class="material-icons">settings</i>
 	</div>
-	
-	<div>
-  class="configuration-button card-btn mdc-elevation--z2"
-  use:Ripple={{ surface: true }}
-  role="button"
-  tabindex="0"
-  onclick={() => (configurationLoginDialogOpen = true)}
-  onkeydown={(e: { key: string; }) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      configurationLoginDialogOpen = true;
-    }
-  }}
-	</div>
+	<div class="label">Konfiguration</div>
+</div>
+
+<div
+class="configuration-button card-btn mdc-elevation--z2"
+use:Ripple={{ surface: true }}
+role="button"
+tabindex="0"
+onclick={() => (configurationLoginDialogOpen = true)}
+onkeydown={(e: { key: string; }) => {
+if (e.key === 'Enter' || e.key === ' ') {
+  configurationLoginDialogOpen = true;
+}
+}}
+>
+</div>
+  <ConfigurationLoginDialog bind:open={configurationLoginDialogOpen}></ConfigurationLoginDialog>
 
 
-	<ConfigurationLoginDialog bind:open={configurationLoginDialogOpen}></ConfigurationLoginDialog>
 </section>
 
 <style>

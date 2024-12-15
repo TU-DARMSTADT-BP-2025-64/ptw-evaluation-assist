@@ -1,12 +1,16 @@
 <script lang="ts">
+     import { createEventDispatcher } from 'svelte';
+
     export let open: boolean;
     let currentPassword = '';
     let newPassword = '';
     let confirmPassword = '';
+const dispatch = createEventDispatcher();
 
     // Funktion zum Schließen des Dialogs
     function closeDialog() {
         open = false;
+        dispatch('close');
     }
 
     // Funktion zum Ändern des Passworts
