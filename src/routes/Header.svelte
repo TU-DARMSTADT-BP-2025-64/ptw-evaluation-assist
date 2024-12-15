@@ -4,13 +4,10 @@
 	import IconButton from '@smui/icon-button';
 	import { HeaderService } from './HeaderService.svelte';
 	import { afterNavigate } from '$app/navigation';
-	import{onMount} from 'svelte';
-	
+
 	// Store to hold the current path
-	let currentPath = '';
-	let isDarkMode = false;
-	let fontSize = 'medium';
-	let showSettings = false;
+	let currentPath = $state('');
+	let isDarkMode = $state(false);
 
 	afterNavigate(() => {
 		currentPath = window.location.pathname;
@@ -20,38 +17,7 @@
 		isDarkMode = !isDarkMode;
 		document.body.classList.toggle('dark', isDarkMode);
 	}
-		// einstellungsbutton
-		function toggleSettings() {
-		showSettings=!showSettings;
-		console.log('Settings toggled', showSettings);
-	}
-//Schriftgröße ändern und speichern
-	function changeFontSize(size: string){
-		fontSize=size;
-		document.body.classList.remove('small', 'medium', 'large'); 
-		document.body.classList.add(size); 
-		saveFontSize(size);
-		
-	}
-//Schriftgröße laden
-	function loadFontSize() {
-		
-		const savedFontSize = localStorage.getItem('fontSize');
-		if (savedFontSize) {
-			fontSize = savedFontSize; 
-			document.body.classList.add(savedFontSize);
-			
-		}
-		console.log('Schriftgröße geladen:', fontSize);
-	}
-//Schriftgröße speichern
-	function saveFontSize(size: string) {
-		localStorage.setItem('fontSize', size);
-	}
-	onMount(() => {
-		loadFontSize();
-	});
-	</script>
+</script>
 
 <header>
 	<a href="/">
@@ -75,28 +41,9 @@
 		<div class="actions">
 			<IconButton class="material-icons" onclick={() => toggleDarkMode()}>dark_mode</IconButton>
 			<IconButton class="material-icons">language</IconButton>
-			<IconButton 
-		class="material-icons" 
-		onclick={() => toggleSettings()}
-	>settings</IconButton>
+		</div>
 	</div>
-	</div>
-
 </header>
-
-
-{#if showSettings}
-	<div class="settings-menu {fontSize}">
-		<h2>Einstellungen</h2>
-		<p>Schriftgröße:</p>
-		
-	<div class="font-size-buttons">
-		<button onclick={() => changeFontSize('small')}>Klein</button>
-		<button onclick={() => changeFontSize('medium')}>Mittel</button>
-		<button onclick={() => changeFontSize('large')}>Groß</button>
-	</div>
-</div>
-{/if}
 
 <style>
 	header {
@@ -146,38 +93,4 @@
 		display: flex;
 		align-items: center;
 	}
-	/*Schriftgrößenkontrollen*/
-	.settings-menu {
-		position: absolute;
-		display:block;
-		top: 50px;
-		right: 20px;
-		background: white;
-		padding: 16px;
-		border: 2px solid red;
-		border-radius: 8px;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		z-index: 10;
-
-	}
-
-	/* Schriftgrößenklassen */
-	.font-size-buttons button {
-		margin-right: 8px;
-		padding: 8px 12px;
-		font-size: 1rem;
-		cursor: pointer;
-	}
-</style>
-.small {
-	font-size: 0.8rem;
-}
-
-.medium {
-	font-size: 1rem;
-}
-
-.large {
-	font-size: 1.2rem;
-}
 </style>
