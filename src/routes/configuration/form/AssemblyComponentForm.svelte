@@ -5,4 +5,5 @@
 
 </script>
 
+
 <div>Komponente {assemblyComponent.name}</div>

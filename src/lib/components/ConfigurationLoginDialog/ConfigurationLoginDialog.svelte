@@ -42,7 +42,7 @@
 		></Textfield>
 	</Content>
 	<div class="actions">
-		<Button class="color-unset" onclick={() => cancel()}>Cancel</Button>
+		<Button class="cancel-button" onclick={() => cancel()}>Abbrechen</Button>
 		<Button onclick={() => login()}>Login</Button>
 	</div>
 </Dialog>

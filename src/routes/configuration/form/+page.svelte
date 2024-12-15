@@ -6,129 +6,113 @@
 	import { ProductTreeViewModel } from '$lib/models/product.model';
 	import { AssemblyGroupTreeViewModel } from '$lib/models/assembly-group.model';
 	import AssemblyGroupForm from './AssemblyGroupForm.svelte';
+	import AssemblyGroupStructureAddButton from './AssemblyGroupStructureAddButton.svelte';
+	import AddAssemblyGroupDialog from './AddAssemblyGroupDialog.svelte';
 	HeaderService.Instance.setTitle('Konfiguration');
-	let valueA = $state('');
-	let valueB = $state('');
 
 	let product = $state(new ProductTreeViewModel());
 
+	let addAssemblyGroupDialogOpen = $state(false);
+
 	let assemblyGroups: AssemblyGroupTreeViewModel[] = $state([]);
 
+	function addAssemblyGroup(assemblyGroup: AssemblyGroupTreeViewModel) {
+		assemblyGroup.parent = product;
 
-	function addAssemblyGroup(name: string) {
-		const assemblyGroupTreeView = new AssemblyGroupTreeViewModel();
-		assemblyGroupTreeView.name = name;
-		assemblyGroupTreeView.parent = product;
-		
-		assemblyGroups.push(assemblyGroupTreeView);
+		assemblyGroups.push(assemblyGroup);
 		console.log(product);
 	}
 
 	function removeAssemblyGroup(index: number) {
-		console.log('remove-assembly-group', index);
+		console.log('remove-assembly-group', index, JSON.parse(JSON.stringify(assemblyGroups)));
 		assemblyGroups.splice(index, 1);
+
+		console.log(JSON.parse(JSON.stringify(assemblyGroups)));
 	}
-	//funktion wo man ein element in die liste hinzufügt
-	//liste von den baugruppen erstellen und dann mit dem plus oder minus ein
-	// element entfernen oder hinzufügen
 </script>
 
-<body>
-	<h1>Produkt hinzufügen</h1>
-</body>
-
 <section>
-	<div class="wholeshit">
-		<div class="pname">
-			<Textfield variant="filled" bind:value={valueA} label="Produkt Name"></Textfield>
-		</div>
+	<div class="product-form-header">
+		<Button class="default-button">
+			<i class="material-icons">arrow_back</i>
+			<span>Zurück</span>
+		</Button>
+		<h1>Produkt hinzufügen</h1>
 
-		<div class="Baugruppe">
-			<Textfield variant="filled" bind:value={valueB} label="Baugruppe"></Textfield>
-			<div
-				class="add-btn mdc-elevation--z2"
-				use:Ripple={{ surface: true }}
-				onkeydown={() => {}}
-				role="button"
-				tabindex="0"
-				onclick={() => addAssemblyGroup(valueB)}
-			>
-				<i class="material-icons">add</i>
-			</div>
-		</div>
-
-		{#each assemblyGroups as group, i}
-			<AssemblyGroupForm bind:assemblyGroup={assemblyGroups[i]} level={1} on:delete-assembly-group={(e) => removeAssemblyGroup(i)} />
-		{/each}
-
-
-		<Button onclick={() => console.log(assemblyGroups)}>
+		<Button>
 			<i class="material-icons">save</i>
-			Speichern
+			<span>Speichern</span>
 		</Button>
 	</div>
+
+	<div class="name-field">
+		<Textfield variant="filled" bind:value={product.name} label="Produktname"></Textfield>
+	</div>
+
+	<h2>Baugruppenstruktur</h2>
+
+	<div class="children-groups-container">
+		<div class="vertical-border">&nbsp;</div>
+		<div class="children-groups">
+			{#each assemblyGroups as group, i}
+				<AssemblyGroupForm
+					bind:assemblyGroup={assemblyGroups[i]}
+					level={1}
+					lastChild={i === assemblyGroups.length - 1}
+					onDeleteAssemblyGroup={() => removeAssemblyGroup(i)}
+				/>
+			{/each}
+		</div>
+	</div>
+
+	<AssemblyGroupStructureAddButton
+		onAddAssemblyGroup={() => (addAssemblyGroupDialogOpen = true)}
+		showAddAssemblyComponent={false}
+	/>
+
+	<AddAssemblyGroupDialog
+		bind:open={addAssemblyGroupDialogOpen}
+		onSave={(group) => addAssemblyGroup(group)}
+	/>
 </section>
 
 <style>
-	h1 {
-		position: fixed;
-		top: 80px; /* Abstand vom oberen Rand */
-		left: 30px; /* Abstand vom linken Rand */
-	}
-	.pname {
-		top: 150px;
-		left: 60px;
-	}
-	.Baugruppe {
-		top: 230px;
-		left: 60px;
-		width: 200px;
-		height: 150px;
+	section {
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
 	}
 
-	.add-btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		padding: 12px;
-		border-radius: 8px;
-		background: white;
-		cursor: pointer;
-		margin-right: 1300px;
-		position: relative; /* Necessary for absolute positioning of label */
-		width: 10px; /* Adjust width to fit the button */
-		height: 10px;
-	}
-	.add-btn .icon i {
-		font-size: 55px;
-		height: 30px;
-		width: 30px;
-		color: #b81018;
-	}
-	.ug-button {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		padding: 12px;
-		border-radius: 8px;
-		background: white;
-		cursor: pointer;
-		margin-right: 1700px;
-		position: relative; /* Necessary for absolute positioning of label */
-		width: 10px; /* Adjust width to fit the button */
-		height: 10px;
-	}
-	.addition-button {
-		font-size: 20px;
-		margin-left: 28px;
-	}
-	.wholeshit {
+	.product-form-header {
 		display: flex;
-		position: fixed;
-		top: 150px;
-		left: 30px;
-		height: 200px;
-		flex-direction: column;
-		gap: 20px;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.product-form-header h1 {
+		margin: 0;
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+	}
+
+	.name-field {
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+	}
+
+	.children-groups-container {
+		display: flex;
+		justify-content: center;
+		align-items: stretch;
+	}
+
+	.vertical-border {
+		border-left: 2px dashed rgba(0, 0, 0, 0.75);
+		
+	}
+
+	.children-groups {
+		width: 100%;
 	}
 </style>
