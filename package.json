@@ -17,6 +17,9 @@
 		"smui-theme-light": "smui-theme compile src/theme/smui.css -i src/theme",
 		"smui-theme-dark": "smui-theme compile src/theme/smui-dark.css -i src/theme/dark"
 	},
+	"dependencies": {
+		"better-sqlite3": "^11.6.0"
+	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^5.0.0",
 		"@material/elevation": "^14.0.0",
@@ -28,7 +31,6 @@
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@testing-library/svelte": "^5.2.6",
 		"@types/better-sqlite3": "^7.6.12",
-		"better-sqlite3": "^11.6.0",
 		"env-paths": "^3.0.0",
 		"eslint": "^9.7.0",
 		"eslint-config-prettier": "^9.1.0",
