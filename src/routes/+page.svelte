@@ -2,10 +2,11 @@
 	import Ripple from '@smui/ripple';
 	import { HeaderService } from './HeaderService.svelte';
 	import ConfigurationLoginDialog from '$lib/ConfigurationLoginDialog.svelte';
-
+	
 	let configurationLoginDialogOpen = $state(false);
-
+	
 	HeaderService.Instance.setTitle('Startseite');
+	
 </script>
 
 <svelte:head>
@@ -36,6 +37,20 @@
 		</div>
 		<div class="label">Konfiguration</div>
 	</div>
+	
+	<div>
+  class="configuration-button card-btn mdc-elevation--z2"
+  use:Ripple={{ surface: true }}
+  role="button"
+  tabindex="0"
+  onclick={() => (configurationLoginDialogOpen = true)}
+  onkeydown={(e: { key: string; }) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      configurationLoginDialogOpen = true;
+    }
+  }}
+	</div>
+
 
 	<ConfigurationLoginDialog bind:open={configurationLoginDialogOpen}></ConfigurationLoginDialog>
 </section>

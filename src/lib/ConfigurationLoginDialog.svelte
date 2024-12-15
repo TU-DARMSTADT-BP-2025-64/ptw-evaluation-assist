@@ -36,7 +36,7 @@
 			invalid={invalidPassword}
 			style="width: 100%;"
 			bind:value={password}
-            onkeydown={(e) => e.key === 'Enter' && login()}
+            onkeydown={(e: { key: string; }) => e.key === 'Enter' && login()}
 			type="password"
 			label="Password"
 		></Textfield>

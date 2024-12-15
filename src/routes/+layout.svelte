@@ -42,15 +42,5 @@ onMount(() => {
 		box-sizing: border-box;
 
 	}
-	.font-small {
-		font-size: 12px;
-	}
-
-	.font-medium {
-		font-size: 16px;
-	}
-
-	.font-large {
-		font-size: 20px;
-	}
+	
 </style>

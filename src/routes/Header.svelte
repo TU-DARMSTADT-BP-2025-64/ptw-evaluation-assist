@@ -5,13 +5,18 @@
 	import { HeaderService } from './HeaderService.svelte';
 	import { afterNavigate } from '$app/navigation';
 	import{onMount} from 'svelte';
-	
-	// Store to hold the current path
+	import Ripple from '@smui/ripple';
+
+	import PasswordChangeDialog from '$lib/PasswordChangeDialog.svelte';
+
+    let passwordChangeDialogOpen = false;
+
 	let currentPath = '';
 	let isDarkMode = false;
 	let fontSize = 'medium';
 	let showSettings = false;
-
+	
+	
 	afterNavigate(() => {
 		currentPath = window.location.pathname;
 	});
@@ -51,6 +56,16 @@
 	onMount(() => {
 		loadFontSize();
 	});
+
+
+	// Schriftgröße beim Mounten laden
+	onMount(() => {
+		loadFontSize();
+	});
+
+	function openPasswordChangeDialog() {
+        passwordChangeDialogOpen = true;
+    }
 	</script>
 
 <header>
@@ -95,7 +110,20 @@
 		<button onclick={() => changeFontSize('medium')}>Mittel</button>
 		<button onclick={() => changeFontSize('large')}>Groß</button>
 	</div>
+
+<!-- Passwort ändern -->
+<p>Passwort:</p>
+<button onclick={() => openPasswordChangeDialog()}>Passwort ändern</button>
 </div>
+{/if}
+
+<!-- Passwort ändern Dialog -->
+{#if passwordChangeDialogOpen}
+<PasswordChangeDialog
+bind:open={passwordChangeDialogOpen}
+on:close={() => (passwordChangeDialogOpen = false)}
+
+/>
 {/if}
 
 <style>
@@ -168,16 +196,22 @@
 		font-size: 1rem;
 		cursor: pointer;
 	}
-</style>
-.small {
-	font-size: 0.8rem;
-}
+	.password-change-button {
+        margin-top: 16px;
+    }
 
-.medium {
-	font-size: 1rem;
-}
+    .password-change-button button {
+        padding: 8px 12px;
+        font-size: 1rem;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+    }
 
-.large {
-	font-size: 1.2rem;
-}
+    .password-change-button button:hover {
+        opacity: 0.9;
+    }
+
 </style>
