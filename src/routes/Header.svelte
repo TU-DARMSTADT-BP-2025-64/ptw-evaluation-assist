@@ -9,12 +9,12 @@
 
 	import PasswordChangeDialog from '$lib/PasswordChangeDialog.svelte';
 
-	let passwordChangeDialogOpen = false;
+	let passwordChangeDialogOpen = $state(false);
 
 	let currentPath = '';
-	let isDarkMode = false;
-	let fontSize = 'medium';
-	let showSettings = false;
+	let isDarkMode = $state(false);
+	let fontSize = $state('medium');
+	let showSettings = $state(false);
 
 	afterNavigate(() => {
 		currentPath = window.location.pathname;
@@ -73,11 +73,6 @@
 	<div class="triangle"></div>
 	<div class="toolbar">
 		<div class="title">
-			<IconButton
-				style={currentPath === '/' ? 'display: none' : 'display: inline'}
-				class = "material-icons"
-				onclick={() => window.history.back()}>arrow_back</IconButton
-			>
 			<p class="title-text">
 				{HeaderService.Instance.getTitle()}
 			</p>
@@ -87,33 +82,28 @@
 			<IconButton class="material-icons" onclick={() => toggleSettings()}>settings</IconButton>
 		</div>
 	</div>
-
 </header>
 {#if showSettings}
-    <div class="settings-menu {fontSize}">
-        <h2>Einstellungen</h2>
-        <p>Schriftgröße:</p>
-        
-    <div class="font-size-buttons">
-        <button onclick={() => changeFontSize('small')}>Klein</button>
-        <button onclick={() => changeFontSize('medium')}>Mittel</button>
-        <button onclick={() => changeFontSize('large')}>Groß</button>
-    </div>
+	<div class="settings-menu {fontSize}">
+		<h2>Einstellungen</h2>
+		<p>Schriftgröße:</p>
 
-<!-- Passwort ändern -->
-<p>Passwort:</p>
-<button onclick={() => openPasswordChangeDialog()}>Passwort ändern</button>
-</div>
+		<div class="font-size-buttons">
+			<button onclick={() => changeFontSize('small')}>Klein</button>
+			<button onclick={() => changeFontSize('medium')}>Mittel</button>
+			<button onclick={() => changeFontSize('large')}>Groß</button>
+		</div>
+
+		<!-- Passwort ändern -->
+		<p>Passwort:</p>
+		<button onclick={() => openPasswordChangeDialog()}>Passwort ändern</button>
+	</div>
 {/if}
 
-<!-- Passwort ändern Dialog -->
-{#if PasswordChangeDialogOpen}
 <PasswordChangeDialog
-bind:open={PasswordChangeDialogOpen}
-on:close={() => (PasswordChangeDialogOpen = false)}
-
+	bind:open={passwordChangeDialogOpen}
+	on:close={() => (passwordChangeDialogOpen = false)}
 />
-{/if}
 
 {#if showSettings}
 	<div class="settings-menu {fontSize}">
