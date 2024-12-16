@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { HeaderService } from '../HeaderService.svelte';
-	import Textfield from '@smui/textfield';
+	import ProductTable from '$lib/components/ProductTable/ProductTable.svelte';
+	import type { ProductViewModel } from '$lib/models/product.model';
 
-	let value = $state('');
-    
-    HeaderService.Instance.setTitle('Assistent');
+	HeaderService.Instance.setTitle('Assistent');
+	let props: { data: {products: ProductViewModel[]} } = $props();
 </script>
 
 <svelte:head>
@@ -13,16 +13,7 @@
 </svelte:head>
 
 <section>
-
-	<div>
-		<Textfield
-		style="width: 100%;"
-		bind:value
-		label="Search"
-		class="solo-input"></Textfield>
-	</div>
-    
-	
+	<ProductTable products = {props.data.products} />
 </section>
 
 <style>
