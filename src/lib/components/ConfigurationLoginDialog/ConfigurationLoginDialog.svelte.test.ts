@@ -5,7 +5,11 @@ import ConfigurationLoginDialog from './ConfigurationLoginDialog.svelte';
 
 test('LoginDialog', () => {
 
-    render(ConfigurationLoginDialog);
+    render(ConfigurationLoginDialog, {
+        props: {
+            open: true
+        }
+    });
 
     const title = screen.getByTestId('dialog-title');
     expect(title.textContent).toEqual('Login Konfiguration');

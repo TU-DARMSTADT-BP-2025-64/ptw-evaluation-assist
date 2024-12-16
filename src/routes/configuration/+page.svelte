@@ -1,8 +1,24 @@
 <script lang="ts">
-	import { HeaderService } from '../HeaderService.svelte';
-	import Ripple from '@smui/ripple';
+    import { HeaderService } from '../HeaderService.svelte';
+    import ProductTable from '$lib/components/ProductTable/ProductTable.svelte';
+    import type { ProductViewModel } from '$lib/models/product.model';
+    
+    HeaderService.Instance.setTitle('Konfiguration');
+    let props: { data: {products: ProductViewModel[]} } = $props();
 
-	HeaderService.Instance.setTitle('Konfiguration');
+
+    function addProduct() {
+        fetch('api/product', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: 'zylinder'
+            })
+
+        })
+    }
 </script>
 
 <svelte:head>
@@ -11,9 +27,9 @@
 </svelte:head>
 
 <section>
-	<a href="/configuration/form">
-		add Product
-	</a>
+    Konfiguration
+    <button onclick="{() => addProduct()}">Add product</button>
+    <ProductTable products = {props.data.products} />
 </section>
 
 <style>
