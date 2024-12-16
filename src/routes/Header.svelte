@@ -75,7 +75,7 @@
 		<div class="title">
 			<IconButton
 				style={currentPath === '/' ? 'display: none' : 'display: inline'}
-				class="material-icons"
+				class = "material-icons"
 				onclick={() => window.history.back()}>arrow_back</IconButton
 			>
 			<p class="title-text">
@@ -87,7 +87,33 @@
 			<IconButton class="material-icons" onclick={() => toggleSettings()}>settings</IconButton>
 		</div>
 	</div>
+
 </header>
+{#if showSettings}
+    <div class="settings-menu {fontSize}">
+        <h2>Einstellungen</h2>
+        <p>Schriftgröße:</p>
+        
+    <div class="font-size-buttons">
+        <button onclick={() => changeFontSize('small')}>Klein</button>
+        <button onclick={() => changeFontSize('medium')}>Mittel</button>
+        <button onclick={() => changeFontSize('large')}>Groß</button>
+    </div>
+
+<!-- Passwort ändern -->
+<p>Passwort:</p>
+<button onclick={() => openPasswordChangeDialog()}>Passwort ändern</button>
+</div>
+{/if}
+
+<!-- Passwort ändern Dialog -->
+{#if PasswordChangeDialogOpen}
+<PasswordChangeDialog
+bind:open={PasswordChangeDialogOpen}
+on:close={() => (PasswordChangeDialogOpen = false)}
+
+/>
+{/if}
 
 {#if showSettings}
 	<div class="settings-menu {fontSize}">
