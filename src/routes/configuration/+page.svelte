@@ -2,22 +2,24 @@
     import { HeaderService } from '../HeaderService.svelte';
     import ProductTable from '$lib/components/ProductTable/ProductTable.svelte';
     import type { ProductViewModel } from '$lib/models/product.model';
+	import { goto } from '$app/navigation';
     
     HeaderService.Instance.setTitle('Konfiguration');
     let props: { data: {products: ProductViewModel[]} } = $props();
 
 
     function addProduct() {
-        fetch('api/product', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: 'zylinder'
-            })
+		goto('configuration/form');
+        // fetch('api/product', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         name: 'zylinder'
+        //     })
 
-        })
+        // })
     }
 </script>
 

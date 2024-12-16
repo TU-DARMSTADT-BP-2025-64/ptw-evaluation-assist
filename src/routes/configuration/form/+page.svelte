@@ -8,6 +8,7 @@
 	import AssemblyGroupForm from './AssemblyGroupForm.svelte';
 	import AssemblyGroupStructureAddButton from './AssemblyGroupStructureAddButton.svelte';
 	import AddAssemblyGroupDialog from './AddAssemblyGroupDialog.svelte';
+	import { goto } from '$app/navigation';
 	HeaderService.Instance.setTitle('Konfiguration');
 
 	let product = $state(new ProductTreeViewModel());
@@ -26,6 +27,19 @@
 	function removeAssemblyGroup(index: number) {
 		assemblyGroups.splice(index, 1);
 	}
+
+	function saveProduct() {
+		fetch('/api/product', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				name: product.name,
+			})
+		});
+		goto('/configuration');
+	}
 </script>
 
 <section>
@@ -36,7 +50,7 @@
 		</Button>
 		<h1>Produkt hinzufügen</h1>
 
-		<Button>
+		<Button onclick={saveProduct}>
 			<i class="material-icons">save</i>
 			<span>Speichern</span>
 		</Button>
@@ -106,7 +120,6 @@
 
 	.vertical-border {
 		border-left: 2px dashed rgba(0, 0, 0, 0.75);
-		
 	}
 
 	.children-groups {
