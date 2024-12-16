@@ -14,6 +14,7 @@
 	let isDarkMode: boolean = false;
 	let fontSize: 'small' | 'medium' | 'large' = 'medium'; // Schriftgröße mit Typ
 		let showSettings =false;
+		let buttonSize = 'mittel';
 		
 
 	afterNavigate(() => {
@@ -197,7 +198,7 @@ on:close={() => (PasswordChangeDialogOpen = false)}
         padding: 8px 12px;
         font-size: 1rem;
         cursor: pointer;
-        background-color: #007bff;
+        background-color: red;
         color: white;
         border: none;
         border-radius: 4px;

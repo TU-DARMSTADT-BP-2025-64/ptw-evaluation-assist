@@ -89,6 +89,7 @@ const dispatch = createEventDispatcher();
 .dialog {
     background: white;
     border-radius: 8px;
+    border: 2px solid rgba(255, 0, 0, 0.748);
     padding: 24px;
     width: 90%;
     max-width: 400px;
@@ -136,7 +137,7 @@ button[type="button"] {
 }
 
 button[type="submit"] {
-    background: #007bff;
+    background: red;
     color: white;
 }
 
