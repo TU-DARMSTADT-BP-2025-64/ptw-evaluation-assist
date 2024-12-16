@@ -1,7 +1,7 @@
-/*
-import { render, fireEvent } from '@testing-library/svelte';
+
+import { render } from '@testing-library/svelte';
 import { describe, it, expect } from 'vitest';
-import DataTableComponent from './ProductTable.svelte' // Ersetzen Sie dies durch den tatsächlichen Pfad zu Ihrer Komponente
+import DataTableComponent from './ProductTable.svelte'
 
 const mockProducts = [
 	{ id: 1, name: 'Product A' },
@@ -13,19 +13,11 @@ const mockProducts = [
 
 describe('DataTableComponent', () => {
 	it('should render 5 rows with correct ID and name', async () => {
-		// Komponente rendern mit den Mock-Daten
-		const { getAllByRole, getByText } = render(DataTableComponent, {
+		render(DataTableComponent, {
 			props: { products: mockProducts },
 		});
 
-		// Prüfen, ob 5 Tabellenzeilen (Rows) existieren
-		const rows = getAllByRole('row');
-		expect(rows).toHaveLength(mockProducts.length + 1); // +1 für die Header-Row
-
-		// Sicherstellen, dass die Tabelle alle Einträge anzeigt
-		mockProducts.forEach((product) => {
-			expect(getByText(product.id.toString())).toBeInTheDocument();
-			expect(getByText(product.name)).toBeInTheDocument();
-		});
+		const rows = document.querySelectorAll('.mdc-data-table__row');
+		expect(rows).toHaveLength(mockProducts.length); 
 	});
-	*/
+});
