@@ -4,16 +4,16 @@
 	import 'svelte-material-ui/bare.css';
 	import '@material/elevation/dist/mdc.elevation.css'; 
 
-	import { onMount } from 'svelte';
-	let { children } = $props();
-	let fontSize = 'medium';
-	onMount(() => {
-    const savedFontSize = localStorage.getItem('fontSize');
-    if (savedFontSize) {
-        fontSize = savedFontSize;  // Lade gespeicherte Größe
-    }
-});
+import { onMount } from 'svelte';
+let { children } = $props();
+let fontSize = 'medium';  // Standardgröße
 
+onMount(() => {
+	const savedFontSize = localStorage.getItem('fontSize');
+	if (savedFontSize) {
+		fontSize = savedFontSize;  // Lade gespeicherte Größe
+	}
+});
 </script>
 
 <div class="app">
@@ -42,4 +42,5 @@
 		box-sizing: border-box;
 
 	}
+	
 </style>
