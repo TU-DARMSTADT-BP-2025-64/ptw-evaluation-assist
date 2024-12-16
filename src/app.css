@@ -46,6 +46,10 @@ a {
 	width: 100%;
 }
 
+.mdc-select {
+	width: 100%;
+}
+
 .mdc-button .material-icons + span {
 	margin-left: 0.5rem;
 
@@ -54,3 +58,4 @@ a {
 .cancel-button, .default-button {
 	color: var(--mdc-theme-on-surface) !important;
 }
+

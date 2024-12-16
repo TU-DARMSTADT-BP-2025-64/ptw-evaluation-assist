@@ -24,10 +24,7 @@
 	}
 
 	function removeAssemblyGroup(index: number) {
-		console.log('remove-assembly-group', index, JSON.parse(JSON.stringify(assemblyGroups)));
 		assemblyGroups.splice(index, 1);
-
-		console.log(JSON.parse(JSON.stringify(assemblyGroups)));
 	}
 </script>
 

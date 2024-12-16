@@ -2,7 +2,8 @@
 	import Dialog, { Title, Content } from '@smui/dialog';
 	import Button from '@smui/button';
 	import Textfield from '@smui/textfield';
-	import { AssemblyComponentTreeViewModel } from '$lib/models/assembly-component.model';
+	import { AssemblyComponentTreeViewModel, PredefinedComponentCategory } from '$lib/models/assembly-component.model';
+    import Select, { Option } from '@smui/select';
 
 	let {
 		open = $bindable(),
@@ -10,7 +11,11 @@
 	}: { open: boolean; onSave: (group: AssemblyComponentTreeViewModel) => void } = $props();
 
 	let name = $state('');
+    let componentCategory = $state(PredefinedComponentCategory.Elektronisches_Bauteile);
 	let invalidName = $state(false);
+
+
+    let predefinedCategories = Object.keys(PredefinedComponentCategory);
 
 	function saveNewComponent() {
 		if (!name || name.trim() === '') {
@@ -31,7 +36,7 @@
 	}
 </script>
 
-<Dialog bind:open class="login-dialog">
+<Dialog bind:open>
 	<Title><span data-testid="dialog-title">Neue Komponente</span></Title>
 	<Content>
 		<Textfield
@@ -42,6 +47,15 @@
 			onkeydown={(e) => e.key === 'Enter' && saveNewComponent()}
 			label="Name"
 		></Textfield>
+
+
+        
+		<Select style="margin-top: 18px" bind:value={componentCategory} label="Kategorie_Maschinenelement">
+			<Option/>
+			{#each predefinedCategories as category}
+				<Option value={category}>{category}</Option>
+			{/each}
+		</Select>
 	</Content>
 	<div class="actions">
 		<Button class="cancel-button" onclick={() => cancel()}>Abbrechen</Button>

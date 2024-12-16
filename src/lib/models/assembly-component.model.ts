@@ -16,3 +16,12 @@ export class AssemblyComponentTreeViewModel {
         
     }
 }
+
+export enum PredefinedComponentCategory {
+    'Elektronisches_Bauteile' = 'Elektronisches_Bauteile',
+    'Lagerungselemente' = 'Lagerungselemente',
+    'Übertragungselemente' = 'Übertragungselemente',
+    'Dichtungselemente' = 'Dichtungselemente',
+    'Verbindungselemente' = 'Verbindungselemente',
+    'Bau_und_Gehäuseteile' = 'Bau_und_Gehäuseteile',
+}

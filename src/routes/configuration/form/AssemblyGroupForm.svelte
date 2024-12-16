@@ -78,16 +78,17 @@
 		</div>
 
 		{#if expanded}
-			{#if children.length > 0}
+			{#if children && children.length > 0}
 				<div class="children-groups-container">
 					<div class="vertical-border">&nbsp;</div>
 					<div class="children-groups">
 						{#each children as child, i}
-							{#if child.type === 'component'}
+							{#if child.type === 'assembly-component'}
 								<AssemblyComponentForm
 									bind:assemblyComponent={children[i] as AssemblyComponentTreeViewModel}
 									level={level + 1}
 									lastChild={i === children.length - 1}
+									
 								/>
 							{:else}
 								<AssemblyGroupForm

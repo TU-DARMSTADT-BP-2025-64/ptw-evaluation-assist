@@ -31,7 +31,7 @@
 	}
 </script>
 
-<Dialog bind:open class="login-dialog">
+<Dialog bind:open>
 	<Title><span data-testid="dialog-title">Neue Baugruppe</span></Title>
 	<Content>
 		<Textfield
@@ -45,7 +45,7 @@
 	</Content>
 	<div class="actions">
 		<Button class="cancel-button" onclick={() => cancel()}>Cancel</Button>
-		<Button onclick={() => saveNewGroup()}>Login</Button>
+		<Button onclick={() => saveNewGroup()}>Speichern</Button>
 	</div>
 </Dialog>
 
