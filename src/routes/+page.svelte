@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Ripple from '@smui/ripple';
 	import { HeaderService } from './HeaderService.svelte';
-	import ConfigurationLoginDialog from '$lib/ConfigurationLoginDialog.svelte';
-	
+	import ConfigurationLoginDialog from '$lib/components/ConfigurationLoginDialog/ConfigurationLoginDialog.svelte';
+
 	let configurationLoginDialogOpen = $state(false);
 	
 	HeaderService.Instance.setTitle('Startseite');

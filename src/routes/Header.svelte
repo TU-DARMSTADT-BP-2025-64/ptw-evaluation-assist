@@ -83,7 +83,7 @@
 				class="material-icons"
 				onclick={() => window.history.back()}>arrow_back</IconButton
 			>
-			<p>
+			<p class="title-text">
 				{HeaderService.Instance.getTitle()}
 			</p>
 		</div>

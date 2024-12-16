@@ -1,4 +1,4 @@
-name: deploy-staging
+name: run-tests
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,6 +21,6 @@ jobs:
           ssh-keyscan -H ${{ secrets.STAGING_HOST }} >> ~/.ssh/known_hosts
 
       # SSH into server and run deploy script
-      - name: Deploy via SSH
+      - name: Run tests via SSH
         run: |
-          ssh ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST  }} './deploy.sh' 
+          ssh ${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST  }} './run-tests.sh' 
