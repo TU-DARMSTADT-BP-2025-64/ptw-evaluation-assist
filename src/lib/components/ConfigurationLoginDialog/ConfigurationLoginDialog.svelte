@@ -12,14 +12,14 @@
 		const response = await fetch('/api/login', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ username: 'admin', password })
+			body: JSON.stringify({ username: 'admin', password }),
 		});
 
 		if (response.ok) {
-			open = false; // Dialog schließen
+			open = false;
 			goto('/configuration');
 		} else {
-			invalidPassword = true; // Fehlermeldung anzeigen
+			invalidPassword = true;
 		}
 	}
 </script>
@@ -39,20 +39,19 @@
 	</Content>
 	<div class="actions">
 		<Button class="color-unset" onclick={() => (open = false)}>Cancel</Button>
-		<Button onclick={() => login()}>Login</Button>
+		<Button onclick={login}>Login</Button>
 	</div>
 </Dialog>
 
-
 <style>
-	.actions {
-		display: flex;
-		justify-content: flex-end;
-		gap: 8px;
-		margin: 8px 8px 8px 0;
-	}
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin: 8px 8px 8px 0;
+    }
 
-	:global(.color-unset) {
-		color: var(--mdc-theme-on-surface) !important;
-	}
+    :global(.color-unset) {
+        color: var(--mdc-theme-on-surface) !important;
+    }
 </style>

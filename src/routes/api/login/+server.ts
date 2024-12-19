@@ -1,5 +1,9 @@
 import { json } from '@sveltejs/kit';
 import { Repository } from '$lib/server/repository';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export async function POST({ request, cookies }) {
 	const { username, password } = await request.json();
@@ -7,12 +11,16 @@ export async function POST({ request, cookies }) {
 	const userExists = await Repository.Instance.userExists(username, password);
 
 	if (userExists) {
-		cookies.set('session', 'valid', {
+		const token = jwt.sign({ username }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+
+		cookies.set('session', token, {
 			path: '/',
 			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
 			sameSite: 'strict',
-			maxAge: 3600 // 1 Stunde
+			maxAge: 3600,
 		});
+
 		return json({ success: true });
 	}
 
