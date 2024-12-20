@@ -3,18 +3,33 @@
 	import TextField from '@smui/textfield';
 	import Select, { Option } from '@smui/select';
 	import IconButton from '@smui/icon-button';
+	import Button from '@smui/button';
 	import { Label } from '@smui/common';
 	import type { ProductViewModel } from '$lib/models/product.model';
-  	import { Icon } from '@smui/common';
+	import { Icon } from '@smui/common';
+	import Dialog, { Title, Content, Actions } from '@smui/dialog';
 
-	let props: { products: ProductViewModel[] } = $props();
+	let {
+		products,
+		onProductClicked,
+		showDelete = false,
+		onProductDelete = () => {}
+	}: {
+		products: ProductViewModel[];
+		onProductClicked: (product: ProductViewModel) => void;
+		showDelete?: boolean;
+		onProductDelete?: (product: ProductViewModel) => void;
+	} = $props();
 
 	// Reaktive Variable für den Suchbegriff
 	let searchQuery = $state('');
 
+	let verifyDeleteDialogOpen = $state(false);
+	let productToDelete: ProductViewModel | null = $state(null);
+
 	// Filtere die Daten basierend auf dem Suchbegriff
 	const filteredData = $derived.by(() => {
-		return props.products.filter(
+		return products.filter(
 			(product) =>
 				product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
 				product.id === Number(searchQuery)
@@ -36,6 +51,26 @@
 			currentPage = lastPage;
 		}
 	});
+
+	function verifyDelete(event: Event, product: ProductViewModel) {
+		event.stopPropagation();
+		productToDelete = product;
+		verifyDeleteDialogOpen = true;
+	}
+
+	function cancelDelete() {
+		verifyDeleteDialogOpen = false;
+		productToDelete = null;
+	}
+
+	function deleteProduct() {
+		if (productToDelete) {
+			onProductDelete(productToDelete);
+			productToDelete = null;
+		}
+		verifyDeleteDialogOpen = false;
+	}
+
 </script>
 
 <div class="product-table">
@@ -43,11 +78,11 @@
 	<div class="search-bar mdc-elevation--z1">
 		<TextField style="width: 100%" variant="filled" bind:value={searchQuery} label="Suche">
 			{#snippet leadingIcon()}
-			  <Icon style="margin-left: 8px; margin-right: 4px" class="material-icons">search</Icon>
+				<Icon style="margin-left: 8px; margin-right: 4px" class="material-icons">search</Icon>
 			{/snippet}
-		  </TextField>
+		</TextField>
 	</div>
-	
+
 	<div class="mdc-elevation--z1" style="width: 100%; overflow: auto;">
 		<!-- Tabelle -->
 		<DataTable table$aria-label="Product List" style="width: 100%;">
@@ -55,17 +90,26 @@
 				<Row>
 					<Cell>ID</Cell>
 					<Cell>Name</Cell>
+					{#if showDelete}
+						<Cell style="width: 100px"></Cell>
+					{/if}
 				</Row>
 			</Head>
 			<Body>
-				{#each slice as { id, name }}
-					<Row>
-						<Cell>{id}</Cell>
-						<Cell>{name}</Cell>
+				{#each slice as product}
+					<Row style="cursor: pointer" onclick={() => onProductClicked(product)}>
+						<Cell>{product.id}</Cell>
+						<Cell>{product.name}</Cell>
+
+						{#if showDelete}
+							<Cell style="width: 100px;">
+								<IconButton class="material-icons" action="delete" title="Delete" onclick={(event: Event) =>  verifyDelete(event, product)}>delete</IconButton>
+							</Cell>
+						{/if}
 					</Row>
 				{/each}
 			</Body>
-		
+
 			<!-- Pagination -->
 			{#snippet paginate()}
 				<Pagination>
@@ -78,7 +122,7 @@
 					{#snippet total()}
 						{start + 1}-{end} of {filteredData.length}
 					{/snippet}
-		
+
 					<!-- Buttons for Pagination -->
 					<IconButton
 						class="material-icons"
@@ -87,7 +131,7 @@
 						onclick={() => (currentPage = 0)}
 						disabled={currentPage === 0}>first_page</IconButton
 					>
-		
+
 					<IconButton
 						class="material-icons"
 						action="prev-page"
@@ -95,7 +139,7 @@
 						onclick={() => currentPage--}
 						disabled={currentPage === 0}>chevron_left</IconButton
 					>
-		
+
 					<IconButton
 						class="material-icons"
 						action="next-page"
@@ -103,7 +147,7 @@
 						onclick={() => currentPage++}
 						disabled={currentPage === lastPage}>chevron_right</IconButton
 					>
-		
+
 					<IconButton
 						class="material-icons"
 						action="last-page"
@@ -117,19 +161,39 @@
 	</div>
 </div>
 
-<style>
+<Dialog bind:open={verifyDeleteDialogOpen}>
+	<Title>Produkt löschen</Title>
+	<Content>
+		<p>Wollen Sie das Produkt: 
+			<strong>{productToDelete?.name}</strong>
+			wirklich löschen?</p>
+	</Content>
+	<div class="actions">
+		<Button class="color-unset" onclick={() => cancelDelete()}>Abbrechen</Button>
+		<Button onclick={() => deleteProduct()}>Löschen</Button>
+	</div>
+</Dialog>
 
+<style>
 	.product-table {
 		width: 100%;
+		height: 100%;
+		overflow: hidden;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-
 	}
 	.search-bar {
 		margin-top: 2rem;
 		margin-bottom: 2rem;
 		width: 100%;
 		max-width: min(100%, 400px);
+	}
+
+	.actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+		margin: 8px 8px 8px 0;
 	}
 </style>

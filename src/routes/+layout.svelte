@@ -29,6 +29,8 @@ onMount(() => {
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
+		height: 100vh;
+		overflow: hidden;
 	}
 
 	main {
@@ -40,6 +42,7 @@ onMount(() => {
 		width: 100%;
 		margin: 0 auto;
 		box-sizing: border-box;
+		overflow: hidden;
 
 	}
 	

@@ -8,6 +8,10 @@
 
 	HeaderService.Instance.setTitle('Assistent');
 	let props: { data: {products: ProductViewModel[]} } = $props();
+
+	function startEvaluation(product: ProductViewModel) {
+		goto(`/assistant/${product.id}`);
+	}
 </script>
 
 <svelte:head>
@@ -24,7 +28,7 @@
 	</div>
 
 	<div class="product-table">
-		<ProductTable products = {props.data.products} />
+		<ProductTable products = {props.data.products} onProductClicked={(product) => startEvaluation(product)} />
 	</div>
 </section>
 

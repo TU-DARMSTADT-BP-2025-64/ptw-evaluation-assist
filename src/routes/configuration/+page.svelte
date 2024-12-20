@@ -5,9 +5,11 @@
 	import { goto } from '$app/navigation';
     import ProductTable from '$lib/components/ProductTable/ProductTable.svelte';
     import type { ProductViewModel } from '$lib/models/product.model';
+	import { onMount } from 'svelte';
     
     HeaderService.Instance.setTitle('Konfiguration');
     let props: { data: {products: ProductViewModel[]} } = $props();
+    let products = $state(props.data.products);
 
 
     function addProduct() {
@@ -21,6 +23,18 @@
             })
 
         })
+    }
+
+    function editProduct(product: ProductViewModel) {
+        goto(`/configuration/${product.id}`);
+    }
+
+    function deleteProduct(product: ProductViewModel) {
+        fetch(`api/product/${product.id}`, {
+            method: 'DELETE'
+        })
+
+        products = products.filter(p => p.id !== product.id);
     }
 </script>
 
@@ -38,7 +52,12 @@
 	</div>
 
 	<div class="product-table">
-		<ProductTable products = {props.data.products} />
+		<ProductTable 
+            products = {products} 
+            onProductClicked={(product) => editProduct(product)} 
+            showDelete 
+            onProductDelete={(product) => deleteProduct(product)} />
+
 	</div>
 
     <div class="add-product-button">
@@ -68,6 +87,8 @@
 	}
 
 	.product-table {
+        max-height: 100%;
+        overflow: hidden;
 		width: 100%;
 		max-width: min(100%, 800px);
 	}
