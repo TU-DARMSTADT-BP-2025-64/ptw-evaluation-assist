@@ -8,6 +8,7 @@ export class Repository {
 	public static Instance: Repository;
 
 	constructor(private databaseClient: DatabaseClient) {
+		console.log('Repository constructor', databaseClient);
 		if (!this.databaseClient.databaseExists()) {
 			this.init();
 		}
