@@ -65,13 +65,13 @@
 		</Row>
 	</Head>
 	<Body>
-		{#each slice as { id, name }}
+		{#each slice as { id, name }, i}
 			<Row>
 				<Cell>{id}</Cell>
 				<Cell>{name}</Cell>
 				{#if props.clickable}
 					<Cell>
-						<button onclick={() => navigateToProcess(id, name)}> Befundung starten </button>
+						<button class="start_assistant_{i}" onclick={() => navigateToProcess(id, name)}> Befundung starten </button>
 					</Cell>
 				{/if}
 			</Row>
