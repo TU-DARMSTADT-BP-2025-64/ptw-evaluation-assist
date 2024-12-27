@@ -7,16 +7,17 @@
 	import type { ProductViewModel } from '$lib/models/product.model';
 
 	// Props
-	let props: { products: ProductViewModel[], clickable?: boolean } = $props();
+	let props: { products: ProductViewModel[]; clickable?: boolean } = $props();
 
 	// Suchbegriff
-	let searchQuery = $state("");
+	let searchQuery = $state('');
 
 	// Gefilterte Daten basierend auf dem Suchbegriff
 	const filteredData = $derived.by(() => {
-		return props.products.filter(product =>
-			product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			product.id === Number(searchQuery)
+		return props.products.filter(
+			(product) =>
+				product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				product.id === Number(searchQuery)
 		);
 	});
 
@@ -43,20 +44,13 @@
 	}
 </script>
 
-<style>
-    .search-bar {
-        margin-bottom: 1rem;
-    }
-</style>
-
 <!-- Suchleiste -->
 <div class="search-bar">
 	<input
 		type="text"
 		placeholder="Search by ID or name..."
 		bind:value={searchQuery}
-		style="width: 100%; padding: 0.5rem; font-size: 1rem;"
-	/>
+		style="width: 100%; padding: 0.5rem; font-size: 1rem;" />
 </div>
 
 <!-- Tabelle -->
@@ -71,66 +65,60 @@
 		</Row>
 	</Head>
 	<Body>
-	{#each slice as { id, name }}
-		<Row>
-			<Cell>{id}</Cell>
-			<Cell>{name}</Cell>
-			{#if props.clickable}
-				<Cell>
-					<button onclick={() => navigateToProcess(id, name)}>
-						Befundung starten
-					</button>
-				</Cell>
-			{/if}
-		</Row>
-	{/each}
+		{#each slice as { id, name }}
+			<Row>
+				<Cell>{id}</Cell>
+				<Cell>{name}</Cell>
+				{#if props.clickable}
+					<Cell>
+						<button onclick={() => navigateToProcess(id, name)}> Befundung starten </button>
+					</Cell>
+				{/if}
+			</Row>
+		{/each}
 	</Body>
 
 	<!-- Pagination -->
-	<Pagination>
-		<Label>Rows Per Page</Label>
-		<Select variant="outlined" bind:value={perPage} noLabel>
-			<Option value={10}>10</Option>
-			<Option value={25}>25</Option>
-			<Option value={100}>100</Option>
-		</Select>
-		{start + 1}-{end} of {filteredData.length}
+	{#snippet paginate()}
+		<Pagination>
+			<Label>Rows Per Page</Label>
+			<Select variant="outlined" bind:value={perPage} noLabel>
+				<Option value={10}>10</Option>
+				<Option value={25}>25</Option>
+				<Option value={100}>100</Option>
+			</Select>
+			{start + 1}-{end} of {filteredData.length}
 
-		<!-- Navigation Buttons -->
-		<IconButton
-			class="material-icons"
-			title="First page"
-			onclick={() => (currentPage = 0)}
-			disabled={currentPage === 0}
-		>first_page</IconButton>
+			<!-- Navigation Buttons -->
+			<IconButton
+				class="material-icons"
+				title="First page"
+				onclick={() => (currentPage = 0)}
+				disabled={currentPage === 0}>first_page</IconButton>
 
-		<IconButton
-			class="material-icons"
-			title="Prev page"
-			onclick={() => (currentPage--)}
-			disabled={currentPage === 0}
-		>chevron_left</IconButton>
+			<IconButton
+				class="material-icons"
+				title="Prev page"
+				onclick={() => currentPage--}
+				disabled={currentPage === 0}>chevron_left</IconButton>
 
-		<IconButton
-			class="material-icons"
-			title="Next page"
-			onclick={() => (currentPage++)}
-			disabled={currentPage === lastPage}
-		>chevron_right</IconButton>
+			<IconButton
+				class="material-icons"
+				title="Next page"
+				onclick={() => currentPage++}
+				disabled={currentPage === lastPage}>chevron_right</IconButton>
 
-		<IconButton
-			class="material-icons"
-			title="Last page"
-			onclick={() => (currentPage = lastPage)}
-			disabled={currentPage === lastPage}
-		>last_page</IconButton>
-	</Pagination>
+			<IconButton
+				class="material-icons"
+				title="Last page"
+				onclick={() => (currentPage = lastPage)}
+				disabled={currentPage === lastPage}>last_page</IconButton>
+		</Pagination>
+	{/snippet}
 </DataTable>
 
-
-
-
-
-
-
-
+<style>
+	.search-bar {
+		margin-bottom: 1rem;
+	}
+</style>
