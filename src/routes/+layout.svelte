@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Header from './Header.svelte';
 	import '../app.css';
-	import 'svelte-material-ui/bare.css';
 	import '@material/elevation/dist/mdc.elevation.css'; 
 
 import { onMount } from 'svelte';
