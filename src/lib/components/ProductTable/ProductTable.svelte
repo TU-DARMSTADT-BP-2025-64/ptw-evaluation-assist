@@ -4,15 +4,17 @@
 	import Select, { Option } from '@smui/select';
 	import IconButton from '@smui/icon-button';
 	import { Label } from '@smui/common';
+	import { goto } from '$app/navigation';
 	import type { ProductViewModel } from '$lib/models/product.model';
   	import { Icon } from '@smui/common';
 
-	let props: { products: ProductViewModel[] } = $props();
+	// Props
+	let props: { products: ProductViewModel[]; clickable?: boolean } = $props();
 
 	// Reaktive Variable für den Suchbegriff
 	let searchQuery = $state('');
 
-	// Filtere die Daten basierend auf dem Suchbegriff
+	// Gefilterte Daten basierend auf dem Suchbegriff
 	const filteredData = $derived.by(() => {
 		return props.products.filter(
 			(product) =>
@@ -22,20 +24,26 @@
 	});
 
 	// Pagination-Variablen
-	let perPage = $state(10); // Anzahl der Einträge pro Seite
-	let currentPage = $state(0); // Aktuelle Seite
+	let perPage = $state(10);
+	let currentPage = $state(0);
 
 	const start = $derived(currentPage * perPage);
 	const end = $derived(Math.min(start + perPage, filteredData.length));
 	const slice = $derived(filteredData.slice(start, end));
 	const lastPage = $derived(Math.max(Math.ceil(filteredData.length / perPage) - 1, 0));
 
-	// Seite wechseln, wenn die Seitenzahl überschritten wird
 	$effect(() => {
 		if (currentPage > lastPage) {
 			currentPage = lastPage;
 		}
 	});
+
+	// Navigationsfunktion
+	function navigateToProcess(id: number, name: string) {
+		if (props.clickable) {
+			goto(`/assistant/product-selection?id=${id}&name=${encodeURIComponent(name)}`);
+		}
+	}
 </script>
 
 <div class="product-table">
