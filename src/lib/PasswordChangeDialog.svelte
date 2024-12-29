@@ -1,29 +1,45 @@
 <script lang="ts">
-     import { createEventDispatcher } from 'svelte';
-
+    import { createEventDispatcher } from 'svelte';
     export let open: boolean;
     let currentPassword = '';
     let newPassword = '';
     let confirmPassword = '';
-const dispatch = createEventDispatcher();
+    const dispatch = createEventDispatcher();
 
-    // Funktion zum Schließen des Dialogs
     function closeDialog() {
         open = false;
         dispatch('close');
     }
 
     // Funktion zum Ändern des Passworts
-    function changePassword() {
+    async function changePassword() {
         if (newPassword !== confirmPassword) {
             alert('Das neue Passwort und die Bestätigung stimmen nicht überein.');
             return;
         }
 
-        console.log('Passwort ändern:', { currentPassword, newPassword });
+        try {
+            const response = await fetch('/api/change-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    currentPassword,
+                    newPassword,
+                }),
+            });
 
-        // Dialog schließen nach erfolgreicher Änderung
-        closeDialog();
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(data.message);
+                closeDialog();
+            } else {
+                alert(`Fehler: ${data.message}`);
+            }
+        } catch (error) {
+            console.error('Fehler beim Ändern des Passworts:', error);
+            alert('Ein unerwarteter Fehler ist aufgetreten.');
+        }
     }
 </script>
 

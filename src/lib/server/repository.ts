@@ -1,7 +1,6 @@
 import { ProductDatabaseModel, ProductViewModel } from '$lib/models/product.model';
 import bcrypt from 'bcrypt';
-import type { DatabaseClient } from './database-client';
-import type { User } from '$lib/models/user.model';
+import { DatabaseClient } from '$lib/server/database-client';
 import dotenv from 'dotenv';
 
 dotenv.config(); // Lädt die Umgebungsvariablen aus der .env-Datei
@@ -44,10 +43,12 @@ export class Repository {
 	public async userExists(username: string, password: string): Promise<boolean> {
 		const database = this.databaseClient.getDatabase();
 		const statement = database.prepare('SELECT * FROM users WHERE username = ?');
-		const user = statement.get(username) as User| undefined;
+		const user = statement.get(username) as { username: string; password: string } | undefined;
 
 		if (user) {
-			return await bcrypt.compare(password, user.password);
+			const passwordMatches = await bcrypt.compare(password, user.password);
+			console.log('Passwort korrekt:', passwordMatches);
+			return passwordMatches;
 		}
 
 		return false;
@@ -109,5 +110,29 @@ export class Repository {
 		const statementInsert = db.prepare('INSERT INTO users (username, password) VALUES (?, ?)');
 		statementInsert.run('admin', passwordHash);
 		console.log('Admin-Benutzer wurde erfolgreich erstellt.');
+	}
+
+	async getAdmin() {
+		const db = this.databaseClient.getDatabase();
+
+		// Hole den Benutzer 'admin'
+		const statement = db.prepare('SELECT * FROM users WHERE username = ?');
+		return statement.get('admin');
+	}
+
+	async updateAdminPassword(newPassword: string) {
+		const db = this.databaseClient.getDatabase();
+
+		// Update-Statement für das Passwort
+		const statement = db.prepare('UPDATE users SET password = ? WHERE username = ?');
+		const result = statement.run(newPassword, 'admin');
+
+		// Rückmeldung über den Erfolg
+		if (result.changes === 1) {
+			console.log('Passwort erfolgreich aktualisiert.');
+		} else {
+			console.log('Fehler beim Aktualisieren des Passworts.');
+		}
+		return result.changes === 1;
 	}
 }
