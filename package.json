@@ -14,8 +14,8 @@
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "cross-env NODE_ENV=test playwright test",
 		"prepare-smui": "npm run smui-theme-light && npm run smui-theme-dark",
-		"smui-theme-light": "smui-theme compile src/theme/smui.css -i src/theme",
-		"smui-theme-dark": "smui-theme compile src/theme/smui-dark.css -i src/theme/dark"
+		"smui-theme-light": "smui-theme compile static/theme/smui.css -i static/theme",
+		"smui-theme-dark": "smui-theme compile static/theme/smui-dark.css -i static/theme/dark"
 	},
 	"dependencies": {
 		"better-sqlite3": "^11.6.0"
