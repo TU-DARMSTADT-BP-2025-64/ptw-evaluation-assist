@@ -13,7 +13,7 @@
 </svelte:head>
 
 <section>
-	<ProductTable products = {props.data.products} />
+	<ProductTable products = {props.data.products} clickable={true} />
 </section>
 
 <style>
