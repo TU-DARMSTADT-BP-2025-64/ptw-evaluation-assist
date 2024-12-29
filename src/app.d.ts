@@ -6,7 +6,8 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			user?: JwtPayload;
+			user?: JwtPayload | null;
+			isLoggedIn: boolean; // Login-Status hinzufügen
 		}
 		// interface PageData {}
 		// interface PageState {}

@@ -5,27 +5,31 @@ import jwt, { type JwtPayload } from 'jsonwebtoken';
 init();
 
 export const handle: Handle = async ({ event, resolve }) => {
-	if (event.url.pathname.startsWith('/configuration')) {
-		const token = event.cookies.get('session');
+	const token = event.cookies.get('session');
 
-		if (!token) {
-			return Response.redirect(`${event.url.origin}/`, 303);
-		}
+	// Standardwerte für Benutzer und Login-Status
+	event.locals.user = null;
+	event.locals.isLoggedIn = false;
 
+	if (token) {
 		try {
+			// Token validieren
 			const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload | string;
 
 			if (typeof decoded === 'object' && decoded !== null) {
-				event.locals.user = decoded;
+				event.locals.user = decoded; // Benutzer-Daten speichern
+				event.locals.isLoggedIn = true; // Benutzer ist eingeloggt
 			} else {
-				// Ungültiges Token, zurückleiten
-				return Response.redirect(`${event.url.origin}/`, 303);
+				event.locals.user = null;
 			}
 		} catch (err) {
-			// Token konnte nicht validiert werden
-			return Response.redirect(`${event.url.origin}/`, 303);
+			event.locals.user = null;
 		}
+	}
 
+	// Zugriffsschutz für `/configuration`
+	if (event.url.pathname.startsWith('/configuration') && !event.locals.isLoggedIn) {
+		return Response.redirect(`${event.url.origin}/`, 303);
 	}
 
 	return resolve(event);

@@ -2,7 +2,7 @@
 	import Dialog, { Title, Content } from '@smui/dialog';
 	import Button from '@smui/button';
 	import Textfield from '@smui/textfield';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 
 	let password = $state('');
 	let invalidPassword = $state(false);
@@ -17,6 +17,7 @@
 
 		if (response.ok) {
 			open = false;
+			await invalidateAll(); // Invalide alle Daten, um `page.data` zu aktualisieren
 			goto('/configuration');
 		} else {
 			invalidPassword = true;
