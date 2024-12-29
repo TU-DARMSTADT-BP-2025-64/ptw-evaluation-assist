@@ -20,9 +20,25 @@
 		currentPath = window.location.pathname;
 	});
 
+	$effect(() => {
+		const lightStylesheet = document.getElementById('theme-stylesheet') as any;
+		const darkStylesheet = document.getElementById('dark-theme-stylesheet') as any;
+
+		if (isDarkMode) {
+			lightStylesheet.media = 'not all';
+			darkStylesheet.media = 'all';
+			
+			localStorage.setItem('theme', 'dark');
+		} else {
+			lightStylesheet.media = 'all';
+			darkStylesheet.media = 'not all';
+			localStorage.setItem('theme', 'light');
+		}
+		document.body.classList.toggle('dark', isDarkMode);
+	});
+
 	function toggleDarkMode() {
 		isDarkMode = !isDarkMode;
-		document.body.classList.toggle('dark', isDarkMode);
 	}
 	// einstellungsbutton
 	function toggleSettings() {
@@ -102,8 +118,7 @@
 
 <PasswordChangeDialog
 	bind:open={passwordChangeDialogOpen}
-	on:close={() => (passwordChangeDialogOpen = false)}
-/>
+	on:close={() => (passwordChangeDialogOpen = false)} />
 
 {#if showSettings}
 	<div class="settings-menu {fontSize}">
@@ -126,8 +141,7 @@
 {#if passwordChangeDialogOpen}
 	<PasswordChangeDialog
 		bind:open={passwordChangeDialogOpen}
-		on:close={() => (passwordChangeDialogOpen = false)}
-	/>
+		on:close={() => (passwordChangeDialogOpen = false)} />
 {/if}
 
 <style>
