@@ -5,6 +5,7 @@
 	import IconButton from '@smui/icon-button';
 	import Button from '@smui/button';
 	import { Label } from '@smui/common';
+	import { goto } from '$app/navigation';
 	import type { ProductViewModel } from '$lib/models/product.model';
 	import { Icon } from '@smui/common';
 	import Dialog, { Title, Content, Actions } from '@smui/dialog';
@@ -37,15 +38,14 @@
 	});
 
 	// Pagination-Variablen
-	let perPage = $state(10); // Anzahl der Einträge pro Seite
-	let currentPage = $state(0); // Aktuelle Seite
+	let perPage = $state(10);
+	let currentPage = $state(0);
 
 	const start = $derived(currentPage * perPage);
 	const end = $derived(Math.min(start + perPage, filteredData.length));
 	const slice = $derived(filteredData.slice(start, end));
 	const lastPage = $derived(Math.max(Math.ceil(filteredData.length / perPage) - 1, 0));
 
-	// Seite wechseln, wenn die Seitenzahl überschritten wird
 	$effect(() => {
 		if (currentPage > lastPage) {
 			currentPage = lastPage;
@@ -82,8 +82,8 @@
 			{/snippet}
 		</TextField>
 	</div>
-
-	<div class="mdc-elevation--z1" style="width: 100%; overflow: auto;">
+	
+	<div class="mdc-elevation--z1" style="width: 100%">
 		<!-- Tabelle -->
 		<DataTable table$aria-label="Product List" style="width: 100%;">
 			<Head>
