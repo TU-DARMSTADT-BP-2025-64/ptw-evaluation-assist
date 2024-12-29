@@ -14,7 +14,7 @@ const mockProducts = [
 describe('DataTableComponent', () => {
 	it('should render 5 rows with correct ID and name', async () => {
 		render(DataTableComponent, {
-			props: { products: mockProducts },
+			props: { products: mockProducts, onProductClicked: () => {}, showDelete: false},
 		});
 
 		const rows = document.querySelectorAll('.mdc-data-table__row');
