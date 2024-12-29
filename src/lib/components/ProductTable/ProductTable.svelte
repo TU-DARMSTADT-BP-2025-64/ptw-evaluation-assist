@@ -56,7 +56,7 @@
 		  </TextField>
 	</div>
 	
-	<div class="mdc-elevation--z1" style="width: 100%; overflow: auto;">
+	<div class="mdc-elevation--z1" style="width: 100%">
 		<!-- Tabelle -->
 		<DataTable table$aria-label="Product List" style="width: 100%;">
 			<Head>
