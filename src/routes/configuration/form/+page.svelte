@@ -40,11 +40,14 @@
 		});
 		goto('/configuration');
 	}
+	function goBack() {
+		goto('/configuration');
+	}
 </script>
 
 <section>
 	<div class="product-form-header">
-		<Button class="default-button">
+		<Button class="default-button" onclick={() => goBack()}>
 			<i class="material-icons">arrow_back</i>
 			<span>Zurück</span>
 		</Button>

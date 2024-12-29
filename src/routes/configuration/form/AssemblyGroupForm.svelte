@@ -7,7 +7,6 @@
 	import Button from '@smui/button';
 	import AssemblyComponentForm from './AssemblyComponentForm.svelte';
 	import AssemblyGroupForm from './AssemblyGroupForm.svelte';
-	import { createEventDispatcher } from 'svelte';
 	import AssemblyGroupStructureAddButton from './AssemblyGroupStructureAddButton.svelte';
 	import AddAssemblyGroupDialog from './AddAssemblyGroupDialog.svelte';
 	import AddAssemblyComponentDialog from './AddAssemblyComponentDialog.svelte';
@@ -35,6 +34,13 @@
 		newAssemblyGroup.parent = assemblyGroup;
 		children.push(newAssemblyGroup);
 		console.log(children);
+	}
+
+	function updateAssemblyComponent(updatedComponent: AssemblyComponentTreeViewModel) {
+		const index = children.findIndex(child => child.id === updatedComponent.id);
+		if (index !== -1) {
+			children[index] = updatedComponent;
+		}
 	}
 
 	function addAssemblyComponent(assemblyComponent: AssemblyComponentTreeViewModel) {
@@ -88,7 +94,8 @@
 									bind:assemblyComponent={children[i] as AssemblyComponentTreeViewModel}
 									level={level + 1}
 									lastChild={i === children.length - 1}
-									
+									onDeleteAssemblyComponent={() => deleteAssemblyGroupFromChildren(i)}
+									onUpdateComponent={updateAssemblyComponent}
 								/>
 							{:else}
 								<AssemblyGroupForm

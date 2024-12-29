@@ -24,4 +24,35 @@ export enum PredefinedComponentCategory {
     'Dichtungselemente' = 'Dichtungselemente',
     'Verbindungselemente' = 'Verbindungselemente',
     'Bau_und_Gehäuseteile' = 'Bau_und_Gehäuseteile',
+    'Elemente_zum_Transport_von_Flüssigkeiten_und_Gasen' = 'Elemente_zum_Transport_von_Flüssigkeiten_und_Gasen',
+}
+
+export enum CategoryElement {
+    'Niete' = 'Niete',
+    'Schraube' = 'Schraube',
+    'Federn'  = 'Federn',
+    'Stifte_Bolzen'  = 'Stifte_Bolzen',
+    'Schweißverbindungen'  = 'Schweißverbindungen',
+    'Lötverbindungen'  = 'Lötverbindungen',
+    'Klebverbindungen'  = 'Klebverbindungen',
+    'Gleitlager'  = 'Gleitlager',
+    'Wälzlager'  = 'Wälzlager',
+    'Achsen/Wellen'  = 'Achsen/Wellen',
+    'Zahnräder'  = 'Zahnräder',
+    'Riemen- und Kettentriebe'  = 'Riemen- und Kettentriebe',
+    'Statische Dichtungen'  = 'Statische Dichtungen',
+    'Dynamische Dichtungen' = 'Dynamische Dichtungen',
+    'Rohre'  = 'Rohre',
+    'Ventile'  = 'Ventile',
+    'Gehäuse'  = 'Gehäuse',
+    'Rahmen'  = 'Rahmen',
+    'Kerne'  = 'Kerne',
+    'Platine' = 'Platine',
+}
+
+
+export enum Strategies{
+    'Recycle' = 'Recycle',
+    'Wiederverwenden' = 'Wiederverwenden',
+    'Wiederaufbereitung' = 'Wiederaufbereitung',
 }
