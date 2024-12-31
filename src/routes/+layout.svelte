@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Header from './Header.svelte';
 	import '../app.css';
-	import 'svelte-material-ui/bare.css';
 	import '@material/elevation/dist/mdc.elevation.css'; 
 
 import { onMount } from 'svelte';
@@ -29,6 +28,8 @@ onMount(() => {
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
+		height: 100vh;
+		overflow: hidden;
 	}
 
 	main {
@@ -40,6 +41,7 @@ onMount(() => {
 		width: 100%;
 		margin: 0 auto;
 		box-sizing: border-box;
+		overflow: hidden;
 
 	}
 	

@@ -8,6 +8,7 @@ export class Repository {
 	public static Instance: Repository;
 
 	constructor(private databaseClient: DatabaseClient) {
+		console.log('Repository constructor', databaseClient);
 		if (!this.databaseClient.databaseExists()) {
 			this.init();
 		}
@@ -35,6 +36,13 @@ export class Repository {
 
 		statement.run(databaseModel.name);
 		return product;
+	}
+
+	public deleteProduct(id: string): boolean {
+		const database = this.databaseClient.getDatabase();
+		const statement = database.prepare('DELETE FROM products WHERE id = ?');
+		statement.run(id);
+		return true;
 	}
 
 	public userExists(username: string, password: string): boolean {

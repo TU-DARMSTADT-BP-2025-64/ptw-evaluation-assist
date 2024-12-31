@@ -1,125 +1,199 @@
 <script lang="ts">
 	import DataTable, { Head, Body, Row, Cell, Pagination } from '@smui/data-table';
+	import TextField from '@smui/textfield';
 	import Select, { Option } from '@smui/select';
 	import IconButton from '@smui/icon-button';
+	import Button from '@smui/button';
 	import { Label } from '@smui/common';
+	import { goto } from '$app/navigation';
 	import type { ProductViewModel } from '$lib/models/product.model';
+	import { Icon } from '@smui/common';
+	import Dialog, { Title, Content, Actions } from '@smui/dialog';
 
-	let props: { products: ProductViewModel[] } = $props();
+	let {
+		products,
+		onProductClicked,
+		showDelete = false,
+		onProductDelete = () => {}
+	}: {
+		products: ProductViewModel[];
+		onProductClicked: (product: ProductViewModel) => void;
+		showDelete?: boolean;
+		onProductDelete?: (product: ProductViewModel) => void;
+	} = $props();
 
 	// Reaktive Variable für den Suchbegriff
-	let searchQuery = $state("");
+	let searchQuery = $state('');
+
+	let verifyDeleteDialogOpen = $state(false);
+	let productToDelete: ProductViewModel | null = $state(null);
 
 	// Filtere die Daten basierend auf dem Suchbegriff
 	const filteredData = $derived.by(() => {
-		return props.products.filter(product =>
-			product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			product.id === Number(searchQuery)
+		return products.filter(
+			(product) =>
+				product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				product.id === Number(searchQuery)
 		);
 	});
 
 	// Pagination-Variablen
-	let perPage = $state(10); // Anzahl der Einträge pro Seite
-	let currentPage = $state(0); // Aktuelle Seite
+	let perPage = $state(10);
+	let currentPage = $state(0);
 
 	const start = $derived(currentPage * perPage);
 	const end = $derived(Math.min(start + perPage, filteredData.length));
 	const slice = $derived(filteredData.slice(start, end));
 	const lastPage = $derived(Math.max(Math.ceil(filteredData.length / perPage) - 1, 0));
 
-	// Seite wechseln, wenn die Seitenzahl überschritten wird
 	$effect(() => {
 		if (currentPage > lastPage) {
 			currentPage = lastPage;
 		}
 	});
+
+	function verifyDelete(event: Event, product: ProductViewModel) {
+		event.stopPropagation();
+		productToDelete = product;
+		verifyDeleteDialogOpen = true;
+	}
+
+	function cancelDelete() {
+		verifyDeleteDialogOpen = false;
+		productToDelete = null;
+	}
+
+	function deleteProduct() {
+		if (productToDelete) {
+			onProductDelete(productToDelete);
+			productToDelete = null;
+		}
+		verifyDeleteDialogOpen = false;
+	}
+
 </script>
 
-<style>
-    .search-bar {
-        margin-bottom: 1rem;
-    }
-</style>
+<div class="product-table">
+	<!-- Suchleiste -->
+	<div class="search-bar mdc-elevation--z1">
+		<TextField style="width: 100%" variant="filled" bind:value={searchQuery} label="Suche">
+			{#snippet leadingIcon()}
+				<Icon style="margin-left: 8px; margin-right: 4px" class="material-icons">search</Icon>
+			{/snippet}
+		</TextField>
+	</div>
+	
+	<div class="mdc-elevation--z1" style="width: 100%">
+		<!-- Tabelle -->
+		<DataTable table$aria-label="Product List" style="width: 100%;">
+			<Head>
+				<Row>
+					<Cell>ID</Cell>
+					<Cell>Name</Cell>
+					{#if showDelete}
+						<Cell style="width: 100px"></Cell>
+					{/if}
+				</Row>
+			</Head>
+			<Body>
+				{#each slice as product}
+					<Row style="cursor: pointer" onclick={() => onProductClicked(product)}>
+						<Cell>{product.id}</Cell>
+						<Cell>{product.name}</Cell>
 
-<!-- Suchleiste -->
-<div class="search-bar">
-	<input
-		type="text"
-		placeholder="Search by ID or name..."
-		bind:value={searchQuery}
-		style="width: 100%; padding: 0.5rem; font-size: 1rem;"
-	/>
+						{#if showDelete}
+							<Cell style="width: 100px;">
+								<IconButton class="material-icons" action="delete" title="Delete" onclick={(event: Event) =>  verifyDelete(event, product)}>delete</IconButton>
+							</Cell>
+						{/if}
+					</Row>
+				{/each}
+			</Body>
+
+			<!-- Pagination -->
+			{#snippet paginate()}
+				<Pagination>
+					<Label>Produkte pro Seite</Label>
+					<Select variant="outlined" bind:value={perPage} noLabel>
+						<Option value={10}>10</Option>
+						<Option value={25}>25</Option>
+						<Option value={100}>100</Option>
+					</Select>
+					{#snippet total()}
+						{start + 1}-{end} of {filteredData.length}
+					{/snippet}
+
+					<!-- Buttons for Pagination -->
+					<IconButton
+						class="material-icons"
+						action="first-page"
+						title="First page"
+						onclick={() => (currentPage = 0)}
+						disabled={currentPage === 0}>first_page</IconButton
+					>
+
+					<IconButton
+						class="material-icons"
+						action="prev-page"
+						title="Prev page"
+						onclick={() => currentPage--}
+						disabled={currentPage === 0}>chevron_left</IconButton
+					>
+
+					<IconButton
+						class="material-icons"
+						action="next-page"
+						title="Next page"
+						onclick={() => currentPage++}
+						disabled={currentPage === lastPage}>chevron_right</IconButton
+					>
+
+					<IconButton
+						class="material-icons"
+						action="last-page"
+						title="Last page"
+						onclick={() => (currentPage = lastPage)}
+						disabled={currentPage === lastPage}>last_page</IconButton
+					>
+				</Pagination>
+			{/snippet}
+		</DataTable>
+	</div>
 </div>
 
-<!-- Tabelle -->
-<DataTable table$aria-label="Product List" style="max-width: 100%;">
-	<Head>
-		<Row>
-			<Cell>ID</Cell>
-			<Cell>Name</Cell>
-		</Row>
-	</Head>
-	<Body>
-	{#each slice as { id, name }}
-		<Row>
-			<Cell>{id}</Cell>
-			<Cell>{name}</Cell>
-		</Row>
-	{/each}
-	</Body>
+<Dialog bind:open={verifyDeleteDialogOpen}>
+	<Title>Produkt löschen</Title>
+	<Content>
+		<p>Wollen Sie das Produkt: 
+			<strong>{productToDelete?.name}</strong>
+			wirklich löschen?</p>
+	</Content>
+	<div class="actions">
+		<Button class="color-unset" onclick={() => cancelDelete()}>Abbrechen</Button>
+		<Button onclick={() => deleteProduct()}>Löschen</Button>
+	</div>
+</Dialog>
 
-	<!-- Pagination -->
-	{#snippet paginate()}
-		<Pagination>
-			<Label>Rows Per Page</Label>
-			<Select variant="outlined" bind:value={perPage} noLabel>
-				<Option value={10}>10</Option>
-				<Option value={25}>25</Option>
-				<Option value={100}>100</Option>
-			</Select>
-			{#snippet total()}
-				{start + 1}-{end} of {filteredData.length}
-			{/snippet}
+<style>
+	.product-table {
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.search-bar {
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+		width: 100%;
+		max-width: min(100%, 400px);
+	}
 
-
-
-			<!-- Buttons for Pagination -->
-			<IconButton
-				class="material-icons"
-				action="first-page"
-				title="First page"
-				onclick={() => currentPage = 0}
-				disabled={currentPage === 0}
-			>first_page</IconButton>
-
-			<IconButton
-				class="material-icons"
-				action="prev-page"
-				title="Prev page"
-				onclick={() => currentPage--}
-				disabled={currentPage === 0}
-			>chevron_left</IconButton>
-
-			<IconButton
-				class="material-icons"
-				action="next-page"
-				title="Next page"
-				onclick={() => currentPage++}
-				disabled={currentPage === lastPage}
-			>chevron_right</IconButton>
-
-			<IconButton
-				class="material-icons"
-				action="last-page"
-				title="Last page"
-				onclick={() => currentPage = lastPage}
-				disabled={currentPage === lastPage}
-			>last_page</IconButton>
-		</Pagination>
-		{/snippet}
-</DataTable>
-
-
-
-
-
+	.actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+		margin: 8px 8px 8px 0;
+	}
+</style>
