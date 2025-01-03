@@ -3,43 +3,46 @@
 	import Select, { Option } from '@smui/select';
 	import IconButton from '@smui/icon-button';
 	import { Label } from '@smui/common';
+	import { goto } from '$app/navigation';
 	import type { ProductViewModel } from '$lib/models/product.model';
 
-	let props: { products: ProductViewModel[] } = $props();
+	// Props
+	let props: { products: ProductViewModel[]; clickable?: boolean } = $props();
 
-	// Reaktive Variable für den Suchbegriff
-	let searchQuery = $state("");
+	// Suchbegriff
+	let searchQuery = $state('');
 
-	// Filtere die Daten basierend auf dem Suchbegriff
+	// Gefilterte Daten basierend auf dem Suchbegriff
 	const filteredData = $derived.by(() => {
-		return props.products.filter(product =>
-			product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			product.id === Number(searchQuery)
+		return props.products.filter(
+			(product) =>
+				product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				product.id === Number(searchQuery)
 		);
 	});
 
 	// Pagination-Variablen
-	let perPage = $state(10); // Anzahl der Einträge pro Seite
-	let currentPage = $state(0); // Aktuelle Seite
+	let perPage = $state(10);
+	let currentPage = $state(0);
 
 	const start = $derived(currentPage * perPage);
 	const end = $derived(Math.min(start + perPage, filteredData.length));
 	const slice = $derived(filteredData.slice(start, end));
 	const lastPage = $derived(Math.max(Math.ceil(filteredData.length / perPage) - 1, 0));
 
-	// Seite wechseln, wenn die Seitenzahl überschritten wird
 	$effect(() => {
 		if (currentPage > lastPage) {
 			currentPage = lastPage;
 		}
 	});
-</script>
 
-<style>
-    .search-bar {
-        margin-bottom: 1rem;
-    }
-</style>
+	// Navigationsfunktion
+	function navigateToProcess(id: number, name: string) {
+		if (props.clickable) {
+			goto(`/assistant/product-selection?id=${id}&name=${encodeURIComponent(name)}`);
+		}
+	}
+</script>
 
 <!-- Suchleiste -->
 <div class="search-bar">
@@ -47,8 +50,7 @@
 		type="text"
 		placeholder="Search by ID or name..."
 		bind:value={searchQuery}
-		style="width: 100%; padding: 0.5rem; font-size: 1rem;"
-	/>
+		style="width: 100%; padding: 0.5rem; font-size: 1rem;" />
 </div>
 
 <!-- Tabelle -->
@@ -57,15 +59,23 @@
 		<Row>
 			<Cell>ID</Cell>
 			<Cell>Name</Cell>
+			{#if props.clickable}
+				<Cell>Aktion</Cell>
+			{/if}
 		</Row>
 	</Head>
 	<Body>
-	{#each slice as { id, name }}
-		<Row>
-			<Cell>{id}</Cell>
-			<Cell>{name}</Cell>
-		</Row>
-	{/each}
+		{#each slice as { id, name }, i}
+			<Row>
+				<Cell>{id}</Cell>
+				<Cell>{name}</Cell>
+				{#if props.clickable}
+					<Cell>
+						<button class="start_assistant_{i}" onclick={() => navigateToProcess(id, name)}> Befundung starten </button>
+					</Cell>
+				{/if}
+			</Row>
+		{/each}
 	</Body>
 
 	<!-- Pagination -->
@@ -77,49 +87,38 @@
 				<Option value={25}>25</Option>
 				<Option value={100}>100</Option>
 			</Select>
-			{#snippet total()}
-				{start + 1}-{end} of {filteredData.length}
-			{/snippet}
+			{start + 1}-{end} of {filteredData.length}
 
-
-
-			<!-- Buttons for Pagination -->
+			<!-- Navigation Buttons -->
 			<IconButton
 				class="material-icons"
-				action="first-page"
 				title="First page"
-				onclick={() => currentPage = 0}
-				disabled={currentPage === 0}
-			>first_page</IconButton>
+				onclick={() => (currentPage = 0)}
+				disabled={currentPage === 0}>first_page</IconButton>
 
 			<IconButton
 				class="material-icons"
-				action="prev-page"
 				title="Prev page"
 				onclick={() => currentPage--}
-				disabled={currentPage === 0}
-			>chevron_left</IconButton>
+				disabled={currentPage === 0}>chevron_left</IconButton>
 
 			<IconButton
 				class="material-icons"
-				action="next-page"
 				title="Next page"
 				onclick={() => currentPage++}
-				disabled={currentPage === lastPage}
-			>chevron_right</IconButton>
+				disabled={currentPage === lastPage}>chevron_right</IconButton>
 
 			<IconButton
 				class="material-icons"
-				action="last-page"
 				title="Last page"
-				onclick={() => currentPage = lastPage}
-				disabled={currentPage === lastPage}
-			>last_page</IconButton>
+				onclick={() => (currentPage = lastPage)}
+				disabled={currentPage === lastPage}>last_page</IconButton>
 		</Pagination>
-		{/snippet}
+	{/snippet}
 </DataTable>
 
-
-
-
-
+<style>
+	.search-bar {
+		margin-bottom: 1rem;
+	}
+</style>

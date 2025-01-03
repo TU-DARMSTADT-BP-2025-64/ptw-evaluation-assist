@@ -116,29 +116,7 @@
 
 		<!-- Passwort ändern -->
 		<p>Passwort:</p>
-		<button onclick={() => openPasswordChangeDialog()}>Passwort ändern</button>
-	</div>
-{/if}
-
-<PasswordChangeDialog
-	bind:open={passwordChangeDialogOpen}
-	on:close={() => (passwordChangeDialogOpen = false)}
-/>
-
-{#if showSettings}
-	<div class="settings-menu {fontSize}">
-		<h2>Einstellungen</h2>
-		<p>Schriftgröße:</p>
-
-		<div class="font-size-buttons">
-			<button onclick={() => changeFontSize('small')}>Klein</button>
-			<button onclick={() => changeFontSize('medium')}>Mittel</button>
-			<button onclick={() => changeFontSize('large')}>Groß</button>
-		</div>
-
-		<!-- Passwort ändern -->
-		<p>Passwort:</p>
-		<button onclick={() => openPasswordChangeDialog()}>Passwort ändern</button>
+		<button id='PasswordChange' onclick={() => openPasswordChangeDialog()}>Passwort ändern</button>
 	</div>
 {/if}
 
