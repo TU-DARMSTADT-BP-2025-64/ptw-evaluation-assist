@@ -12,28 +12,63 @@
 
     let snackbarSuccess: Snackbar;
     let snackbarWarning: Snackbar;
+    let snackbarInvalidOldPassword: Snackbar;
 
     // Funktion zum Schließen des Dialogs
     function closeDialog() {
-        open = false;
-        dispatch('close');
+			snackbarSuccess.close();
+			snackbarWarning.close();
+			snackbarInvalidOldPassword.close();
+			open = false;
+			dispatch('close');
     }
 
     // Funktion zum Ändern des Passworts
-    function changePassword() {
-        if (newPassword !== confirmPassword) {
-            snackbarWarning.open();
-            return;
-        }
+		async function changePassword() {
+			if (newPassword !== confirmPassword) {
+				// Snackbar zurücksetzen und öffnen
+				snackbarWarning.close();
+				setTimeout(() => snackbarWarning.open(), 10);
+				return;
+			}
 
-        console.log('Passwort ändern:', { currentPassword, newPassword });
+			try {
+				const response = await fetch('/api/change-password', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						currentPassword,
+						newPassword,
+					}),
+				});
 
-        // Erfolgssnackbar öffnen
-        snackbarSuccess.open();
+				const data = await response.json();
 
-        // Dialog schließen nach erfolgreicher Änderung
-        closeDialog();
-    }
+				if (response.ok) {
+					// Snackbar zurücksetzen und öffnen
+					snackbarSuccess.close();
+					setTimeout(() => snackbarSuccess.open(), 10);
+
+					// Dialog schließen nach erfolgreicher Änderung
+					setTimeout(() => closeDialog(), 500);
+				} else if (data.message.includes('Das aktuelle Passwort ist falsch')) {
+					// Snackbar zurücksetzen und öffnen
+					snackbarInvalidOldPassword.close();
+					setTimeout(() => snackbarInvalidOldPassword.open(), 10);
+				} else {
+					// Snackbar zurücksetzen und öffnen
+					snackbarWarning.close();
+					setTimeout(() => snackbarWarning.open(), 10);
+				}
+			} catch (error) {
+				console.error('Fehler beim Ändern des Passworts:', error);
+
+				// Snackbar zurücksetzen und öffnen
+				snackbarWarning.close();
+				setTimeout(() => snackbarWarning.open(), 10);
+			}
+		}
+
 </script>
 
 <!-- SMUI Dialog -->
@@ -94,8 +129,15 @@
     </SnackbarActions>
 </Snackbar>
 
-<style>
+<!-- Invalid Old Password Snackbar -->
+<Snackbar bind:this={snackbarInvalidOldPassword} class="snackbar-invalid-old-password">
+    <Label>Das aktuelle Passwort ist falsch!</Label>
+    <SnackbarActions>
+        <IconButton class="material-icons" title="Dismiss">close</IconButton>
+    </SnackbarActions>
+</Snackbar>
 
+<style>
     .form-group {
         margin-left: 0;
         margin-right: 1rem;
