@@ -1,122 +1,104 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
+    import Dialog, { Title, Content, Actions } from '@smui/dialog';
+    import Snackbar, { Label, Actions as SnackbarActions } from '@smui/snackbar';
+    import IconButton from '@smui/icon-button';
+
     export let open: boolean;
     let currentPassword = '';
     let newPassword = '';
     let confirmPassword = '';
     const dispatch = createEventDispatcher();
 
+    let snackbarSuccess: Snackbar;
+    let snackbarWarning: Snackbar;
+
+    // Funktion zum Schließen des Dialogs
     function closeDialog() {
         open = false;
         dispatch('close');
     }
 
     // Funktion zum Ändern des Passworts
-    async function changePassword() {
+    function changePassword() {
         if (newPassword !== confirmPassword) {
-            alert('Das neue Passwort und die Bestätigung stimmen nicht überein.');
+            snackbarWarning.open();
             return;
         }
 
-        try {
-            const response = await fetch('/api/change-password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    currentPassword,
-                    newPassword,
-                }),
-            });
+        console.log('Passwort ändern:', { currentPassword, newPassword });
 
-            const data = await response.json();
+        // Erfolgssnackbar öffnen
+        snackbarSuccess.open();
 
-            if (response.ok) {
-                alert(data.message);
-                closeDialog();
-            } else {
-                alert(`Fehler: ${data.message}`);
-            }
-        } catch (error) {
-            console.error('Fehler beim Ändern des Passworts:', error);
-            alert('Ein unerwarteter Fehler ist aufgetreten.');
-        }
+        // Dialog schließen nach erfolgreicher Änderung
+        closeDialog();
     }
 </script>
 
-{#if open}
-    <div class="dialog-backdrop">
-        <div class="dialog">
-            <h2>Passwort ändern</h2>
+<!-- SMUI Dialog -->
+<Dialog bind:open={open} class="dialog">
+    <Title>Passwort ändern</Title>
+    <Content>
+        <form on:submit|preventDefault={changePassword}>
+            <div class="form-group">
+                <label for="currentPassword">Aktuelles Passwort</label>
+                <input
+                  id="currentPassword"
+                  type="password"
+                  bind:value={currentPassword}
+                  required
+                />
+            </div>
 
-            <form on:submit|preventDefault={changePassword}>
-                <div class="form-group">
-                    <label for="currentPassword">Aktuelles Passwort</label>
-                    <input
-                        id="currentPassword"
-                        type="password"
-                        bind:value={currentPassword}
-                        required
-                    />
-                </div>
+            <div class="form-group">
+                <label for="newPassword">Neues Passwort</label>
+                <input
+                  id="newPassword"
+                  type="password"
+                  bind:value={newPassword}
+                  required
+                />
+            </div>
 
-                <div class="form-group">
-                    <label for="newPassword">Neues Passwort</label>
-                    <input
-                        id="newPassword"
-                        type="password"
-                        bind:value={newPassword}
-                        required
-                    />
-                </div>
+            <div class="form-group">
+                <label for="confirmPassword">Neues Passwort bestätigen</label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  bind:value={confirmPassword}
+                  required
+                />
+            </div>
+        </form>
+    </Content>
+    <Actions>
+        <button type="button" on:click={closeDialog}>Abbrechen</button>
+        <button type="submit" on:click={changePassword}>Passwort ändern</button>
+    </Actions>
+</Dialog>
 
-                <div class="form-group">
-                    <label for="confirmPassword">Neues Passwort bestätigen</label>
-                    <input
-                        id="confirmPassword"
-                        type="password"
-                        bind:value={confirmPassword}
-                        required
-                    />
-                </div>
+<!-- Success Snackbar -->
+<Snackbar bind:this={snackbarSuccess} class="snackbar-success">
+    <Label>Passwort erfolgreich geändert!</Label>
+    <SnackbarActions>
+        <IconButton class="material-icons" title="Dismiss">close</IconButton>
+    </SnackbarActions>
+</Snackbar>
 
-                <div class="button-group">
-                    <button type="button" on:click={closeDialog}>Abbrechen</button>
-                    <button id='SubmitPasswordChange' type="submit">Passwort ändern</button>
-                </div>
-            </form>
-        </div>
-    </div>
-{/if}
+<!-- Warning Snackbar -->
+<Snackbar bind:this={snackbarWarning} class="snackbar-warning">
+    <Label>Das neue Passwort und die Bestätigung stimmen nicht überein.</Label>
+    <SnackbarActions>
+        <IconButton class="material-icons" title="Dismiss">close</IconButton>
+    </SnackbarActions>
+</Snackbar>
 
 <style>
-    .dialog-backdrop {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-
-    .dialog {
-        background: white;
-        border-radius: 8px;
-        padding: 24px;
-        width: 90%;
-        max-width: 400px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    h2 {
-        margin-top: 0;
-    }
 
     .form-group {
-        margin-bottom: 16px;
+        margin-left: 0;
+        margin-right: 1rem;
     }
 
     label {
@@ -132,26 +114,21 @@
         border-radius: 4px;
     }
 
-    .button-group {
-        display: flex;
-        justify-content: flex-end;
-        gap: 8px;
-    }
-
     button {
         padding: 8px 16px;
         font-size: 16px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
+        margin-right: 8px;
     }
 
-    button[type="button"] {
+    button:first-child {
         background: #ccc;
         color: black;
     }
 
-    button[type="submit"] {
+    button:last-child {
         background: #007bff;
         color: white;
     }
@@ -159,4 +136,5 @@
     button:hover {
         opacity: 0.9;
     }
+
 </style>

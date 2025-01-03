@@ -4,6 +4,16 @@ import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
 	plugins: [sveltekit(), svelteTesting()],
+	ssr: {
+		noExternal: [
+			'@smui/textfield',
+			'@smui/dialog',
+			'@smui/snackbar',
+			'@smui/list',
+			'@smui/menu',
+			'@smui/select'
+		]
+	},
 
 	test: {
 		environment: 'jsdom',
@@ -13,6 +23,6 @@ export default defineConfig({
 				inline: [/@smui/]
 			}
 		}
-		
+
 	}
 });
