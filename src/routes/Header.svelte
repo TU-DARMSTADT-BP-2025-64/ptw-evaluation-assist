@@ -98,7 +98,7 @@
 			<IconButton class="material-icons" onclick={() => toggleDarkMode()}>dark_mode</IconButton>
 			<IconButton class="material-icons" onclick={() => toggleSettings()}>settings</IconButton>
 			{#if $page.data.isLoggedIn}
-				<IconButton class="material-icons" onclick={logout}>logout</IconButton>
+				<IconButton id='logoutButton' class="material-icons" onclick={logout}>logout</IconButton>
 			{/if}
 		</div>
 	</div>
