@@ -81,7 +81,7 @@
 
                 <div class="button-group">
                     <button type="button" on:click={closeDialog}>Abbrechen</button>
-                    <button type="submit">Passwort ändern</button>
+                    <button id='SubmitPasswordChange' type="submit">Passwort ändern</button>
                 </div>
             </form>
         </div>
