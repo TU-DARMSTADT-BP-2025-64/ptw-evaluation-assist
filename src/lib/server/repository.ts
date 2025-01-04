@@ -40,6 +40,14 @@ export class Repository {
 		return product;
 	}
 
+
+	public deleteProduct(id: string): boolean {
+		const database = this.databaseClient.getDatabase();
+		const statement = database.prepare('DELETE FROM products WHERE id = ?');
+		statement.run(id);
+		return true;
+	}
+
 	public async userExists(username: string, password: string): Promise<boolean> {
 		const database = this.databaseClient.getDatabase();
 		const statement = database.prepare('SELECT * FROM users WHERE username = ?');
