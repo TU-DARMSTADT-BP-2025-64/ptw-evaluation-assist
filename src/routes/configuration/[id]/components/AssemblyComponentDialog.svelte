@@ -143,15 +143,17 @@
 			{/each}
 		</Select>
 
-		<h1>Verschleißkriterien</h1>
+		<div class="wear-criterion-title">Verschleißkriterien</div>
 
-		{#each wearCriteria as verschleißkrit, index}
-			<WearCriterionForm bind:wearCriterion={wearCriteria[index]} machineElement={machineElement} ondelete={() => removeWearCriterion(index)} />
-		{/each}
+		<div class="wear-criteria">
+			{#each wearCriteria as verschleißkrit, index}
+				<WearCriterionForm bind:wearCriterion={wearCriteria[index]} machineElement={machineElement} ondelete={() => removeWearCriterion(index)} />
+			{/each}
+		</div>
 
 		<Button id="wear-criterion-add-button" onclick={addWearCriterion}>
 			<Icon class="material-icons">add</Icon>
-			<span>Add Verschleißkriterium</span>
+			<span>Verschleißkriterium hinzufügen</span>
 		</Button>
 	</Content>
 
@@ -175,6 +177,21 @@
 		max-height: 200px;
 		overflow-y: auto;
 	}
+
+	.wear-criterion-title {
+		font-size: 1rem;
+		margin-top: 24px;
+		font-weight: 600;
+		margin-bottom: 8px;
+	}
+
+	.wear-criteria {
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+	}
+
+
 	.actions {
 		display: flex;
 		justify-content: flex-end;
