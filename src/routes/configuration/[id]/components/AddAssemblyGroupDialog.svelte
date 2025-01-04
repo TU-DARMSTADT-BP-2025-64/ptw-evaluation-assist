@@ -44,7 +44,7 @@
 		></Textfield>
 	</Content>
 	<div class="actions">
-		<Button class="cancel-button" onclick={() => cancel()}>Cancel</Button>
+		<Button class="cancel-button" onclick={() => cancel()}>Abbrechen</Button>
 		<Button onclick={() => saveNewGroup()}>Speichern</Button>
 	</div>
 </Dialog>

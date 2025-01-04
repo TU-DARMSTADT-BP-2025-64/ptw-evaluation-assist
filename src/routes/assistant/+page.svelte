@@ -10,7 +10,7 @@
 	let props: { data: {products: ProductViewModel[]} } = $props();
 
 	function startEvaluation(product: ProductViewModel) {
-		goto(`/assistant/${product.id}`);
+		goto(`/assistant/evaluate/${product.id}`);
 	}
 </script>
 
