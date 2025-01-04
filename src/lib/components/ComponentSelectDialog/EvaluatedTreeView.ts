@@ -2,6 +2,8 @@
 import { AssemblyComponentTreeViewModel } from '$lib/models/assembly-component.model';
 import { AssemblyGroupTreeViewModel } from '$lib/models/assembly-group.model';
 import { ProductTreeViewModel } from '$lib/models/product.model';
+import { WearCriterionTreeViewModel } from '$lib/models/wear-criterion.model';
+import { WearThresholdTreeViewModel } from '$lib/models/wear-threshold.model';
 
 export class EvaluatedProductTreeViewModel extends ProductTreeViewModel  {
     public override assemblyGroups: EvaluatedAssemblyGroupTreeViewModel[]  = [];
@@ -23,6 +25,8 @@ export class EvaluatedAssemblyGroupTreeViewModel extends AssemblyGroupTreeViewMo
 export class EvaluatedAssemblyComponentTreeViewModel extends AssemblyComponentTreeViewModel {
 	public evaluate: boolean = true;
     public finishedEvaluation: boolean = false;
+    public measures: string[] = [];
+    public wearCriteria: EvaluatedWearCriterionTreeViewModel[] = [];
 
     constructor(options: Partial<EvaluatedAssemblyComponentTreeViewModel> = {}) {
         super(options);
@@ -30,6 +34,14 @@ export class EvaluatedAssemblyComponentTreeViewModel extends AssemblyComponentTr
         this.finishedEvaluation = options.finishedEvaluation ?? false;
     }
 };
+
+export class EvaluatedWearCriterionTreeViewModel extends WearCriterionTreeViewModel {
+    public wearThresholds: EvaluatedWearThresholdTreeViewModel[] = [];
+}
+
+export class EvaluatedWearThresholdTreeViewModel extends WearThresholdTreeViewModel {
+    public selected: boolean = false;
+}
 
 
 export function createEvaluatedProductTreeView(productTreeView: ProductTreeViewModel): EvaluatedProductTreeViewModel {
@@ -58,7 +70,9 @@ function convertToEvaluatedAssemblyGroupTreeView(assemblyGroupTreeViewElement: E
 export function getEvaluatedComponents(productTreeView: EvaluatedProductTreeViewModel): EvaluatedAssemblyComponentTreeViewModel[] {
     const evaluatedComponents: EvaluatedAssemblyComponentTreeViewModel[] = [];
     productTreeView.assemblyGroups.forEach((assemblyGroup) => {
-        getEvaluatedComponentsFromAssemblyGroup(assemblyGroup, evaluatedComponents);
+        if (assemblyGroup.evaluate) {
+            getEvaluatedComponentsFromAssemblyGroup(assemblyGroup, evaluatedComponents);
+        }
     });
     return evaluatedComponents;
 }
@@ -66,7 +80,9 @@ export function getEvaluatedComponents(productTreeView: EvaluatedProductTreeView
 function getEvaluatedComponentsFromAssemblyGroup(assemblyGroup: EvaluatedAssemblyGroupTreeViewModel, evaluatedComponents: EvaluatedAssemblyComponentTreeViewModel[]): void {
     assemblyGroup.children.forEach((child) => {
         if (child.type === 'assembly-group') {
-            getEvaluatedComponentsFromAssemblyGroup(child as EvaluatedAssemblyGroupTreeViewModel, evaluatedComponents);
+            if ((child as EvaluatedAssemblyGroupTreeViewModel).evaluate) {
+                getEvaluatedComponentsFromAssemblyGroup(child as EvaluatedAssemblyGroupTreeViewModel, evaluatedComponents);
+            }
         } else {
             const assemblyComponentTreeViewElement = child as EvaluatedAssemblyComponentTreeViewModel;
             if (assemblyComponentTreeViewElement.evaluate) {

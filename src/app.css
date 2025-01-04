@@ -10,6 +10,7 @@
 	--mdc-theme-secondary: #767676;
 	--mdc-theme-background: rgb(238, 238, 238);
 	--mdc-theme-surface: white;
+	--mdc-theme-on-surface: #000;
 	--mdc-theme-on-primary: #fff;
 
 	font-family: var(--font-body); 
@@ -19,6 +20,7 @@ body.dark {
 	--mdc-theme-background: #151b23;
 	--mdc-theme-primary: #b81018;
 	--mdc-theme-secondary: #676778;
+	--mdc-theme-on-surface: #fff;
 	--mdc-theme-on-primary: #fff;
 	--mdc-theme-surface: #212830;
 	color: #fff;

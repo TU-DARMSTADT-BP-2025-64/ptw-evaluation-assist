@@ -4,7 +4,7 @@
     import Button from '@smui/button';
     import Dialog, { Title, Content, Actions } from '@smui/dialog';
 	import AssemblyGroupSelect from './AssemblyGroupSelect.svelte';
-	import { createEvaluatedProductTreeView, EvaluatedProductTreeViewModel } from './SelectableTreeView';
+	import { createEvaluatedProductTreeView, EvaluatedProductTreeViewModel } from './EvaluatedTreeView';
 	let {
 		open = $bindable(),
 		productTreeView,
