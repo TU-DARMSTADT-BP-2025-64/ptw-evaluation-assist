@@ -48,7 +48,7 @@
 		justify-content: start;
 		align-items: stretch;
 		width: 100%;
-		height: 100%;
+		/* height: 100%; */
 	}
 
 	.prefix-block {

@@ -42,9 +42,10 @@ a {
 
 /* Material overrides */
 
-.mdc-text-field {
+.mdc-text-field, .smui-autocomplete {
 	width: 100%;
 }
+
 
 .mdc-select {
 	width: 100%;

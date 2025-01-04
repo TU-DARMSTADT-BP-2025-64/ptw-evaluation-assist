@@ -12,20 +12,6 @@
     let products = $state(props.data.products);
 
 
-    function addProduct() {
-		goto('configuration/form');
-        // fetch('api/product', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({
-        //         name: 'zylinder'
-        //     })
-
-        // })
-    }
-
     function editProduct(product: ProductViewModel) {
         goto(`/configuration/${product.id}`);
     }

@@ -1,21 +1,28 @@
 <script lang="ts">
-	import { HeaderService } from './../../HeaderService.svelte';
+	import { HeaderService } from '../../HeaderService.svelte';
 	import Textfield from '@smui/textfield';
 	import Ripple from '@smui/ripple';
 	import Button from '@smui/button';
 	import { ProductTreeViewModel } from '$lib/models/product.model';
 	import { AssemblyGroupTreeViewModel } from '$lib/models/assembly-group.model';
-	import AssemblyGroupForm from './AssemblyGroupForm.svelte';
-	import AssemblyGroupStructureAddButton from './AssemblyGroupStructureAddButton.svelte';
-	import AddAssemblyGroupDialog from './AddAssemblyGroupDialog.svelte';
+	import AssemblyGroupForm from './components/AssemblyGroupForm.svelte';
+	import AssemblyGroupStructureAddButton from './components/AssemblyGroupStructureAddButton.svelte';
+	import AddAssemblyGroupDialog from './components/AddAssemblyGroupDialog.svelte';
 	import { goto } from '$app/navigation';
+	import { getElementsFromProductTreeView } from '$lib/util/ProductTreeViewUtil';
+
 	HeaderService.Instance.setTitle('Konfiguration');
 
-	let product = $state(new ProductTreeViewModel());
+	let { data }: { data: { id: string; productTreeView: ProductTreeViewModel } } = $props();
+	let { id, productTreeView, ...rest } = data;
+
+	console.log('props', id, productTreeView, rest);
+
+	let product = $state(!id ? new ProductTreeViewModel() : productTreeView);
 
 	let addAssemblyGroupDialogOpen = $state(false);
 
-	let assemblyGroups: AssemblyGroupTreeViewModel[] = $state([]);
+	let assemblyGroups: AssemblyGroupTreeViewModel[] = $state(product.assemblyGroups);
 
 	function addAssemblyGroup(assemblyGroup: AssemblyGroupTreeViewModel) {
 		assemblyGroup.parent = product;
@@ -29,17 +36,22 @@
 	}
 
 	function saveProduct() {
-		fetch('/api/product', {
-			method: 'POST',
+		product.assemblyGroups = assemblyGroups;
+
+		const elements = getElementsFromProductTreeView(product);
+
+		console.log('elements', elements);
+
+		fetch('/api/product/' + id  + '?asTreeView=true', {
+			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({
-				name: product.name,
-			})
+			body: JSON.stringify(elements)
 		});
 		goto('/configuration');
 	}
+
 	function goBack() {
 		goto('/configuration');
 	}
@@ -73,21 +85,18 @@
 					bind:assemblyGroup={assemblyGroups[i]}
 					level={1}
 					lastChild={i === assemblyGroups.length - 1}
-					onDeleteAssemblyGroup={() => removeAssemblyGroup(i)}
-				/>
+					onDeleteAssemblyGroup={() => removeAssemblyGroup(i)} />
 			{/each}
 		</div>
 	</div>
 
 	<AssemblyGroupStructureAddButton
 		onAddAssemblyGroup={() => (addAssemblyGroupDialogOpen = true)}
-		showAddAssemblyComponent={false}
-	/>
+		showAddAssemblyComponent={false} />
 
 	<AddAssemblyGroupDialog
 		bind:open={addAssemblyGroupDialogOpen}
-		onSave={(group) => addAssemblyGroup(group)}
-	/>
+		onSave={(group) => addAssemblyGroup(group)} />
 </section>
 
 <style>

@@ -9,7 +9,7 @@
 	import AssemblyGroupForm from './AssemblyGroupForm.svelte';
 	import AssemblyGroupStructureAddButton from './AssemblyGroupStructureAddButton.svelte';
 	import AddAssemblyGroupDialog from './AddAssemblyGroupDialog.svelte';
-	import AddAssemblyComponentDialog from './AddAssemblyComponentDialog.svelte';
+	import AssemblyComponentDialog from './AssemblyComponentDialog.svelte';
 
 	let {
 		assemblyGroup = $bindable(),
@@ -37,7 +37,7 @@
 	}
 
 	function updateAssemblyComponent(updatedComponent: AssemblyComponentTreeViewModel) {
-		const index = children.findIndex(child => child.id === updatedComponent.id);
+		const index = children.findIndex((child) => child.id === updatedComponent.id);
 		if (index !== -1) {
 			children[index] = updatedComponent;
 		}
@@ -95,15 +95,13 @@
 									level={level + 1}
 									lastChild={i === children.length - 1}
 									onDeleteAssemblyComponent={() => deleteAssemblyGroupFromChildren(i)}
-									onUpdateComponent={updateAssemblyComponent}
-								/>
+									onUpdateComponent={updateAssemblyComponent} />
 							{:else}
 								<AssemblyGroupForm
 									bind:assemblyGroup={children[i] as AssemblyGroupTreeViewModel}
 									level={level + 1}
 									lastChild={i === children.length - 1}
-									onDeleteAssemblyGroup={() => deleteAssemblyGroupFromChildren(i)}
-								/>
+									onDeleteAssemblyGroup={() => deleteAssemblyGroupFromChildren(i)} />
 							{/if}
 						{/each}
 					</div>
@@ -113,18 +111,19 @@
 			<AssemblyGroupStructureAddButton
 				onAddAssemblyGroup={() => (addAssemblyGroupDialogOpen = true)}
 				onAddAssemblyComponent={() => (addAssemblyComponentDialogOpen = true)}
-				showAddAssemblyComponent={true}
-			/>
+				showAddAssemblyComponent={true} />
 
-			<AddAssemblyGroupDialog
-				bind:open={addAssemblyGroupDialogOpen}
-				onSave={(group) => addSubAssemblyGroup(group)}
-			/>
+			{#if addAssemblyGroupDialogOpen}
+				<AddAssemblyGroupDialog
+					bind:open={addAssemblyGroupDialogOpen}
+					onSave={(group) => addSubAssemblyGroup(group)} />
+			{/if}
 
-			<AddAssemblyComponentDialog
-				bind:open={addAssemblyComponentDialogOpen}
-				onSave={(component) => addAssemblyComponent(component)}
-			/>
+			{#if addAssemblyComponentDialogOpen}
+				<AssemblyComponentDialog
+					bind:open={addAssemblyComponentDialogOpen}
+					onSave={(component) => addAssemblyComponent(component)} />
+			{/if}
 		{/if}
 	</div>
 </div>
