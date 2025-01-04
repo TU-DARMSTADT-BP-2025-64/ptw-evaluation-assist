@@ -74,7 +74,8 @@
 
 	.product-table {
         max-height: 100%;
-        overflow: hidden;
+		height: 100%;
+        overflow: auto;
 		width: 100%;
 		max-width: min(100%, 800px);
 	}

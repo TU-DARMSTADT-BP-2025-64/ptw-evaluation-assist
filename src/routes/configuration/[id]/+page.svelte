@@ -77,22 +77,23 @@
 
 	<h2>Baugruppenstruktur</h2>
 
-	<div class="children-groups-container">
-		<div class="vertical-border">&nbsp;</div>
-		<div class="children-groups">
-			{#each assemblyGroups as group, i}
-				<AssemblyGroupForm
-					bind:assemblyGroup={assemblyGroups[i]}
-					level={1}
-					lastChild={i === assemblyGroups.length - 1}
-					onDeleteAssemblyGroup={() => removeAssemblyGroup(i)} />
-			{/each}
+	<div class="assembly-group-structure">
+		<div class="children-groups-container">
+			<div class="vertical-border">&nbsp;</div>
+			<div class="children-groups">
+				{#each assemblyGroups as group, i}
+					<AssemblyGroupForm
+						bind:assemblyGroup={assemblyGroups[i]}
+						level={1}
+						lastChild={i === assemblyGroups.length - 1}
+						onDeleteAssemblyGroup={() => removeAssemblyGroup(i)} />
+				{/each}
+			</div>
 		</div>
+		<AssemblyGroupStructureAddButton
+			onAddAssemblyGroup={() => (addAssemblyGroupDialogOpen = true)}
+			showAddAssemblyComponent={false} />
 	</div>
-
-	<AssemblyGroupStructureAddButton
-		onAddAssemblyGroup={() => (addAssemblyGroupDialogOpen = true)}
-		showAddAssemblyComponent={false} />
 
 	<AddAssemblyGroupDialog
 		bind:open={addAssemblyGroupDialogOpen}
@@ -104,6 +105,8 @@
 		width: 100%;
 		height: 100%;
 		overflow: hidden;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.product-form-header {
@@ -122,6 +125,11 @@
 	.name-field {
 		margin-top: 2rem;
 		margin-bottom: 2rem;
+	}
+
+	.assembly-group-structure {
+		overflow: auto;
+		height: 100%;
 	}
 
 	.children-groups-container {
