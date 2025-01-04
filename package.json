@@ -18,7 +18,8 @@
 		"smui-theme-dark": "smui-theme compile static/theme/smui-dark.css -i static/theme/dark"
 	},
 	"dependencies": {
-		"better-sqlite3": "^11.6.0"
+		"better-sqlite3": "^11.6.0",
+		"uuid": "^11.0.3"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^5.0.0",

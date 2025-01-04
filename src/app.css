@@ -38,3 +38,25 @@ a {
 	text-decoration: none;
 	color: unset;
 }
+
+
+/* Material overrides */
+
+.mdc-text-field, .smui-autocomplete {
+	width: 100%;
+}
+
+
+.mdc-select {
+	width: 100%;
+}
+
+.mdc-button .material-icons + span {
+	margin-left: 0.5rem;
+
+}
+
+.cancel-button, .default-button {
+	color: var(--mdc-theme-on-surface) !important;
+}
+

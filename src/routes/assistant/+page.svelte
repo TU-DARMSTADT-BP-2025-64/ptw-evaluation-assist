@@ -31,7 +31,6 @@
 		<ProductTable products = {props.data.products} onProductClicked={(product) => startEvaluation(product)} />
 	</div>
 </section>
-
 <style>
 	.page {
 		position: relative;
