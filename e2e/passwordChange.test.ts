@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 test.describe('Passwort ändern', () => {
 	test('Einstellungen öffnen und Passwort ändern-Button sichtbar', async ({ page }) => {
