@@ -61,7 +61,6 @@
 		console.log('effect', assemblyGroup);
 	});
 
-	$inspect(addAssemblyGroupDialogOpen);
 </script>
 
 <div class="group-form" style="margin-bottom: {lastChild ? '0' : '16px'}">

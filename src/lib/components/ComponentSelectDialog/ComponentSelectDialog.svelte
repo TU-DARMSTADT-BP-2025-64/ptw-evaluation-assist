@@ -1,39 +1,41 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { ProductTreeViewModel } from '$lib/models/product.model';
-    import Button from '@smui/button';
-    import Dialog, { Title, Content, Actions } from '@smui/dialog';
+	import Button from '@smui/button';
+	import Dialog, { Title, Content, Actions } from '@smui/dialog';
 	import AssemblyGroupSelect from './AssemblyGroupSelect.svelte';
-	import { createEvaluatedProductTreeView, EvaluatedProductTreeViewModel } from './EvaluatedTreeView';
+	import { EvaluatedProductTreeViewModel } from './EvaluatedTreeView.svelte';
 	let {
 		open = $bindable(),
 		productTreeView,
 		onstartevaluate
-	}: { open: boolean, productTreeView: ProductTreeViewModel; onstartevaluate: (treeView: EvaluatedProductTreeViewModel) => void } = $props();
+	}: {
+		open: boolean;
+		productTreeView: ProductTreeViewModel;
+		onstartevaluate: (treeView: EvaluatedProductTreeViewModel) => void;
+	} = $props();
 
-	let selectableProductTreeView = $state(createEvaluatedProductTreeView(productTreeView));
+	let selectableProductTreeView = $state(new EvaluatedProductTreeViewModel(productTreeView));
 
 	console.log(selectableProductTreeView);
 
-    function startEvaluation() {
-        onstartevaluate(selectableProductTreeView);
-        open = false;
-    }
+	function startEvaluation() {
+		onstartevaluate(selectableProductTreeView);
+		open = false;
+	}
 
-    function cancel() {
-        open = false;
-        goto('/assistant');
-    }
-    
+	function cancel() {
+		open = false;
+		goto('/assistant');
+	}
 </script>
 
-<Dialog bind:open>
+<Dialog bind:open scrimClickAction="" escapeKeyAction="">
 	<Title><span data-testid="dialog-title">Auswahl Befundung</span></Title>
 	<Content>
 		{#each selectableProductTreeView.assemblyGroups as group, i}
 			<AssemblyGroupSelect bind:assemblyGroup={selectableProductTreeView.assemblyGroups[i]} />
 		{/each}
-		
 	</Content>
 	<div class="actions">
 		<Button class="cancel-button" onclick={() => cancel()}>Abbrechen</Button>
@@ -41,9 +43,8 @@
 	</div>
 </Dialog>
 
-
 <style>
-    .actions {
+	.actions {
 		display: flex;
 		justify-content: flex-end;
 		gap: 8px;

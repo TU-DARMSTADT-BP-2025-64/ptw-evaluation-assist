@@ -1,32 +1,62 @@
 <script lang="ts">
-    import { EvaluatedAssemblyComponentTreeViewModel, EvaluatedWearCriterionTreeViewModel } from '$lib/components/ComponentSelectDialog/EvaluatedTreeView';
-    import Ripple from '@smui/ripple';
-    let {
-        wearCriterion = $bindable(),
-    }: {
-        wearCriterion: EvaluatedWearCriterionTreeViewModel;    
-    } = $props();
+	import {
+		EvaluatedAssemblyComponentTreeViewModel,
+		EvaluatedWearCriterionTreeViewModel,
+
+		EvaluatedWearThresholdTreeViewModel
+
+	} from '$lib/components/ComponentSelectDialog/EvaluatedTreeView.svelte';
+	import Ripple from '@smui/ripple';
+	let {
+		wearCriterion = $bindable(),
+		onSelectionChanged,
+	}: {
+		wearCriterion: EvaluatedWearCriterionTreeViewModel;
+		onSelectionChanged: (wearCriterion: EvaluatedWearCriterionTreeViewModel) => void;
+	} = $props();
 
 
+	let selectedThreshold: EvaluatedWearThresholdTreeViewModel | null = $state(null);
+
+	let evaluatedThresholds = $derived.by(() => {
+		return wearCriterion.wearThresholds.filter((threshold) => threshold.canBeEvaluated());
+	});
+
+
+	function toggleSelected(threshold: EvaluatedWearThresholdTreeViewModel): void {
+		if (selectedThreshold?.id === threshold.id) {
+			selectedThreshold = null;
+		} else {
+			selectedThreshold = threshold;
+		}
+
+		wearCriterion.selectedThreshold = selectedThreshold;
+
+		onSelectionChanged(wearCriterion);
+    }
 </script>
 
 <div class="wear-criterion">
-    <div class="wear-criterion-label">{wearCriterion.label}</div>
+	<div class="wear-criterion-label">{wearCriterion.label}</div>
 
-    <div class="wear-thresholds">
-        {#each wearCriterion.wearThresholds as threshold, i}
-            <div class="wear-threshold mdc-elevation--z2" use:Ripple={{ surface: true }}>
-                <div class="threshold-label">{threshold.label}</div>
-            </div>
-        {/each}
-    </div>
+	<div class="wear-thresholds">
+		{#each evaluatedThresholds as threshold, i}
+			<div
+				class={'wear-threshold mdc-elevation--z2' + (selectedThreshold?.id === threshold.id ? ' selected' : '')}
+				use:Ripple={{ surface: true }}
+				role="button"
+				tabindex="0"
+				onkeydown="{(e) => e.key === 'Enter' && toggleSelected(wearCriterion.wearThresholds[i])}"
+				onclick={() => toggleSelected(wearCriterion.wearThresholds[i])}>
+				<div class="threshold-label">{threshold.label}</div>
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>
-
 	.wear-criterion-label {
-		font-size: 1rem;
-		font-weight: 600;
+		font-size: 1.5rem;
 	}
 
 	.wear-thresholds {
@@ -47,10 +77,8 @@
 		background-color: var(--mdc-theme-surface);
 	}
 
-    :global(.wear-threshold.selected) {
-        background-color: var(--mdc-theme-primary);
-        color: var(--mdc-theme-on-primary);
-    }
-
+	:global(.wear-threshold.selected) {
+		background-color: var(--mdc-theme-primary) !important;
+		color: var(--mdc-theme-on-primary);
+	}
 </style>
-

@@ -11,7 +11,9 @@
 	--mdc-theme-background: rgb(238, 238, 238);
 	--mdc-theme-surface: white;
 	--mdc-theme-on-surface: #000;
+	--mdc-theme-on-surface-rgb: 0, 0, 0;
 	--mdc-theme-on-primary: #fff;
+	
 
 	font-family: var(--font-body); 
 	color: var(--color-text);
