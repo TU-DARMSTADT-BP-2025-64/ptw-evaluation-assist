@@ -58,11 +58,10 @@ export enum WearThresholdFixStrategy {
 	Recycle = 'Recycle'
 }
 
-export const WearThresholdFixStrategyTranslation = {
+export const WearThresholdFixStrategyTranslation: Record<string, string> = {
     Reuse: 'Wiederverwendung',
     Repair: 'Reparatur',
     Recycle: 'Recycling'
-}
-
+};
 
     

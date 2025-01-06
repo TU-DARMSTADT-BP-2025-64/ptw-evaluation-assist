@@ -69,11 +69,14 @@
 				.map((wearCriterion) => wearCriterion.selectedThreshold)
 				.filter((threshold) => threshold !== null) as EvaluatedWearThresholdTreeViewModel[];
 
+			console.log('selectedThresholds', selectedThresholds);
 			const fixStrategy = Math.min(
 				...selectedThresholds.map((threshold) =>
 					fixStrategyPriority.indexOf(threshold.fixStrategy as WearThresholdFixStrategy)
-				)
+				).filter((index) => index !== -1)
 			);
+
+			console.log('fix strategy', fixStrategy);
 
 			selectedComponent.evaluatedFixStrategy = fixStrategyPriority[fixStrategy];
 
