@@ -5,16 +5,20 @@
 	import { HeaderService } from './HeaderService.svelte';
 	import { afterNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import Ripple from '@smui/ripple';
-
+	import { page } from '$app/stores'; // Zugriff auf globale Daten
 	import PasswordChangeDialog from '$lib/PasswordChangeDialog.svelte';
 
 	let passwordChangeDialogOpen = $state(false);
-
+	let isLoggedIn = $state(false);
 	let currentPath = '';
 	let isDarkMode = $state(false);
 	let fontSize = $state('medium');
 	let showSettings = $state(false);
+
+	// Aktualisiere `isLoggedIn`, wenn `page.data.isLoggedIn` sich ändert
+	$effect(() => {
+		isLoggedIn = $page.data?.isLoggedIn || false;
+	});
 
 	afterNavigate(() => {
 		currentPath = window.location.pathname;
@@ -43,7 +47,6 @@
 	// einstellungsbutton
 	function toggleSettings() {
 		showSettings = !showSettings;
-		console.log('Settings toggled', showSettings);
 	}
 	//Schriftgröße ändern und speichern
 	function changeFontSize(size: string) {
@@ -59,7 +62,6 @@
 			fontSize = savedFontSize;
 			document.body.classList.add(savedFontSize);
 		}
-		console.log('Schriftgröße geladen:', fontSize);
 	}
 	//Schriftgröße speichern
 	function saveFontSize(size: string) {
@@ -76,6 +78,21 @@
 
 	function openPasswordChangeDialog() {
 		passwordChangeDialogOpen = true;
+	}
+
+	async function logout() {
+		try {
+			const response = await fetch('/api/logout', {
+				method: 'POST',
+			});
+			if (response.ok) {
+				window.location.href = '/'; // Weiterleitung zur Startseite
+			} else {
+				console.error('Logout fehlgeschlagen:', await response.text());
+			}
+		} catch (err) {
+			console.error('Fehler beim Logout:', err);
+		}
 	}
 </script>
 
@@ -96,6 +113,9 @@
 		<div class="actions">
 			<IconButton class="material-icons" onclick={() => toggleDarkMode()}>dark_mode</IconButton>
 			<IconButton class="material-icons" onclick={() => toggleSettings()}>settings</IconButton>
+			{#if $page.data.isLoggedIn}
+				<IconButton class="material-icons" onclick={logout}>logout</IconButton>
+			{/if}
 		</div>
 	</div>
 </header>
@@ -112,28 +132,7 @@
 
 		<!-- Passwort ändern -->
 		<p>Passwort:</p>
-		<button onclick={() => openPasswordChangeDialog()}>Passwort ändern</button>
-	</div>
-{/if}
-
-<PasswordChangeDialog
-	bind:open={passwordChangeDialogOpen}
-	on:close={() => (passwordChangeDialogOpen = false)} />
-
-{#if showSettings}
-	<div class="settings-menu {fontSize}">
-		<h2>Einstellungen</h2>
-		<p>Schriftgröße:</p>
-
-		<div class="font-size-buttons">
-			<button onclick={() => changeFontSize('small')}>Klein</button>
-			<button onclick={() => changeFontSize('medium')}>Mittel</button>
-			<button onclick={() => changeFontSize('large')}>Groß</button>
-		</div>
-
-		<!-- Passwort ändern -->
-		<p>Passwort:</p>
-		<button onclick={() => openPasswordChangeDialog()}>Passwort ändern</button>
+		<button id='PasswordChange' onclick={() => openPasswordChangeDialog()}>Passwort ändern</button>
 	</div>
 {/if}
 
@@ -164,7 +163,7 @@
 		width: 0;
 		height: 0;
 		border-left: 24px solid transparent;
-		border-right: 0px solid var(--mdc-theme-primary);
+		border-right: 0 solid var(--mdc-theme-primary);
 		border-bottom: 80px solid var(--mdc-theme-primary);
 	}
 

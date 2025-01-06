@@ -1,13 +1,16 @@
 import { ProductDatabaseModel, ProductViewModel } from '$lib/models/product.model';
-import generator from 'generate-password';
-import { createHash } from 'crypto';
-import { Logger } from './logger';
-import type { DatabaseClient } from './database-client';
-import { ServerConstants } from './server-constants';
+import bcrypt from 'bcrypt';
+import { DatabaseClient } from '$lib/server/database-client';
+import dotenv from 'dotenv';
 import type { AssemblyGroupViewModel } from '$lib/models/assembly-group.model';
 import type { WearCriterionViewModel } from '$lib/models/wear-criterion.model';
 import type { WearThresholdViewModel } from '$lib/models/wear-threshold.model';
 import type { AssemblyComponentViewModel } from '$lib/models/assembly-component.model';
+
+dotenv.config(); // Lädt die Umgebungsvariablen aus der .env-Datei
+// Stellen Sie sicher, dass DEV_ADMIN_PASSWORD in der .env-Datei gesetzt ist
+
+
 export class Repository {
 	public static Instance: Repository;
 
@@ -58,6 +61,7 @@ export class Repository {
 		statement.run(databaseModel.name, product.id);
 		return product;
 	}
+
 
 	public deleteProduct(id: string): boolean {
 		const database = this.databaseClient.getDatabase();
@@ -238,15 +242,20 @@ export class Repository {
 		return true;
 	}
 
-	public userExists(username: string, password: string): boolean {
-		const database = this.databaseClient.getDatabase();
-		const statement = database.prepare('SELECT * FROM users WHERE username = ? AND password = ?');
 
-		const passwordHash = createHash('sha256')
-			.update(password + ServerConstants.USER_SALT)
-			.digest('base64');
-		const user = statement.get(username, passwordHash);
-		return !!user;
+
+	public async userExists(username: string, password: string): Promise<boolean> {
+		const database = this.databaseClient.getDatabase();
+		const statement = database.prepare('SELECT * FROM users WHERE username = ?');
+		const user = statement.get(username) as { username: string; password: string } | undefined;
+
+		if (user) {
+			const passwordMatches = await bcrypt.compare(password, user.password);
+			console.log('Passwort korrekt:', passwordMatches);
+			return passwordMatches;
+		}
+
+		return false;
 	}
 
 	private _initTables() {
@@ -308,6 +317,7 @@ export class Repository {
 					)`
 		).run();
 
+
 		// Users table
 		db.prepare(
 			`CREATE TABLE users (
@@ -318,25 +328,56 @@ export class Repository {
 		).run();
 	}
 
-	private _initAdminUser() {
+	private async _initAdminUser() {
 		const db = this.databaseClient.getDatabase();
 
-		const password = generator.generate({
-			length: 10,
-			numbers: true,
-			excludeSimilarCharacters: true
-		});
-		const passwordHash = createHash('sha256')
-			.update(password + ServerConstants.USER_SALT)
-			.digest('base64');
-		const statement = db.prepare('INSERT INTO users (username, password) VALUES (?, ?)');
+		// Prüfe, ob der Benutzer 'admin' bereits existiert
+		const statementCheck = db.prepare('SELECT * FROM users WHERE username = ?');
+		const adminUser = statementCheck.get('admin');
 
-		Logger.Instance.info(
-			'Creating admin user with password: ' +
-				password +
-				'. Please change this password immediately.'
-		);
+		if (adminUser) {
+			console.log('Admin-Benutzer existiert bereits.');
+			return;
+		}
 
-		statement.run('admin', passwordHash);
+		const password = process.env.DEV_ADMIN_PASSWORD;
+
+		if (!password) {
+			throw new Error('DEV_ADMIN_PASSWORD ist nicht gesetzt! Setze es in der .env-Datei.');
+		}
+
+		// Passwort mit bcrypt hashen
+		const saltRounds = 10;
+		const passwordHash = await bcrypt.hash(password, saltRounds);
+		console.log('Initiales Admin-Passwort wurde erfolgreich erstellt.');
+
+		// User,Passwort Kombination in Datenbank ablegen
+		const statementInsert = db.prepare('INSERT INTO users (username, password) VALUES (?, ?)');
+		statementInsert.run('admin', passwordHash);
+		console.log('Admin-Benutzer wurde erfolgreich erstellt.');
+	}
+
+	async getAdmin() {
+		const db = this.databaseClient.getDatabase();
+
+		// Hole den Benutzer 'admin'
+		const statement = db.prepare('SELECT * FROM users WHERE username = ?');
+		return statement.get('admin');
+	}
+
+	async updateAdminPassword(newPassword: string) {
+		const db = this.databaseClient.getDatabase();
+
+		// Update-Statement für das Passwort
+		const statement = db.prepare('UPDATE users SET password = ? WHERE username = ?');
+		const result = statement.run(newPassword, 'admin');
+
+		// Rückmeldung über den Erfolg
+		if (result.changes === 1) {
+			console.log('Passwort erfolgreich aktualisiert.');
+		} else {
+			console.log('Fehler beim Aktualisieren des Passworts.');
+		}
+		return result.changes === 1;
 	}
 }
