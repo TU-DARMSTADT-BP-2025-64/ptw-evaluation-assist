@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import {
 		getEvaluatedComponents,
 		type EvaluatedProductTreeViewModel
 	} from '$lib/components/ComponentSelectDialog/EvaluatedTreeView.svelte';
-	import { WearThresholdFixStrategy } from '$lib/models/wear-threshold.model';
+    import Button from '@smui/button';
 
 	const { evaluatedProductTreeView }: { evaluatedProductTreeView: EvaluatedProductTreeViewModel } =
 		$props();
@@ -12,11 +13,19 @@
 		return getEvaluatedComponents(evaluatedProductTreeView);
 	});
 
+    function goBack() {
+        goto('/assistant');
+    }
+
 	$inspect(components);
 </script>
 
 <div class="evaluation-result">
 	<div class="evaluation-result-header">
+        <Button class="default-button back-button" onclick={() => goBack()}>
+			<i class="material-icons">arrow_back</i>
+			<span>Zurück</span>
+		</Button>
 		Ergebnis der Befundung von {evaluatedProductTreeView.name}
 	</div>
 
@@ -43,6 +52,13 @@
 		align-items: center;
 		width: 100%;
 		height: 100%;
+	}
+
+    :global(.back-button) {
+		position: absolute;
+		top: 20px;
+		left: 20px;
+		z-index: 100;
 	}
 
 	.evaluation-result-header {

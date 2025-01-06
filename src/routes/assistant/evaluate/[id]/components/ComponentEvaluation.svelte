@@ -96,6 +96,22 @@
 
 		selectNext();
 	}
+
+	function getEvaluationResultText(): string {
+		if (!selectedComponent || !selectedComponent.evaluatedFixStrategy) {
+			return '';
+		}
+
+		const fixStrategyText = {
+			[WearThresholdFixStrategy.Recycle]: 'Komponente recyceln',
+			[WearThresholdFixStrategy.Repair]: 'Komponente reparieren',
+			[WearThresholdFixStrategy.Reuse]: 'Komponente wiederverwenden'
+		};
+
+		const measures = selectedComponent.getEvaluatedMeasures();
+		
+		return fixStrategyText[selectedComponent.evaluatedFixStrategy] + (measures.length > 0 ? `: ${measures}` : '');
+	}
 </script>
 
 <div class="component-evaluation">
@@ -117,27 +133,30 @@
 				{/if}
 			</div>
 
-			{#if selectedComponent.finishedEvaluation}
-				<div class="evaluation-result"></div>
-			{/if}
-
-			<div class="actions">
-				{#if canFinishEvaluation}
-					<Button variant="raised" onclick={onEvaluationFinished}>
-						<Icon class="material-icons">done_all</Icon>
-						<span>Befundung abschlißen</span>
-					</Button>
-				{:else if selectedComponent.finishedEvaluation}
-					<Button variant="raised" onclick={() => selectNext()}>
-						<Icon class="material-icons">arrow_forward</Icon>
-						<span>Nächste </span>
-					</Button>
-				{:else}
-					<Button onclick={skipComponent}>
-						<Icon class="material-icons">skip_next</Icon>
-						<span>Überspringen </span>
-					</Button>
+			<div class="evaluation-footer">
+				{#if selectedComponent.finishedEvaluation}
+					<div class="evaluation-result">
+						{getEvaluationResultText()}
+					</div>
 				{/if}
+				<div class="actions">
+					{#if canFinishEvaluation}
+						<Button variant="raised" onclick={onEvaluationFinished}>
+							<Icon class="material-icons">done_all</Icon>
+							<span>Befundung abschlißen</span>
+						</Button>
+					{:else if selectedComponent.finishedEvaluation}
+						<Button variant="raised" onclick={() => selectNext()}>
+							<Icon class="material-icons">arrow_forward</Icon>
+							<span>Nächste </span>
+						</Button>
+					{:else}
+						<Button onclick={skipComponent}>
+							<Icon class="material-icons">skip_next</Icon>
+							<span>Überspringen </span>
+						</Button>
+					{/if}
+				</div>
 			</div>
 		</div>
 	{:else}
@@ -168,13 +187,31 @@
 		gap: 32px;
 	}
 
+	.evaluation-footer {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 2rem;
+	}
+
 	.actions {
 		width: 100%;
 		display: flex;
 		justify-content: flex-end;
-		gap: 8px;
-		margin-top: 2rem;
-		
+		gap: 8px;		
+	}
+
+	.evaluation-result {
+		font-size: 1.1rem;
+		font-weight: bold;
+		border: 3px solid green;
+		border-radius: 8px;
+		padding: 8px;
+		margin-left: 8px;
+		margin-right: 8px;
+		white-space: nowrap;
+		display: flex;
+		align-items: center;
+
 	}
 
 	.no-wear-criteria-found-msg {

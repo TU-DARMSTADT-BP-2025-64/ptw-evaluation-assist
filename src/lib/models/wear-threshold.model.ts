@@ -58,5 +58,11 @@ export enum WearThresholdFixStrategy {
 	Recycle = 'Recycle'
 }
 
+export const WearThresholdFixStrategyTranslation = {
+    Reuse: 'Wiederverwendung',
+    Repair: 'Reparatur',
+    Recycle: 'Recycling'
+}
+
 
     
