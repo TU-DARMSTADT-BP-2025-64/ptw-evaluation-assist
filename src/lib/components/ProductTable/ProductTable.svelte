@@ -95,8 +95,8 @@
 				</Row>
 			</Head>
 			<Body>
-				{#each slice as product}
-					<Row style="cursor: pointer" onclick={() => onProductClicked(product)}>
+				{#each slice as product, i}
+					<Row id={'product-table-row-' + i} style="cursor: pointer" onclick={() => onProductClicked(product)}>
 						<Cell>{product.name}</Cell>
 
 						{#if showDelete}

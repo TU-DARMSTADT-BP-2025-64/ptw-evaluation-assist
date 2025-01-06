@@ -48,7 +48,7 @@
 	</div>
 
     <div class="add-product-button">
-		<Button variant="raised" color="secondary"  onclick={() => goto('/configuration/add')}>
+		<Button id="add-product-button" variant="raised" color="secondary"  onclick={() => goto('/configuration/add')}>
 			<Icon class="material-icons">add</Icon>
 			<span>Produkt hinzufügen</span>
 		</Button>

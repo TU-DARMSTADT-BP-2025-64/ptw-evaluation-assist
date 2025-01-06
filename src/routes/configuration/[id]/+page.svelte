@@ -57,7 +57,7 @@
 	}
 </script>
 
-<section>
+<section class="product-form">
 	<div class="product-form-header">
 		<Button class="default-button" onclick={() => goBack()}>
 			<i class="material-icons">arrow_back</i>

@@ -77,7 +77,11 @@
 		</div>
 
 		<div>
-			<div class="expand-button" on:click={() => (expanded = !expanded)}>
+			<div class="expand-button" 
+			role="button"
+			tabindex="0"
+			onkeydown="{(e) => e.key === 'Enter' && (expanded = !expanded)}"
+			onclick={() => (expanded = !expanded)}>
 				{expanded ? '▼' : '►'}
 			</div>
 		</div>

@@ -7,14 +7,14 @@ test('assistant page shows start test products', async ({ page }) => {
 });
 
 
-test('open product selection after click on row', async ({ page }) => {
+test('open product evaluation after click on row', async ({ page }) => {
     await page.goto('/assistant');
-
-    console.log(await page.locator('.start_assistant_0').first().innerText());
-
-    await page.locator('.start_assistant_0').first().click();
+    await page.waitForTimeout(1000);
+    await page.locator('#product-table-row-0').first().click();
     await page.waitForTimeout(1000);
 
 
-    await expect(page.url()).toContain('/assistant/product-selection');
+    await expect(page.url()).toContain('/assistant/evaluate/1');
 });
+
+

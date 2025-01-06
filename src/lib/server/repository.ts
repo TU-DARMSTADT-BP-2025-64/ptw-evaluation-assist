@@ -342,6 +342,8 @@ export class Repository {
 
 		const password = process.env.DEV_ADMIN_PASSWORD;
 
+		console.log('Initialisiere Admin-Benutzer: '+ password);
+
 		if (!password) {
 			throw new Error('DEV_ADMIN_PASSWORD ist nicht gesetzt! Setze es in der .env-Datei.');
 		}
