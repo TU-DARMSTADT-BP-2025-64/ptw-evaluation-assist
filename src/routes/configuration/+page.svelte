@@ -12,19 +12,6 @@
     let products = $state(props.data.products);
 
 
-    function addProduct() {
-        fetch('api/product', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: 'zylinder'
-            })
-
-        })
-    }
-
     function editProduct(product: ProductViewModel) {
         goto(`/configuration/${product.id}`);
     }
@@ -39,8 +26,8 @@
 </script>
 
 <svelte:head>
-    <title>Konfiguration</title>
-    <meta name="description" content="PTW evaluation assist" />
+	<title>Konfiguration</title>
+	<meta name="description" content="PTW evaluation assist" />
 </svelte:head>
 
 <section class="page">
@@ -61,7 +48,7 @@
 	</div>
 
     <div class="add-product-button">
-		<Button variant="raised" color="secondary"  onclick={() => goto('/configuration/add')}>
+		<Button id="add-product-button" variant="raised" color="secondary"  onclick={() => goto('/configuration/add')}>
 			<Icon class="material-icons">add</Icon>
 			<span>Produkt hinzufügen</span>
 		</Button>
@@ -87,7 +74,8 @@
 
 	.product-table {
         max-height: 100%;
-        overflow: hidden;
+		height: 100%;
+        overflow: auto;
 		width: 100%;
 		max-width: min(100%, 800px);
 	}

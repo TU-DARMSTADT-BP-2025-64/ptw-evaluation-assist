@@ -81,7 +81,7 @@ test.describe('Login Cookie Test', () => {
 		const cookies = await context.cookies();
 
 		// Finde das `session`-Cookie
-		const sessionCookie = cookies.find(cookie => cookie.name === 'session');
+		const sessionCookie = cookies.find((cookie) => cookie.name === 'session');
 
 		// Überprüfe, ob das Cookie gesetzt wurde
 		expect(sessionCookie).toBeDefined();
@@ -103,7 +103,10 @@ test.describe('Login Cookie Test', () => {
 		await expect(page).toHaveURL('/');
 	});
 
-	test('Benutzer mit ungültigem Cookie wird zur Startseite umgeleitet', async ({ page, context }) => {
+	test('Benutzer mit ungültigem Cookie wird zur Startseite umgeleitet', async ({
+		page,
+		context
+	}) => {
 		// Rufe die Basis-URL aus der aktuellen Seite ab
 		await page.goto('/'); // Lade die Startseite, um die Basis-URL zu erhalten
 		const baseUrl = new URL(page.url()).origin;
@@ -117,8 +120,8 @@ test.describe('Login Cookie Test', () => {
 				path: '/',
 				httpOnly: true,
 				secure: true,
-				sameSite: 'Strict',
-			},
+				sameSite: 'Strict'
+			}
 		]);
 
 		// Versuche, direkt zu /configuration zu navigieren

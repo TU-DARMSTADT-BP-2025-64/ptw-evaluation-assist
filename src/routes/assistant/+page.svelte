@@ -10,7 +10,7 @@
 	let props: { data: {products: ProductViewModel[]} } = $props();
 
 	function startEvaluation(product: ProductViewModel) {
-		goto(`/assistant/${product.id}`);
+		goto(`/assistant/evaluate/${product.id}`);
 	}
 </script>
 
@@ -31,7 +31,6 @@
 		<ProductTable products = {props.data.products} onProductClicked={(product) => startEvaluation(product)} />
 	</div>
 </section>
-
 <style>
 	.page {
 		position: relative;

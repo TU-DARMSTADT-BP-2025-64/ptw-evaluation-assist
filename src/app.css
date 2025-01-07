@@ -10,7 +10,10 @@
 	--mdc-theme-secondary: #767676;
 	--mdc-theme-background: rgb(238, 238, 238);
 	--mdc-theme-surface: white;
+	--mdc-theme-on-surface: #000;
+	--mdc-theme-on-surface-rgb: 0, 0, 0;
 	--mdc-theme-on-primary: #fff;
+	
 
 	font-family: var(--font-body); 
 	color: var(--color-text);
@@ -19,6 +22,7 @@ body.dark {
 	--mdc-theme-background: #151b23;
 	--mdc-theme-primary: #b81018;
 	--mdc-theme-secondary: #676778;
+	--mdc-theme-on-surface: #fff;
 	--mdc-theme-on-primary: #fff;
 	--mdc-theme-surface: #212830;
 	color: #fff;
@@ -38,3 +42,25 @@ a {
 	text-decoration: none;
 	color: unset;
 }
+
+
+/* Material overrides */
+
+.mdc-text-field, .smui-autocomplete {
+	width: 100%;
+}
+
+
+.mdc-select {
+	width: 100%;
+}
+
+.mdc-button .material-icons + span {
+	margin-left: 0.5rem;
+
+}
+
+.cancel-button, .default-button {
+	color: var(--mdc-theme-on-surface) !important;
+}
+

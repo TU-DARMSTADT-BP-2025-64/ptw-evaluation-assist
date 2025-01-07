@@ -1,25 +1,26 @@
 import type { AssemblyGroupTreeViewModel } from './assembly-group.model';
 import { DatabaseModel } from './database.model';
+import { v4 as uuidv4 } from 'uuid';
 
 export class ProductDatabaseModel extends DatabaseModel {
     name: string = '';
 }
 
 export class ProductViewModel {
-    id: number | null = 0;
+    id: string = uuidv4();
     name: string = '';
 
-    constructor() {
-
+    constructor(options: Partial<ProductViewModel> = {}) {
+        Object.assign(this, options);
     }
 }
 
 export class ProductTreeViewModel {
-    id: number | null = 0;
+    id: string = uuidv4();
     name: string = '';
     assemblyGroups: AssemblyGroupTreeViewModel[] = [];
 
-    constructor() {
-
+    constructor(options: Partial<ProductTreeViewModel> = {}) {
+        Object.assign(this, options);
     }
 }

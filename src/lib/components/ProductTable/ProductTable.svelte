@@ -33,7 +33,7 @@
 		return products.filter(
 			(product) =>
 				product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				product.id === Number(searchQuery)
+				product.id === searchQuery
 		);
 	});
 
@@ -88,17 +88,15 @@
 		<DataTable table$aria-label="Product List" style="width: 100%;">
 			<Head>
 				<Row>
-					<Cell>ID</Cell>
-					<Cell>Name</Cell>
+					<Cell>Produkt</Cell>
 					{#if showDelete}
 						<Cell style="width: 100px"></Cell>
 					{/if}
 				</Row>
 			</Head>
 			<Body>
-				{#each slice as product}
-					<Row style="cursor: pointer" onclick={() => onProductClicked(product)}>
-						<Cell>{product.id}</Cell>
+				{#each slice as product, i}
+					<Row id={'product-table-row-' + i} style="cursor: pointer" onclick={() => onProductClicked(product)}>
 						<Cell>{product.name}</Cell>
 
 						{#if showDelete}
