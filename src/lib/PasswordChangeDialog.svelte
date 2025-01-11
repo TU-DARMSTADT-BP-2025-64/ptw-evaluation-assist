@@ -12,13 +12,13 @@
 
     let snackbarSuccess: Snackbar;
     let snackbarWarning: Snackbar;
-    let snackbarInvalidOldPassword: Snackbar;
+    let snackbarError: Snackbar;
 
     // Funktion zum Schließen des Dialogs
     function closeDialog() {
 			snackbarSuccess.close();
 			snackbarWarning.close();
-			snackbarInvalidOldPassword.close();
+      snackbarError.close();
 			open = false;
 			dispatch('close');
     }
@@ -53,8 +53,8 @@
 					setTimeout(() => closeDialog(), 500);
 				} else if (data.message.includes('Das aktuelle Passwort ist falsch')) {
 					// Snackbar zurücksetzen und öffnen
-					snackbarInvalidOldPassword.close();
-					setTimeout(() => snackbarInvalidOldPassword.open(), 10);
+            snackbarError.close();
+					setTimeout(() => snackbarError.open(), 10);
 				} else {
 					// Snackbar zurücksetzen und öffnen
 					snackbarWarning.close();
@@ -130,7 +130,7 @@
 </Snackbar>
 
 <!-- Invalid Old Password Snackbar -->
-<Snackbar bind:this={snackbarInvalidOldPassword} class="snackbar-invalid-old-password">
+<Snackbar bind:this={snackbarError} class="snackbar-error">
     <Label>Das aktuelle Passwort ist falsch!</Label>
     <SnackbarActions>
         <IconButton class="material-icons" title="Dismiss">close</IconButton>
@@ -178,5 +178,4 @@
     button:hover {
         opacity: 0.9;
     }
-
 </style>

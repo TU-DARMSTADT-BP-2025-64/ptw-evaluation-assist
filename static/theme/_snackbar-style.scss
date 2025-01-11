@@ -1,0 +1,25 @@
+@use '../../node_modules/@material/theme/color-palette';
+
+.snackbar-success .mdc-snackbar__surface {
+  background-color: color-palette.$green-500 !important;
+}
+
+.snackbar-warning .mdc-snackbar__surface {
+  background-color: color-palette.$orange-500 !important;
+}
+
+.snackbar-error .mdc-snackbar__surface {
+  background-color: color-palette.$red-500 !important;
+}
+
+.snackbar-success .mdc-snackbar__label {
+  color: black !important;
+}
+
+.snackbar-warning .mdc-snackbar__label {
+  color: black !important;
+}
+
+.snackbar-error .mdc-snackbar__label {
+  color: white !important;
+}
