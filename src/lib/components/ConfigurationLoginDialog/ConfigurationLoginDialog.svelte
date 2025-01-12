@@ -23,6 +23,10 @@
 			invalidPassword = true;
 		}
 	}
+
+	function cancel() {
+		open = false;
+	}
 </script>
 
 <Dialog bind:open class="login-dialog">
