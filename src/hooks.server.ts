@@ -14,16 +14,15 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (token) {
 		try {
 			// Token validieren
-			const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload | string;
+			const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
 			if (typeof decoded === 'object' && decoded !== null) {
 				event.locals.user = decoded; // Benutzer-Daten speichern
 				event.locals.isLoggedIn = true; // Benutzer ist eingeloggt
-			} else {
-				event.locals.user = null;
 			}
-		} catch (err) {
-			event.locals.user = null;
+		} catch {
+			// Wenn das Token ungültig ist, bleibt der Benutzer ausgeloggt
+			event.locals.isLoggedIn = false;
 		}
 	}
 
