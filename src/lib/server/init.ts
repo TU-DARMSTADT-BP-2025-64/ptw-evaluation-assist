@@ -3,7 +3,7 @@ import { DatabaseClient } from './database-client';
 import { Logger } from './logger';
 import { Repository } from './repository';
 import { ServerConstants } from './server-constants';
-import { initTestEnvironment } from './tests/init.test';
+import { initTestEnvironment } from './tests/init-test';
 
 console.log('test env', process.env.NODE_ENV);
 
