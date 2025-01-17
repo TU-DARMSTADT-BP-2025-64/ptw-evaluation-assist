@@ -4,7 +4,12 @@
 		getEvaluatedComponents,
 		type EvaluatedProductTreeViewModel
 	} from '$lib/components/ComponentSelectDialog/EvaluatedTreeView.svelte';
-    import Button from '@smui/button';
+	import Button from '@smui/button';
+	import jsPDF from 'jspdf';
+	import 'jspdf-autotable';
+
+
+
 
 	const { evaluatedProductTreeView }: { evaluatedProductTreeView: EvaluatedProductTreeViewModel } =
 		$props();
@@ -13,16 +18,46 @@
 		return getEvaluatedComponents(evaluatedProductTreeView);
 	});
 
-    function goBack() {
-        goto('/assistant');
-    }
+	function goBack() {
+		goto('/assistant');
+	}
+
+	function generatePDF() {
+		const doc = new jsPDF();
+		const dateTime = new Date().toLocaleString();
+		const productName = evaluatedProductTreeView.name;
+
+		doc.setFontSize(16);
+		doc.text(`Befundungsergebnis`, 10, 10);
+		doc.setFontSize(12);
+		doc.text(`Produktname: ${productName}`, 10, 20);
+		doc.text(`Datum und Uhrzeit: ${dateTime}`, 10, 30);
+
+		// Table header
+		const headers = ["Komponente", "Strategie", "Zusätzliche Maßnahmen"];
+		const rows = components.map(component => [
+			component.name,
+			component.evaluatedFixStrategy,
+			component.getEvaluatedMeasures()
+		]);
+
+		// Draw table
+		let startY = 40;
+		doc.autoTable({
+			head: [headers],
+			body: rows,
+			startY,
+		});
+
+		doc.save(`Befundung_${productName.replace(/\s+/g, '_')}.pdf`);
+	}
 
 	$inspect(components);
 </script>
 
 <div class="evaluation-result">
 	<div class="evaluation-result-header">
-        <Button class="default-button back-button" onclick={() => goBack()}>
+		<Button class="default-button back-button" onclick={() => goBack()}>
 			<i class="material-icons">arrow_back</i>
 			<span>Zurück</span>
 		</Button>
@@ -43,84 +78,97 @@
 			</div>
 		{/each}
 	</div>
+
+	<Button class="default-button pdf-button" onclick={() => generatePDF()}>
+		<i class="material-icons">picture_as_pdf</i>
+		<span>PDF Generieren</span>
+	</Button>
 </div>
 
 <style>
-	.evaluation-result {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		width: 100%;
-		height: 100%;
-	}
+    .evaluation-result {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
 
     :global(.back-button) {
-		position: absolute;
-		top: 20px;
-		left: 20px;
-		z-index: 100;
-	}
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 100;
+    }
 
-	.evaluation-result-header {
-		font-size: 1.5rem;
-		font-weight: bold;
-		margin-bottom: 32px;
-	}
+    :global(.pdf-button) {
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-	.table {
+    .evaluation-result-header {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 32px;
+    }
+
+    .table {
         width: 50%;
-		display: flex;
-		flex-direction: column;
-	}
+        display: flex;
+        flex-direction: column;
+    }
 
-	.table-header {
-		border-bottom: 1px solid rgba(var(--mdc-theme-on-surface-rgb), 0.6);
-		display: flex;
-		padding: 0 8px;
-	}
+    .table-header {
+        border-bottom: 1px solid rgba(var(--mdc-theme-on-surface-rgb), 0.6);
+        display: flex;
+        padding: 0 8px;
+    }
 
-	.header-cell {
-		flex: 1;
-		text-align: start;
-		/* font-size: 15px; */
-		font-weight: bold;
-		color: var(--primary);
+    .header-cell {
+        flex: 1;
+        text-align: start;
+        font-weight: bold;
+        color: var(--primary);
         padding-bottom: 4px;
-	}
+    }
 
-	.table-row {
-		padding: 0 8px;
+    .table-row {
+        padding: 0 8px;
+        display: flex;
+        border-bottom: 1px solid rgba(var(--mdc-theme-on-surface-rgb), 0.3);
+    }
 
-		display: flex;
-		border-bottom: 1px solid rgba(var(--mdc-theme-on-surface-rgb), 0.3);
-	}
-
-	.component-cell {
-		flex: 1;
-		padding: 8px 0;
-		display: flex;
-		justify-content: flex-start;
-		align-items: center;
-		border-right: 1px solid rgba(var(--mdc-theme-on-surface-rgb), 0.3);
-	}
+    .component-cell {
+        flex: 1;
+        padding: 8px 0;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        border-right: 1px solid rgba(var(--mdc-theme-on-surface-rgb), 0.3);
+    }
 
     .fix-strategy-cell {
-		flex: 1;
-		padding: 8px 0 8px 8px;
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
-	}
+        flex: 1;
+        padding: 8px 0 8px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
 
-	.measures-cell {
-		flex: 1;
-		padding: 8px 0 8px 8px;
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
-	}
+    .measures-cell {
+        flex: 1;
+        padding: 8px 0 8px 8px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
 
-	.table-row:nth-child(odd) {
-		background: rgba(var(--mdc-theme-on-surface-rgb), 0.1);
-	}
+    .table-row:nth-child(odd) {
+        background: rgba(var(--mdc-theme-on-surface-rgb), 0.1);
+    }
 </style>
+
+
+
