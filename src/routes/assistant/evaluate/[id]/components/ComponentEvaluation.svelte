@@ -211,9 +211,11 @@
 		padding: 8px;
 		margin-left: 8px;
 		margin-right: 8px;
-		white-space: nowrap;
 		display: flex;
 		align-items: center;
+      flex-wrap: wrap;
+      white-space: normal;
+      word-break: break-word;
 
 	}
 
