@@ -146,7 +146,7 @@
 					{#if canFinishEvaluation}
 						<Button variant="raised" onclick={onEvaluationFinished}>
 							<Icon class="material-icons">done_all</Icon>
-							<span>Befundung abschlißen</span>
+							<span>Befundung abschließen</span>
 						</Button>
 					{:else if selectedComponent.finishedEvaluation}
 						<Button variant="raised" onclick={() => selectNext()}>
