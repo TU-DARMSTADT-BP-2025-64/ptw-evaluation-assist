@@ -3,6 +3,8 @@
     import Dialog, { Title, Content, Actions } from '@smui/dialog';
     import Snackbar, { Label, Actions as SnackbarActions } from '@smui/snackbar';
     import IconButton from '@smui/icon-button';
+    import Button from '@smui/button';
+    import Textfield from '@smui/textfield';
 
     export let open: boolean;
     let currentPassword = '';
@@ -75,41 +77,30 @@
 <Dialog bind:open={open} class="dialog">
     <Title>Passwort ändern</Title>
     <Content>
-        <form on:submit|preventDefault={changePassword}>
-            <div class="form-group">
-                <label for="currentPassword">Aktuelles Passwort</label>
-                <input
-                  id="currentPassword"
-                  type="password"
-                  bind:value={currentPassword}
-                  required
-                />
-            </div>
-
-            <div class="form-group">
-                <label for="newPassword">Neues Passwort</label>
-                <input
-                  id="newPassword"
-                  type="password"
-                  bind:value={newPassword}
-                  required
-                />
-            </div>
-
-            <div class="form-group">
-                <label for="confirmPassword">Neues Passwort bestätigen</label>
-                <input
-                  id="confirmPassword"
-                  type="password"
-                  bind:value={confirmPassword}
-                  required
-                />
-            </div>
+        <form class="form-group" on:submit|preventDefault={changePassword}>
+            <Textfield 
+                bind:value={currentPassword}
+                variant="filled"
+                type="password"
+                label="Aktuelles Passwort"
+            />
+            <Textfield 
+                bind:value={newPassword}
+                variant="filled"
+                type="password"
+                label="Neues Passwort"
+            />
+            <Textfield 
+                bind:value={confirmPassword}
+                variant="filled"
+                type="password"
+                label="Passwort bestätigen"
+            />
         </form>
     </Content>
     <Actions>
-        <button type="button" on:click={closeDialog}>Abbrechen</button>
-        <button type="submit" on:click={changePassword}>Passwort ändern</button>
+        <Button class="default-button" onclick={closeDialog}>Abbrechen</Button>
+        <Button onclick={changePassword}>Passwort ändern</Button>
     </Actions>
 </Dialog>
 
@@ -138,44 +129,9 @@
 </Snackbar>
 
 <style>
-    .form-group {
-        margin-left: 0;
-        margin-right: 1rem;
+
+    :global(.form-group .mdc-text-field) {
+        margin-bottom: 1.2rem;
     }
 
-    label {
-        display: block;
-        margin-bottom: 8px;
-    }
-
-    input {
-        width: 100%;
-        padding: 8px;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    button {
-        padding: 8px 16px;
-        font-size: 16px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        margin-right: 8px;
-    }
-
-    button:first-child {
-        background: #ccc;
-        color: black;
-    }
-
-    button:last-child {
-        background: #007bff;
-        color: white;
-    }
-
-    button:hover {
-        opacity: 0.9;
-    }
 </style>
