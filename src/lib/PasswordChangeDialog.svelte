@@ -18,17 +18,21 @@
     function closeDialog() {
 			snackbarSuccess.close();
 			snackbarWarning.close();
-      snackbarError.close();
+            snackbarError.close();
 			open = false;
 			dispatch('close');
     }
 
     // Funktion zum Ändern des Passworts
 		async function changePassword() {
+
+            snackbarSuccess.close();
+            snackbarWarning.close();
+            snackbarError.close();
+
 			if (newPassword !== confirmPassword) {
 				// Snackbar zurücksetzen und öffnen
-				snackbarWarning.close();
-				setTimeout(() => snackbarWarning.open(), 10);
+				snackbarWarning.forceOpen();
 				return;
 			}
 
@@ -46,26 +50,22 @@
 
 				if (response.ok) {
 					// Snackbar zurücksetzen und öffnen
-					snackbarSuccess.close();
-					setTimeout(() => snackbarSuccess.open(), 10);
-
+					snackbarSuccess.forceOpen();
+		
 					// Dialog schließen nach erfolgreicher Änderung
 					setTimeout(() => closeDialog(), 500);
 				} else if (data.message.includes('Das aktuelle Passwort ist falsch')) {
 					// Snackbar zurücksetzen und öffnen
-            snackbarError.close();
-					setTimeout(() => snackbarError.open(), 10);
+            
+                    snackbarError.forceOpen();
 				} else {
-					// Snackbar zurücksetzen und öffnen
-					snackbarWarning.close();
-					setTimeout(() => snackbarWarning.open(), 10);
+					snackbarWarning.forceOpen();					
 				}
 			} catch (error) {
 				console.error('Fehler beim Ändern des Passworts:', error);
 
 				// Snackbar zurücksetzen und öffnen
-				snackbarWarning.close();
-				setTimeout(() => snackbarWarning.open(), 10);
+				snackbarWarning.forceOpen();
 			}
 		}
 
