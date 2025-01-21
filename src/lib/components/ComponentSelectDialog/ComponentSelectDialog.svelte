@@ -16,6 +16,8 @@
 	} = $props();
 
 	let selectableProductTreeView = $state(new EvaluatedProductTreeViewModel(productTreeView));
+	// svelte-ignore non_reactive_update
+		let selectAll=false;
 
 	console.log(selectableProductTreeView);
 
@@ -27,6 +29,10 @@
 	function cancel() {
 		open = false;
 		goto('/assistant');
+	}
+	function toggleSelectAll(){
+		selectAll= !selectAll;
+		selectableProductTreeView.assemblyGroups.forEach(group=>{group.selected=selectAll;})
 	}
 </script>
 
