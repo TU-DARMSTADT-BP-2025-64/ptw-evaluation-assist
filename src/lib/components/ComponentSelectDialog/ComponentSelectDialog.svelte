@@ -40,6 +40,8 @@
 	<div class="actions">
 		<Button class="cancel-button" onclick={() => cancel()}>Abbrechen</Button>
 		<Button onclick={() => startEvaluation()}>Befundung starten</Button>
+		<Button onclick={() => toggleSelectAll()}>{selectAll ? 'Alle abwählen' : 'Alle auswählen'}</Button>
+
 	</div>
 </Dialog>
 

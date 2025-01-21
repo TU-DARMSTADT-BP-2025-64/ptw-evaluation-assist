@@ -39,7 +39,7 @@
 			invalid={invalidName}
 			style="width: 100%;"
 			bind:value={name}
-			onkeydown={(e) => e.key === 'Enter' && saveNewGroup()}
+			onkeydown={(e: { key: string; }) => e.key === 'Enter' && saveNewGroup()}
 			label="Name"
 		></Textfield>
 	</Content>
