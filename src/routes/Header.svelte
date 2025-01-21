@@ -212,9 +212,6 @@
 		font-size: 1rem;
 		cursor: pointer;
 	}
-	.password-change-button {
-		margin-top: 16px;
-	}
 
 	.password-change-button button {
 		padding: 8px 12px;
