@@ -119,7 +119,7 @@
 
 <div class="component-evaluation">
 	{#if !!selectedComponent}
-		<div>
+		<div class="component">
 			<div class="component-name">
 				Verschleiß von Komponente: {selectedComponent.name}
 			</div>
@@ -175,9 +175,11 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+    overflow-y: auto;
+    max-height: 916px;
 	}
 
-	.component-name {
+  .component-name {
 		font-size: 1.3rem;
 		font-weight: bold;
 		margin-bottom: 2rem;

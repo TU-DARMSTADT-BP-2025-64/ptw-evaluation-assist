@@ -126,31 +126,12 @@
     }
 
     .table {
-        width: 50%;
+        width: 60%;
         display: flex;
         flex-direction: column;
-        max-height: 400px; /* Maximale Höhe der Tabelle */
-        overflow-y: scroll; /* Scrollbar immer anzeigen */
-        border: 1px solid rgba(var(--mdc-theme-on-surface-rgb), 0.3); /* Optional: Rahmen */
-    }
-
-    .table::-webkit-scrollbar {
-        width: 10px; /* Breite der Scrollbar */
-    }
-
-    .table::-webkit-scrollbar-thumb {
-        background-color: rgba(var(--mdc-theme-primary-rgb), 0.6); /* Farbe des Scrollbalkens */
-        border-radius: 4px;
-        border: 2px solid rgba(var(--mdc-theme-on-surface-rgb), 0.1); /* Abstand und Rand */
-    }
-
-    .table::-webkit-scrollbar-thumb:hover {
-        background-color: rgba(var(--mdc-theme-primary-rgb), 0.8); /* Farbe beim Hover */
-    }
-
-    .table::-webkit-scrollbar-track {
-        background-color: rgba(var(--mdc-theme-on-surface-rgb), 0.1); /* Hintergrundfarbe der Scrollspur */
-        border-radius: 4px;
+        max-height: 650px;
+        overflow-y: auto;
+        border: 1px solid rgba(var(--mdc-theme-on-surface-rgb), 0.3);
     }
 
     .table-header {
@@ -179,7 +160,7 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        border-right: 2px solid rgba(var(--mdc-theme-on-surface-rgb), 0.3);
+        border-right: 1px solid rgba(var(--mdc-theme-on-surface-rgb), 0.3);
     }
 
     .fix-strategy-cell {
