@@ -40,7 +40,6 @@
 	.sidebar {
 		display: flex;
 		flex-direction: column;
-
 	}
 
 	.title {
@@ -50,7 +49,7 @@
 
 
 	.components-container{
-      max-height: 916px;
+      max-height: 890px;
       overflow-y: auto;
 	}
 
