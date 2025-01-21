@@ -176,7 +176,7 @@
 		flex-direction: column;
 		gap: 1rem;
     overflow-y: auto;
-    max-height: 916px;
+    max-height: 400px;
 	}
 
   .component-name {
