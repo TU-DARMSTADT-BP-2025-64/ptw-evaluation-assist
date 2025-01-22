@@ -1,3 +1,4 @@
+import { WearThresholdFixStrategy, WearThresholdType } from '$lib/models/wear-threshold.model';
 import { Logger } from '../logger';
 import { Repository } from '../repository';
 import { DatabaseClientMock } from './database-client.mock';
@@ -6,13 +7,54 @@ export function initTestEnvironment() {
 	Logger.Instance = new Logger();
 	Repository.Instance = new Repository(dbClient);
 
+
+	initTestProduct('1');
+	initTestProduct('2');
+}
+
+function initTestProduct(id: string) {
 	Repository.Instance.addProduct({
-		id: '1',
+		id: id,
 		name: 'Test Product'
 	});
 
-	Repository.Instance.addProduct({
-		id: '2',
-		name: 'Test Product 2'
+	Repository.Instance.addAssemblyGroup({
+		id: id,
+		name: 'Test Assembly Group',
+		productId: id,
+		parentId: undefined
+	})
+
+	Repository.Instance.addAssemblyGroup({
+		id: id + '1',
+		name: 'Test Assembly Group 2',
+		productId: id,
+		parentId: id
+	})
+
+	Repository.Instance.addAssemblyComponent({
+		id: id,
+		assemblyGroupId: id,
+		machineElement: 'Test Machine Element',
+		machineElementCategory: 'Test Machine Element Category',
+		name: 'Test Assembly Component',
+		productId: id,
+	});
+
+	Repository.Instance.addWearCriterion({
+		id: id,
+		componentId: id,
+		productId: id,
+		label: 'Test Wear Criterion',
+	});
+
+	Repository.Instance.addWearThreshold({
+		id: id,
+		criterionId: id,
+		productId: id,
+		fixStrategy: WearThresholdFixStrategy.Reuse,
+		label: 'Test Wear Threshold',
+		measures: 'Test Measures',
+		type: WearThresholdType.OpticalError
 	});
 }
