@@ -129,7 +129,7 @@
 						>Keine Verschleißkriterien für diese Komponente gefunden!</span>
 				{:else}
 					{#each evaluatedCriteria as wearCriterion, i}
-						<WearCriterionEvaluation
+						<WearCriterionEvaluation	
 							bind:wearCriterion={evaluatedCriteria[i]}
 							onSelectionChanged={wearCriterionSelectionChanged} />
 					{/each}
@@ -144,17 +144,17 @@
 				{/if}
 				<div class="actions">
 					{#if canFinishEvaluation}
-						<Button variant="raised" onclick={onEvaluationFinished}>
+						<Button id="finish-evaluation-button" variant="raised" onclick={onEvaluationFinished}>
 							<Icon class="material-icons">done_all</Icon>
 							<span>Befundung abschließen</span>
 						</Button>
 					{:else if selectedComponent.finishedEvaluation}
-						<Button variant="raised" onclick={() => selectNext()}>
+						<Button id="next-evaluation-button" variant="raised" onclick={() => selectNext()}>
 							<Icon class="material-icons">arrow_forward</Icon>
 							<span>Nächste </span>
 						</Button>
 					{:else}
-						<Button onclick={skipComponent}>
+						<Button id="skip-evaluation-button" onclick={skipComponent}>
 							<Icon class="material-icons">skip_next</Icon>
 							<span>Überspringen </span>
 						</Button>
