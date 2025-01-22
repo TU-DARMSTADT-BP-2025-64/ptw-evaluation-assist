@@ -42,6 +42,7 @@
 	<div class="wear-thresholds">
 		{#each evaluatedThresholds as threshold, i}
 			<div
+				id="wear-threshold-{threshold.id}"
 				class={'wear-threshold mdc-elevation--z2' + (selectedThreshold?.id === threshold.id ? ' selected' : '')}
 				use:Ripple={{ surface: true }}
 				role="button"
