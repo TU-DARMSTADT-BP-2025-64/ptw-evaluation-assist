@@ -16,5 +16,3 @@ test('open product evaluation after click on row', async ({ page }) => {
 
     await expect(page.url()).toContain('/assistant/evaluate/1');
 });
-
-

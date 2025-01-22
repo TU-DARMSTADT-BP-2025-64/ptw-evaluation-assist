@@ -90,9 +90,9 @@
 		{/each}
 	</div>
 
-	<Button class="default-button pdf-button" onclick={() => generatePDF()}>
-		<i class="material-icons">picture_as_pdf</i>
-		<span>PDF Generieren</span>
+	<Button class="pdf-button" onclick={() => generatePDF()} id="pdf-creation">
+		<i class="material-icons">file_download</i>
+		<span>PDF Download</span>
 	</Button>
 </div>
 
