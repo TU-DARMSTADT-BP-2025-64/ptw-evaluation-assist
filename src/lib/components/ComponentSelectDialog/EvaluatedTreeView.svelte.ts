@@ -37,7 +37,6 @@ export class EvaluatedAssemblyGroupTreeViewModel extends AssemblyGroupTreeViewMo
 		| EvaluatedAssemblyComponentTreeViewModel
 	)[] = [];
 	public evaluate: boolean = $state(true);
-	selected: boolean = false;
 
 	constructor(
 		assemblyGroupTreeViewModel: AssemblyGroupTreeViewModel,

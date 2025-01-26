@@ -17,7 +17,7 @@
 
 	let selectableProductTreeView = $state(new EvaluatedProductTreeViewModel(productTreeView));
 	// svelte-ignore non_reactive_update
-		let selectAll=false;
+	let selectAll=$state(true);
 
 	console.log(selectableProductTreeView);
 
@@ -32,13 +32,14 @@
 	}
 	function toggleSelectAll(){
 		selectAll= !selectAll;
-		selectableProductTreeView.assemblyGroups.forEach(group=>{group.selected=selectAll;})
+		selectableProductTreeView.assemblyGroups.forEach(group=>{group.evaluate=selectAll;})
 	}
 </script>
 
 <Dialog bind:open scrimClickAction="" escapeKeyAction="">
 	<Title><span data-testid="dialog-title">Auswahl Befundung</span></Title>
 	<Content>
+		<Button onclick={() => toggleSelectAll()}>{selectAll ? 'Alle abwählen' : 'Alle auswählen'}</Button>
 		{#each selectableProductTreeView.assemblyGroups as group, i}
 			<AssemblyGroupSelect bind:assemblyGroup={selectableProductTreeView.assemblyGroups[i]} />
 		{/each}
@@ -46,8 +47,6 @@
 	<div class="actions">
 		<Button class="cancel-button" onclick={() => cancel()}>Abbrechen</Button>
 		<Button onclick={() => startEvaluation()}>Befundung starten</Button>
-		<Button onclick={() => toggleSelectAll()}>{selectAll ? 'Alle abwählen' : 'Alle auswählen'}</Button>
-
 	</div>
 </Dialog>
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { AssemblyGroupTreeViewModel } from '$lib/models/assembly-group.model';
 	import IconButton from '@smui/icon-button';
     import AssemblyGroupSelect from './AssemblyGroupSelect.svelte';
 	import { EvaluatedAssemblyGroupTreeViewModel } from './EvaluatedTreeView.svelte';
