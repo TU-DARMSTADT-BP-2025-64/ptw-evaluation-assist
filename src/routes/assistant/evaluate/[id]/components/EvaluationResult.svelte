@@ -44,7 +44,7 @@
 			component.getEvaluatedMeasures()
 		]);
 
-		// Draw table
+		// Draw result-table
 		let startY = 40;
 		doc.autoTable({
 			head: [headers],
