@@ -11,4 +11,7 @@ test('evaluation can be finished', async ({ page }) => {
 	await page.locator('#wear-threshold-1').first().click();
 
 	await expect(page.locator('#finish-evaluation-button')).toBeVisible();
+
+	// CHeck if  for download event
+	
 });

@@ -5,7 +5,7 @@ import { Repository } from './repository';
 import { ServerConstants } from './server-constants';
 import { initTestEnvironment } from './tests/init-test';
 
-console.log('test env', process.env.NODE_ENV);
+console.log('Environment: ', process.env.NODE_ENV);
 
 let initialized = false;
 export function init() {
