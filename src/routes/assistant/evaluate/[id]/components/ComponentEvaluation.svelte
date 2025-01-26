@@ -119,7 +119,7 @@
 
 <div class="component-evaluation">
 	{#if !!selectedComponent}
-		<div>
+		<div class="component">
 			<div class="component-name">
 				Verschleiß von Komponente: {selectedComponent.name}
 			</div>
@@ -146,7 +146,7 @@
 					{#if canFinishEvaluation}
 						<Button id="finish-evaluation-button" variant="raised" onclick={onEvaluationFinished}>
 							<Icon class="material-icons">done_all</Icon>
-							<span>Befundung abschlißen</span>
+							<span>Befundung abschließen</span>
 						</Button>
 					{:else if selectedComponent.finishedEvaluation}
 						<Button id="next-evaluation-button" variant="raised" onclick={() => selectNext()}>
@@ -175,9 +175,11 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+    overflow-y: auto;
+    max-height: 400px;
 	}
 
-	.component-name {
+  .component-name {
 		font-size: 1.3rem;
 		font-weight: bold;
 		margin-bottom: 2rem;
@@ -211,9 +213,11 @@
 		padding: 8px;
 		margin-left: 8px;
 		margin-right: 8px;
-		white-space: nowrap;
 		display: flex;
 		align-items: center;
+      flex-wrap: wrap;
+      white-space: normal;
+      word-break: break-word;
 
 	}
 
