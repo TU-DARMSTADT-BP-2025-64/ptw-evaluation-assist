@@ -39,7 +39,7 @@
 <Dialog bind:open scrimClickAction="" escapeKeyAction="">
 	<Title><span data-testid="dialog-title">Auswahl Befundung</span></Title>
 	<Content>
-		<Button onclick={() => toggleSelectAll()}>{selectAll ? 'Alle abwählen' : 'Alle auswählen'}</Button>
+		<Button id="component-master-toggle" onclick={() => toggleSelectAll()}>{selectAll ? 'Alle abwählen' : 'Alle auswählen'}</Button>
 		{#each selectableProductTreeView.assemblyGroups as group, i}
 			<AssemblyGroupSelect bind:assemblyGroup={selectableProductTreeView.assemblyGroups[i]} />
 		{/each}

@@ -36,3 +36,16 @@ test('PDF is being created and downloaded', async ({ page }) => {
 
 	await expect(page.locator('#pdf-creation')).toBeVisible();
 })
+
+
+test('Deselect All button is working', async ({ page }) => {
+	await page.goto('/assistant');
+	await page.waitForTimeout(1000);
+	await page.locator('#product-table-row-0').first().click();
+	await page.waitForTimeout(1000);
+
+	await page.locator('#component-master-toggle').first().click();
+
+	await expect(page.locator('.component-select-checkbox')).not.toBeChecked();
+});
+
