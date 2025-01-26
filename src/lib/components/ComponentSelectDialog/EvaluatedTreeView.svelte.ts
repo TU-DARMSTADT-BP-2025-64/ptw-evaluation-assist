@@ -65,6 +65,34 @@ export class EvaluatedAssemblyGroupTreeViewModel extends AssemblyGroupTreeViewMo
 			}
 		});
 	}
+
+	public checkForEvaluate() {
+		const allChildrenEvaluate = this.children.every((child) => {
+			if (child.type === 'assembly-group') {
+				return (child as EvaluatedAssemblyGroupTreeViewModel).evaluate;
+			} else {
+				return (child as EvaluatedAssemblyComponentTreeViewModel).evaluate;
+			}
+		});
+
+		this.evaluate = allChildrenEvaluate;
+
+	}
+
+	public setEvaluate(evaluate: boolean): void {
+		this.evaluate = evaluate;
+		this.children.forEach((child) => {
+			if (child.type === 'assembly-group') {
+				(child as EvaluatedAssemblyGroupTreeViewModel).setEvaluate(evaluate);
+			} else {
+				(child as EvaluatedAssemblyComponentTreeViewModel).evaluate = evaluate;
+			}
+		});
+
+		if (this.parent instanceof EvaluatedAssemblyGroupTreeViewModel) {
+			this.parent.checkForEvaluate();
+		}
+	}
 }
 
 export class EvaluatedAssemblyComponentTreeViewModel extends AssemblyComponentTreeViewModel {
@@ -87,6 +115,11 @@ export class EvaluatedAssemblyComponentTreeViewModel extends AssemblyComponentTr
 		this.wearCriteria = assemblyComponentTreeViewModel.wearCriteria.map((wearCriterion) => {
 			return new EvaluatedWearCriterionTreeViewModel(wearCriterion, this);
 		});
+	}
+
+	public setEvaluate(evaluate: boolean): void {
+		this.evaluate = evaluate;
+		this.evaluatedParent.checkForEvaluate();
 	}
 
 	public canBeEvaluated(): boolean {
@@ -161,9 +194,7 @@ export function getEvaluatedComponents(
 ): EvaluatedAssemblyComponentTreeViewModel[] {
 	const evaluatedComponents: EvaluatedAssemblyComponentTreeViewModel[] = [];
 	productTreeView.assemblyGroups.forEach((assemblyGroup) => {
-		if (assemblyGroup.evaluate) {
-			getEvaluatedComponentsFromAssemblyGroup(assemblyGroup, evaluatedComponents);
-		}
+		getEvaluatedComponentsFromAssemblyGroup(assemblyGroup, evaluatedComponents);
 	});
 	return evaluatedComponents;
 }

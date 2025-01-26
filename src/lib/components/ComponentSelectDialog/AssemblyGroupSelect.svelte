@@ -12,7 +12,7 @@
 
 <div>
 	<div class="assembly-group">
-		<input type="checkbox" bind:checked={assemblyGroup.evaluate} />
+		<input type="checkbox" checked={assemblyGroup.evaluate} onchange={(e) => assemblyGroup.setEvaluate((e.target! as any).checked as boolean)} />
 		<IconButton onclick={() => (expanded = !expanded)} class="material-icons">
 			{expanded ? 'expand_less' : 'expand_more'}
 		</IconButton>
@@ -28,7 +28,7 @@
                         <AssemblyGroupSelect bind:assemblyGroup={assemblyGroup.children[i] as EvaluatedAssemblyGroupTreeViewModel} />
                     {:else}
                         <div class="assembly-group">
-                            <input type="checkbox" bind:checked={assemblyGroup.children[i].evaluate} />
+                            <input type="checkbox" checked={assemblyGroup.children[i].evaluate} onchange={(e) => group.setEvaluate((e.target! as any).checked)} />
                             <div>
                                 {assemblyGroup.children[i].name}
                             </div>

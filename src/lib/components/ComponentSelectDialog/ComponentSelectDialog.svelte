@@ -32,7 +32,7 @@
 	}
 	function toggleSelectAll(){
 		selectAll= !selectAll;
-		selectableProductTreeView.assemblyGroups.forEach(group=>{group.evaluate=selectAll;})
+		selectableProductTreeView.assemblyGroups.forEach(group=>group.setEvaluate(selectAll));
 	}
 </script>
 
