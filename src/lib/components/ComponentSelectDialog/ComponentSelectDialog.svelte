@@ -46,7 +46,7 @@
 	</Content>
 	<div class="actions">
 		<Button class="cancel-button" onclick={() => cancel()}>Abbrechen</Button>
-		<Button onclick={() => startEvaluation()}>Befundung starten</Button>
+		<Button id="start-evaluation-button" onclick={() => startEvaluation()}>Befundung starten</Button>
 	</div>
 </Dialog>
 
