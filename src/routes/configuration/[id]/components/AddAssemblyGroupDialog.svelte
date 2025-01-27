@@ -3,7 +3,7 @@
 	import Dialog, { Title, Content, Actions } from '@smui/dialog';
 	import Button from '@smui/button';
 	import Textfield from '@smui/textfield';
-
+	let image: File|null=null;
 	let {
 		open = $bindable(),
 		onSave
@@ -29,6 +29,12 @@
         name = '';
 		open = false;
 	}
+	function handleFileUpload(event: Event){
+		const target = event.target as HTMLInputElement;
+		if(target.files&& target.files[0]){
+			image=target.files[0];
+		}
+	}
 </script>
 
 <Dialog bind:open>
@@ -39,9 +45,19 @@
 			invalid={invalidName}
 			style="width: 100%;"
 			bind:value={name}
-			onkeydown={(e) => e.key === 'Enter' && saveNewGroup()}
+			onkeydown={(e: { key: string; }) => e.key === 'Enter' && saveNewGroup()}
 			label="Name"
 		></Textfield>
+		<div style= "margin-top: 18px;">
+			<label for="file-upload" style="font-weight: bold;">Bild hinzufügen(optional):</label>
+		<input
+		id="file-upload"
+		type="file"
+		accept="image/*"
+		on:change={handleFileUpload}
+		style="margin-top: 8px, width:100%;"
+		/>
+		</div>
 	</Content>
 	<div class="actions">
 		<Button class="cancel-button" onclick={() => cancel()}>Abbrechen</Button>

@@ -9,7 +9,7 @@
   	import Button from '@smui/button';
   	import { Label } from '@smui/common';
 	import { page } from '$app/stores'; // Zugriff auf globale Daten
-	import PasswordChangeDialog from '$lib/PasswordChangeDialog.svelte';
+	import PasswordChangeDialog from '$lib/components/PasswordChangeDialog/PasswordChangeDialog.svelte';
 
 	let passwordChangeDialogOpen = $state(false);
 	let isLoggedIn = $state(false);
