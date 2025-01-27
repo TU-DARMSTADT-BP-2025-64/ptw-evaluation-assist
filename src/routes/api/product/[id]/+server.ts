@@ -42,11 +42,13 @@ export async function PUT({ params, request, url }: { params: { id: string }; re
         if (existingProduct) {
             repository.deleteProduct(params.id);
         }
-
-
         
         const productElements = (await request.json()) as ProductTreeViewElements;
 
+        // If we are updating an existing product, we do not want to update the creation date
+        if (!existingProduct) {
+            productElements.product.createdAt = new Date();
+        }
 
         const newProduct = repository.addProduct(productElements.product);
 
@@ -55,7 +57,8 @@ export async function PUT({ params, request, url }: { params: { id: string }; re
             groups: [],
             components: [],
             wearCriteria: [],
-            wearThresholds: []
+            wearThresholds: [],
+            strategies: []
         };
 
         for (const group of productElements.groups) {
@@ -72,6 +75,10 @@ export async function PUT({ params, request, url }: { params: { id: string }; re
 
         for (const threshold of productElements.wearThresholds) {
             resultElements.wearThresholds.push(repository.addWearThreshold(threshold));
+        }
+
+        for (const strategy of productElements.strategies) {
+            resultElements.strategies.push(repository.addThresholdStrategy(strategy));
         }
 
         return new Response(JSON.stringify(resultElements));
@@ -91,12 +98,14 @@ function getAllTreeViewElements(
 	const components = repository.getAssemblyComponents(product.id!);
 	const wearCriteria = repository.getWearCriteria(product.id!);
 	const wearThresholds = repository.getWearThresholds(product.id!);
+    const strategies = repository.getThresholdStrategies(product.id!);
 
 	return {
         product,
 		groups,
 		components,
 		wearCriteria,
-		wearThresholds
+		wearThresholds,
+        strategies
 	};
 }

@@ -9,6 +9,7 @@ export class WearThresholdDatabaseModel extends DatabaseModel {
 	public type: WearThresholdType = WearThresholdType.OpticalError;
 	public fixStrategy: string = '';
     public measures: string = '';
+    public image: Uint8Array | undefined;
 }
 
 export class WearThresholdViewModel {
@@ -19,6 +20,7 @@ export class WearThresholdViewModel {
     public type: WearThresholdType = WearThresholdType.OpticalError;
     public fixStrategy: string = '';
     public measures: string = '';
+    public image: Uint8Array | undefined;
 
     constructor(options: Partial<WearThresholdViewModel> = {}) {
         Object.assign(this, options);

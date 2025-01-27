@@ -24,11 +24,36 @@ export const load: PageLoad = async ({ params }) => {
 
 	// If the product does not exist we handle it as an add 
 	if (response.status === 404) {
+
+		const productTreeViewModel = new ProductTreeViewModel({
+			id: productId,
+		});
+
+
+		productTreeViewModel.fixStrategies.push({
+			id: uuidv4(),
+			name: 'Reuse',
+			priority: 0,
+			product: productTreeViewModel
+		});
+
+		productTreeViewModel.fixStrategies.push({
+			id: uuidv4(),
+			name: 'Remanufacture',
+			priority: 1,
+			product: productTreeViewModel
+		});
+
+		productTreeViewModel.fixStrategies.push({
+			id: uuidv4(),
+			name: 'Recycle',
+			priority: 2,
+			product: productTreeViewModel
+		});
+
 		return {
 			id: productId,
-			productTreeView: new ProductTreeViewModel({
-				id: productId
-			})
+			productTreeView: productTreeViewModel
 		}
 	}
 

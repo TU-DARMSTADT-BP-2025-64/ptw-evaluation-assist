@@ -3,14 +3,17 @@
 	import Textfield from '@smui/textfield';
 	import IconButton from '@smui/icon-button';
 	import AssemblyComponentDialog from './AssemblyComponentDialog.svelte';
+	import type { ThresholdStrategyTreeViewModel } from '$lib/models/threshold-strategy.model';
 
 	let {
 		assemblyComponent = $bindable(),
+		strategies,
 		level,
 		lastChild,
 		onDeleteAssemblyComponent
 	}: {
 		assemblyComponent: AssemblyComponentTreeViewModel;
+		strategies: ThresholdStrategyTreeViewModel[];
 		level: number;
 		lastChild: boolean;
 		onDeleteAssemblyComponent: () => void;
@@ -39,6 +42,7 @@
 {#if editDialogOpen}
 	<AssemblyComponentDialog
 		bind:open={editDialogOpen}
+		strategies={strategies}
 		assemblyComponent={assemblyComponent}
 		onSave={(component) => {
 			assemblyComponent = component;

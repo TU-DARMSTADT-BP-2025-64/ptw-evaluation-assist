@@ -1,11 +1,13 @@
 import { ProductDatabaseModel, ProductViewModel } from '$lib/models/product.model';
 import bcrypt from 'bcrypt';
+
 import { DatabaseClient } from '$lib/server/database-client';
 import dotenv from 'dotenv';
 import type { AssemblyGroupViewModel } from '$lib/models/assembly-group.model';
 import type { WearCriterionViewModel } from '$lib/models/wear-criterion.model';
 import type { WearThresholdViewModel } from '$lib/models/wear-threshold.model';
 import type { AssemblyComponentViewModel } from '$lib/models/assembly-component.model';
+import type { ThresholdStrategyViewModel } from '$lib/models/threshold-strategy.model';
 
 dotenv.config(); // Lädt die Umgebungsvariablen aus der .env-Datei
 // Stellen Sie sicher, dass DEV_ADMIN_PASSWORD in der .env-Datei gesetzt ist
@@ -34,31 +36,33 @@ export class Repository {
 		const database = this.databaseClient.getDatabase();
 		const products = database.prepare('SELECT * FROM products').all() as ProductDatabaseModel[];
 
-		return products as ProductViewModel[];
+		return products.map((product) => ProductViewModel.fromDatabaseModel(product)).filter((product) => product !== null) as ProductViewModel[];
 	}
 
-	public getProduct(id: string): ProductViewModel {
+	public getProduct(id: string): ProductViewModel | null {
 		console.log('getProduct', id);
 		const database = this.databaseClient.getDatabase();
 		const statement = database.prepare('SELECT * FROM products WHERE id = ?');
 		const product = statement.get(id) as ProductDatabaseModel;
-		return product as ProductViewModel;
+		return ProductViewModel.fromDatabaseModel(product);
 	}
 
 	public addProduct(product: ProductViewModel): ProductViewModel {
 		const database = this.databaseClient.getDatabase();
-		const statement = database.prepare('INSERT INTO products (id, name) VALUES (?, ?)');
-		statement.run(product.id, product.name);
+		const databaseModel = ProductViewModel.toDatabaseModel(product);
+
+		const statement = database.prepare('INSERT INTO products (id, name, createdAt) VALUES (?, ?, ?)');
+		statement.run(databaseModel.id, databaseModel.name, databaseModel.createdAt);
 		return product;
 	}
 
 	public updateProduct(product: ProductViewModel): ProductViewModel {
 		const database = this.databaseClient.getDatabase();
-		const statement = database.prepare('UPDATE products SET name = ? WHERE id = ?');
-		const databaseModel = new ProductDatabaseModel();
-		databaseModel.name = product.name;
 
-		statement.run(databaseModel.name, product.id);
+		const statement = database.prepare('UPDATE products SET name = ?, createdAt = ? WHERE id = ?');
+		const databaseModel = ProductViewModel.toDatabaseModel(product);
+		
+		statement.run(databaseModel.name, databaseModel.createdAt, databaseModel.id);
 		return product;
 	}
 
@@ -242,6 +246,36 @@ export class Repository {
 		return true;
 	}
 
+	public getThresholdStrategies(productId: string): ThresholdStrategyViewModel[] {
+		const database = this.databaseClient.getDatabase();
+		const statement = database.prepare('SELECT * FROM threshold_strategies WHERE productId = ?');
+		const thresholdStrategies = statement.all(productId);
+		return thresholdStrategies as ThresholdStrategyViewModel[];
+	}
+
+	public addThresholdStrategy(thresholdStrategy: ThresholdStrategyViewModel): ThresholdStrategyViewModel {
+
+		const database = this.databaseClient.getDatabase();
+		const statement = database.prepare(
+			'INSERT INTO threshold_strategies (id, productId, name, priority) VALUES (?, ?, ?, ?)'
+		);
+
+		statement.run(
+			thresholdStrategy.id,
+			thresholdStrategy.productId,
+			thresholdStrategy.name,
+			thresholdStrategy.priority
+		);
+
+		return thresholdStrategy;
+	}
+
+	public deleteThresholdStrategy(id: string): boolean {
+		const database = this.databaseClient.getDatabase();
+		const statement = database.prepare('DELETE FROM threshold_strategies WHERE id = ?');
+		statement.run(id);
+		return true;
+	}
 
 
 	public async userExists(username: string, password: string): Promise<boolean> {
@@ -264,7 +298,8 @@ export class Repository {
 		db.prepare(
 			`CREATE TABLE products (
 						id TEXT PRIMARY KEY, 
-						name TEXT NOT NULL
+						name TEXT NOT NULL,
+						createdAt INTEGER NOT NULL
 				)`
 		).run();
 		// Assembly group table
@@ -317,7 +352,17 @@ export class Repository {
 					)`
 		).run();
 
-
+		// Threshold strategy table
+		db.prepare(
+			`CREATE TABLE threshold_strategies (
+				id TEXT PRIMARY KEY,
+				productId TEXT NOT NULL,
+				name TEXT NOT NULL,
+				priority INTEGER NOT NULL,
+				FOREIGN KEY(productId) REFERENCES products(id) ON DELETE CASCADE
+			)`
+		).run();
+			
 		// Users table
 		db.prepare(
 			`CREATE TABLE users (

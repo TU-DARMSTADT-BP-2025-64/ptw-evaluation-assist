@@ -11,13 +11,17 @@
 	import WearCriterionForm from './WearCriterionForm.svelte';
 	import { WearCriterionTreeViewModel } from '$lib/models/wear-criterion.model';
 	import { WearThresholdTreeViewModel, WearThresholdType } from '$lib/models/wear-threshold.model';
+	import Autocomplete from '@smui-extra/autocomplete';
+	import { ThresholdStrategyTreeViewModel } from '$lib/models/threshold-strategy.model';
 
 	let {
 		open = $bindable(),
+		strategies,
 		onSave,
 		assemblyComponent = new AssemblyComponentTreeViewModel()
 	}: {
 		open: boolean;
+		strategies: ThresholdStrategyTreeViewModel[];
 		onSave: (group: AssemblyComponentTreeViewModel) => void;
 		assemblyComponent?: AssemblyComponentTreeViewModel;
 	} = $props();
@@ -61,6 +65,7 @@
 		}
 	});
 
+	console.log('AssemblyComponent', assemblyComponent);
 	let name = $state(assemblyComponent.name); // Für gleichen Dialog bzw fürs editieren
 	let machineElementCategory = $state(assemblyComponent.machineElementCategory);
 	let machineElement = $state(assemblyComponent.machineElement);
@@ -128,26 +133,16 @@
 			onkeydown={(e) => e.key === 'Enter' && saveNewComponent()}
 			label="Name"></Textfield>
 
-		<Select
-			style="margin-top: 18px"
-			bind:value={machineElementCategory}
-			label="Kategorie_Maschinenelement">
-			{#each predefinedCategories as category}
-				<Option value={category}>{category}</Option>
-			{/each}
-		</Select>
 
-		<Select style="margin-top: 18px" bind:value={machineElement} label="Maschinenelemente">
-			{#each category_elements as element}
-				<Option value={element}>{element}</Option>
-			{/each}
-		</Select>
+		<Autocomplete style="margin-top: 12px" combobox bind:value={machineElementCategory} options={predefinedCategories} label="Kategorie Maschinenelement"></Autocomplete>
+
+		<Autocomplete style="margin-top: 12px" combobox bind:value={machineElement} options={category_elements} label="Maschinenelement"></Autocomplete>
 
 		<div class="wear-criterion-title">Verschleißkriterien</div>
 
 		<div class="wear-criteria">
 			{#each wearCriteria as verschleißkrit, index}
-				<WearCriterionForm bind:wearCriterion={wearCriteria[index]} machineElement={machineElement} ondelete={() => removeWearCriterion(index)} />
+				<WearCriterionForm bind:wearCriterion={wearCriteria[index]} machineElement={machineElement} strategies={strategies} ondelete={() => removeWearCriterion(index)} />
 			{/each}
 		</div>
 

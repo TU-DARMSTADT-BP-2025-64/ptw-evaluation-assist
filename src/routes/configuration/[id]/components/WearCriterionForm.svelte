@@ -10,14 +10,17 @@
 	} from '$lib/models/assembly-component.model';
 	import type { WearCriterionTreeViewModel } from '$lib/models/wear-criterion.model';
 	import WearThresholdForm from './WearThresholdForm.svelte';
+	import type { ThresholdStrategyTreeViewModel } from '$lib/models/threshold-strategy.model';
 
 	let {
 		wearCriterion = $bindable(),
 		machineElement,
+		strategies,
 		ondelete
 	}: {
 		wearCriterion: WearCriterionTreeViewModel;
 		machineElement: string;
+		strategies: ThresholdStrategyTreeViewModel[];
 		ondelete: () => void;
 	} = $props();
 
@@ -129,7 +132,7 @@
 
 	<div class="thresholds">
 		{#each wearCriterion.wearThresholds as threshold, i}
-			<WearThresholdForm bind:wearThreshold={wearCriterion.wearThresholds[i]} />
+			<WearThresholdForm bind:wearThreshold={wearCriterion.wearThresholds[i]} strategies={strategies} />
 		{/each}
 
 	</div>

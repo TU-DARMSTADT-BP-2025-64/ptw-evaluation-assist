@@ -10,6 +10,7 @@
 	import AddAssemblyGroupDialog from './components/AddAssemblyGroupDialog.svelte';
 	import { goto } from '$app/navigation';
 	import { getElementsFromProductTreeView } from '$lib/util/ProductTreeViewUtil';
+	import ThresholdStrategyForm from './components/ThresholdStrategyForm.svelte';
 
 	HeaderService.Instance.setTitle('Konfiguration');
 
@@ -21,6 +22,8 @@
 	let product = $state(!id ? new ProductTreeViewModel() : productTreeView);
 
 	let addAssemblyGroupDialogOpen = $state(false);
+
+	let strategies = $state(productTreeView.fixStrategies.sort((a, b) => a.priority - b.priority) ?? []);
 
 	let assemblyGroups: AssemblyGroupTreeViewModel[] = $state(product.assemblyGroups);
 
@@ -37,6 +40,7 @@
 
 	function saveProduct() {
 		product.assemblyGroups = assemblyGroups;
+		product.fixStrategies = strategies;
 
 		const elements = getElementsFromProductTreeView(product);
 
@@ -75,7 +79,7 @@
 		<Textfield variant="filled" bind:value={product.name} label="Produktname"></Textfield>
 	</div>
 
-	<h2>Baugruppenstruktur</h2>
+	<h3>Baugruppenstruktur</h3>
 
 	<div class="assembly-group-structure">
 		<div class="children-groups-container">
@@ -84,6 +88,7 @@
 				{#each assemblyGroups as group, i}
 					<AssemblyGroupForm
 						bind:assemblyGroup={assemblyGroups[i]}
+						strategies={strategies}
 						level={1}
 						lastChild={i === assemblyGroups.length - 1}
 						onDeleteAssemblyGroup={() => removeAssemblyGroup(i)} />
@@ -98,6 +103,9 @@
 	<AddAssemblyGroupDialog
 		bind:open={addAssemblyGroupDialogOpen}
 		onSave={(group) => addAssemblyGroup(group)} />
+
+	<h3 style="margin-top: 32px">Fix Strategien</h3>
+	<ThresholdStrategyForm bind:strategies={strategies} product={productTreeView}/>
 </section>
 
 <style>
@@ -128,8 +136,7 @@
 	}
 
 	.assembly-group-structure {
-		overflow: auto;
-		height: 100%;
+		overflow: hidden;
 	}
 
 	.children-groups-container {

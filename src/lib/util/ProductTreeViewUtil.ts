@@ -8,6 +8,10 @@ import {
 } from '$lib/models/assembly-group.model';
 import { ProductTreeViewModel, ProductViewModel } from '$lib/models/product.model';
 import {
+	ThresholdStrategyTreeViewModel,
+	ThresholdStrategyViewModel
+} from '$lib/models/threshold-strategy.model';
+import {
 	WearCriterionTreeViewModel,
 	WearCriterionViewModel
 } from '$lib/models/wear-criterion.model';
@@ -22,12 +26,23 @@ export type ProductTreeViewElements = {
 	components: AssemblyComponentViewModel[];
 	wearCriteria: WearCriterionViewModel[];
 	wearThresholds: WearThresholdViewModel[];
+	strategies: ThresholdStrategyViewModel[];
 };
 
 export function createProductTreeView(elements: ProductTreeViewElements): ProductTreeViewModel {
 	const treeView = new ProductTreeViewModel();
 	treeView.id = elements.product.id;
 	treeView.name = elements.product.name;
+
+	treeView.fixStrategies = elements.strategies.map(
+		(strategy) =>
+			new ThresholdStrategyTreeViewModel({
+				id: strategy.id,
+				name: strategy.name,
+				priority: strategy.priority,
+				product: treeView
+			})
+	);
 
 	const assemblyGroups = elements.groups.filter((group) => !group.parentId);
 
@@ -73,7 +88,8 @@ export function getElementsFromProductTreeView(
 		groups: [],
 		components: [],
 		wearCriteria: [],
-		wearThresholds: []
+		wearThresholds: [],
+		strategies: getStrategiesFromProductTreeView(treeView)
 	};
 
 	for (const assemblyGroup of treeView.assemblyGroups) {
@@ -122,6 +138,8 @@ function buildAssemblyComponentTreeView(
 	const treeView = new AssemblyComponentTreeViewModel();
 	treeView.id = assemblyComponent.id;
 	treeView.name = assemblyComponent.name;
+	treeView.machineElementCategory = assemblyComponent.machineElementCategory;
+	treeView.machineElement = assemblyComponent.machineElement;
 	treeView.parent = parent;
 
 	const wearCriteria = elements.wearCriteria.filter(
@@ -251,4 +269,18 @@ function getElementsFromWearThresholdTreeView(
 	});
 
 	elements.wearThresholds.push(wearThreshold);
+}
+
+function getStrategiesFromProductTreeView(
+	productTreeView: ProductTreeViewModel
+): ThresholdStrategyViewModel[] {
+	return productTreeView.fixStrategies.map(
+		(strategy) =>
+			new ThresholdStrategyViewModel({
+				id: strategy.id,
+				name: strategy.name,
+				priority: strategy.priority,
+				productId: productTreeView.id
+			})
+	);
 }

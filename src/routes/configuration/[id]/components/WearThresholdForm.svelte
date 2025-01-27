@@ -3,10 +3,9 @@
     import Select, { Option } from '@smui/select';
 	import { WearThresholdFixStrategy, WearThresholdFixStrategyTranslation, WearThresholdTypeTranslation, type WearThresholdTreeViewModel } from '$lib/models/wear-threshold.model';
 	import { Strategies } from '$lib/models/assembly-component.model';
+	import { ThresholdStrategyTreeViewModel } from '$lib/models/threshold-strategy.model';
 
-    let {wearThreshold = $bindable()}: {wearThreshold: WearThresholdTreeViewModel} = $props();
-
-    const strategies = Object.keys(WearThresholdFixStrategy);
+    let {wearThreshold = $bindable(), strategies}: {wearThreshold: WearThresholdTreeViewModel, strategies: ThresholdStrategyTreeViewModel[]} = $props();
 
     function getStrategyTranslation(strategy: string): string {
         return WearThresholdFixStrategyTranslation[strategy];
@@ -21,7 +20,7 @@
     <div class="threshold-strategy">
         <Select style="margin-top: 18px" bind:value={wearThreshold.fixStrategy} label="Strategie">
             {#each strategies as strat}
-                <Option value={strat}>{getStrategyTranslation(strat)}</Option>
+                <Option value={strat.id}>{strat.name}</Option>
             {/each}
         </Select>
     </div>
