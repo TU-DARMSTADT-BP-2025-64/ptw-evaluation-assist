@@ -43,6 +43,28 @@ export function createProductTreeView(elements: ProductTreeViewElements): Produc
 	return treeView;
 }
 
+export function getComponents(
+	node: ProductTreeViewModel | AssemblyGroupTreeViewModel
+): AssemblyComponentTreeViewModel[] {
+	const components: AssemblyComponentTreeViewModel[] = [];
+	if (node instanceof ProductTreeViewModel) {
+		for (const assemblyGroup of node.assemblyGroups) {
+			components.push(...getComponents(assemblyGroup));
+		}
+		return components;
+	} else {
+		for (const child of node.children) {
+			if (child.type === 'assembly-component') {
+				components.push(child as AssemblyComponentTreeViewModel);
+			} else {
+				components.push(...getComponents(child as AssemblyGroupTreeViewModel));
+			}
+		}
+
+		return components;
+	}
+}
+
 export function getElementsFromProductTreeView(
 	treeView: ProductTreeViewModel
 ): ProductTreeViewElements {
@@ -159,7 +181,8 @@ function getElementsFromAssemblyGroupTreeView(
 		id: treeView.id,
 		name: treeView.name,
 		productId: elements.product.id,
-        parentId: treeView.parent instanceof AssemblyGroupTreeViewModel ? treeView.parent?.id : undefined
+		parentId:
+			treeView.parent instanceof AssemblyGroupTreeViewModel ? treeView.parent?.id : undefined
 	});
 
 	elements.groups.push(group);
@@ -181,9 +204,9 @@ function getElementsFromAssemblyComponentTreeView(
 		id: treeView.id,
 		name: treeView.name,
 		assemblyGroupId: treeView.parent!.id,
-        productId: elements.product.id,
-        machineElementCategory: treeView.machineElementCategory,
-        machineElement: treeView.machineElement
+		productId: elements.product.id,
+		machineElementCategory: treeView.machineElementCategory,
+		machineElement: treeView.machineElement
 	});
 
 	elements.components.push(component);
@@ -194,38 +217,38 @@ function getElementsFromAssemblyComponentTreeView(
 }
 
 function getElementsFromWearCriterionTreeView(
-    elements: ProductTreeViewElements,
-    treeView: WearCriterionTreeViewModel
+	elements: ProductTreeViewElements,
+	treeView: WearCriterionTreeViewModel
 ) {
-    const wearCriterion = new WearCriterionViewModel({
-        id: treeView.id,
-        productId: elements.product.id,
-        componentId: treeView.component!.id,
-        label: treeView.label
-    });
+	const wearCriterion = new WearCriterionViewModel({
+		id: treeView.id,
+		productId: elements.product.id,
+		componentId: treeView.component!.id,
+		label: treeView.label
+	});
 
 	console.log('Store WearCriterion', wearCriterion);
 
-    elements.wearCriteria.push(wearCriterion);
+	elements.wearCriteria.push(wearCriterion);
 
-    for (const child of treeView.wearThresholds) {
-        getElementsFromWearThresholdTreeView(elements, child);
-    }
+	for (const child of treeView.wearThresholds) {
+		getElementsFromWearThresholdTreeView(elements, child);
+	}
 }
 
 function getElementsFromWearThresholdTreeView(
-    elements: ProductTreeViewElements,
-    treeView: WearThresholdTreeViewModel
+	elements: ProductTreeViewElements,
+	treeView: WearThresholdTreeViewModel
 ) {
-    const wearThreshold = new WearThresholdViewModel({
-        id: treeView.id,
-        productId: elements.product.id,
-        criterionId: treeView.criterion!.id,
-        label: treeView.label,
-        type: treeView.type,
-        fixStrategy: treeView.fixStrategy,
-        measures: treeView.measures
-    });
+	const wearThreshold = new WearThresholdViewModel({
+		id: treeView.id,
+		productId: elements.product.id,
+		criterionId: treeView.criterion!.id,
+		label: treeView.label,
+		type: treeView.type,
+		fixStrategy: treeView.fixStrategy,
+		measures: treeView.measures
+	});
 
-    elements.wearThresholds.push(wearThreshold);
+	elements.wearThresholds.push(wearThreshold);
 }

@@ -6,7 +6,7 @@
 	import { afterNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores'; // Zugriff auf globale Daten
-	import PasswordChangeDialog from '$lib/PasswordChangeDialog.svelte';
+	import PasswordChangeDialog from '$lib/components/PasswordChangeDialog/PasswordChangeDialog.svelte';
 
 	let passwordChangeDialogOpen = $state(false);
 	let isLoggedIn = $state(false);
@@ -211,9 +211,6 @@
 		padding: 8px 12px;
 		font-size: 1rem;
 		cursor: pointer;
-	}
-	.password-change-button {
-		margin-top: 16px;
 	}
 
 	.password-change-button button {

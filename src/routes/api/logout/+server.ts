@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit';
 
-export async function POST({ cookies }) {
+export async function POST({ cookies }: RequestEvent) {
 	const token = cookies.get('session');
 
 	if (!token) {

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { AssemblyGroupTreeViewModel } from '$lib/models/assembly-group.model';
 	import IconButton from '@smui/icon-button';
     import AssemblyGroupSelect from './AssemblyGroupSelect.svelte';
 	import { EvaluatedAssemblyGroupTreeViewModel } from './EvaluatedTreeView.svelte';
@@ -13,7 +12,7 @@
 
 <div>
 	<div class="assembly-group">
-		<input type="checkbox" bind:checked={assemblyGroup.evaluate} />
+		<input type="checkbox" class="component-select-checkbox" checked={assemblyGroup.evaluate} onchange={(e) => assemblyGroup.setEvaluate((e.target! as any).checked as boolean)} />
 		<IconButton onclick={() => (expanded = !expanded)} class="material-icons">
 			{expanded ? 'expand_less' : 'expand_more'}
 		</IconButton>
@@ -29,7 +28,7 @@
                         <AssemblyGroupSelect bind:assemblyGroup={assemblyGroup.children[i] as EvaluatedAssemblyGroupTreeViewModel} />
                     {:else}
                         <div class="assembly-group">
-                            <input type="checkbox" bind:checked={assemblyGroup.children[i].evaluate} />
+                            <input type="checkbox" class="component-select-checkbox"  checked={assemblyGroup.children[i].evaluate} onchange={(e) => group.setEvaluate((e.target! as any).checked)} />
                             <div>
                                 {assemblyGroup.children[i].name}
                             </div>

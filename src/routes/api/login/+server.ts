@@ -2,10 +2,11 @@ import { json } from '@sveltejs/kit';
 import { Repository } from '$lib/server/repository';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import type { RequestEvent } from '@sveltejs/kit';
 
 dotenv.config();
 
-export async function POST({ request, cookies }) {
+export async function POST({ request, cookies }: RequestEvent) {
 	const { username, password } = await request.json();
 
 	const userExists = await Repository.Instance.userExists(username, password);
