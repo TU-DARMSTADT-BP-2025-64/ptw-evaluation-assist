@@ -5,6 +5,9 @@
 	import { HeaderService } from './HeaderService.svelte';
 	import { afterNavigate } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import SegmentedButton, { Segment } from '@smui/segmented-button';
+  	import Button from '@smui/button';
+  	import { Label } from '@smui/common';
 	import { page } from '$app/stores'; // Zugriff auf globale Daten
 	import PasswordChangeDialog from '$lib/PasswordChangeDialog.svelte';
 
@@ -14,6 +17,8 @@
 	let isDarkMode = $state(false);
 	let fontSize = $state('medium');
 	let showSettings = $state(false);
+
+	let fontSizeChoices = ['small', 'medium', 'large'];
 
 	// Aktualisiere `isLoggedIn`, wenn `page.data.isLoggedIn` sich ändert
 	$effect(() => {
@@ -31,7 +36,7 @@
 		if (isDarkMode) {
 			lightStylesheet.media = 'not all';
 			darkStylesheet.media = 'all';
-			
+
 			localStorage.setItem('theme', 'dark');
 		} else {
 			lightStylesheet.media = 'all';
@@ -83,7 +88,7 @@
 	async function logout() {
 		try {
 			const response = await fetch('/api/logout', {
-				method: 'POST',
+				method: 'POST'
 			});
 			if (response.ok) {
 				window.location.href = '/'; // Weiterleitung zur Startseite
@@ -120,19 +125,31 @@
 	</div>
 </header>
 {#if showSettings}
-	<div class="settings-menu {fontSize}">
+	<div
+		class="settings-menu-background"
+		role="button"
+		onkeypress={() => {}}
+		tabindex="0"
+		onclick={() => toggleSettings()}>
+	</div>
+	<div class="settings-menu mdc-elevation--z4">
 		<h2>Einstellungen</h2>
-		<p>Schriftgröße:</p>
+		<p style="margin-bottom: -2px" class="settings-section">Schriftgröße</p>
 
-		<div class="font-size-buttons">
-			<button onclick={() => changeFontSize('small')}>Klein</button>
-			<button onclick={() => changeFontSize('medium')}>Mittel</button>
-			<button onclick={() => changeFontSize('large')}>Groß</button>
-		</div>
+		<SegmentedButton segments={fontSizeChoices} singleSelect bind:selected={fontSize}>
+			{#snippet segment(segment)}
+			  <!-- Note: the `segment` property is required! -->
+			  <Segment {segment}>
+				<Label>{segment}</Label>
+			  </Segment>
+			{/snippet}
+		  </SegmentedButton>
+
+		
 
 		<!-- Passwort ändern -->
-		<p>Passwort:</p>
-		<button id='PasswordChange' onclick={() => openPasswordChangeDialog()}>Passwort ändern</button>
+		<p class="settings-section">Benutzer</p>
+		<Button variant="raised" id="PasswordChange" onclick={() => openPasswordChangeDialog()}>Passwort ändern</Button>
 	</div>
 {/if}
 
@@ -192,41 +209,34 @@
 		align-items: center;
 	}
 	/*Schriftgrößenkontrollen*/
+
+	.settings-menu-background {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 2;
+	}
 	.settings-menu {
 		position: absolute;
 		display: block;
 		top: 50px;
 		right: 20px;
-		background: white;
+		background: var(--mdc-theme-surface);
 		padding: 16px;
-		border: 2px solid red;
 		border-radius: 8px;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		z-index: 10;
+		z-index: 3;
 	}
 
-	/* Schriftgrößenklassen */
-	.font-size-buttons button {
-		margin-right: 8px;
-		padding: 8px 12px;
-		font-size: 1rem;
-		cursor: pointer;
+	.settings-menu h2 {
+		margin: 0;
 	}
-	.password-change-button {
+
+	.settings-section {
+		font-weight: bold;
 		margin-top: 16px;
+		margin-bottom: 12px;
 	}
 
-	.password-change-button button {
-		padding: 8px 12px;
-		font-size: 1rem;
-		cursor: pointer;
-		background-color: #007bff;
-		color: white;
-		border: none;
-		border-radius: 4px;
-	}
-
-	.password-change-button button:hover {
-		opacity: 0.9;
-	}
 </style>
