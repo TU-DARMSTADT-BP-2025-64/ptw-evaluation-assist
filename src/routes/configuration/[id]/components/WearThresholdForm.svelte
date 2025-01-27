@@ -20,7 +20,7 @@
     <div class="threshold-strategy">
         <Select style="margin-top: 18px" bind:value={wearThreshold.fixStrategy} label="Strategie">
             {#each strategies as strat}
-                <Option value={strat.id}>{strat.name}</Option>
+                <Option value={strat.name}>{strat.name}</Option>
             {/each}
         </Select>
     </div>
