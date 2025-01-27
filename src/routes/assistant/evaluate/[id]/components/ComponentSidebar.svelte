@@ -13,6 +13,7 @@
 
 <div class="sidebar">
 	<div class="title">Komponenten</div>
+	<div class="components-container">
 	{#each components as component, i}
 		<div
 			class={"component" + (selectedComponent === component ? ' selected' : '')}
@@ -32,6 +33,7 @@
 			
 		</div>
 	{/each}
+	</div>
 </div>
 
 <style>
@@ -43,6 +45,12 @@
 	.title {
 		font-size: 1.2rem;
 		font-weight: bold;
+	}
+
+
+	.components-container{
+      max-height: 400px;
+      overflow-y: auto;
 	}
 
 	.component {

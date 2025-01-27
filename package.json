@@ -13,7 +13,7 @@
 		"format": "prettier --write .",
 		"test:unit": "vitest --disable-console-intercept ",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
-		"test:e2e": "playwright test",
+		"test:e2e": "playwright test --headed",
 		"prepare-smui": "npm run smui-theme-light && npm run smui-theme-dark",
 		"smui-theme-light": "smui-theme compile static/theme/smui.css -i static/theme",
 		"smui-theme-dark": "smui-theme compile static/theme/smui-dark.css -i static/theme/dark"
@@ -23,7 +23,10 @@
 		"better-sqlite3": "^11.6.0",
 		"dotenv": "^16.4.7",
 		"jsonwebtoken": "^9.0.2",
-		"uuid": "^11.0.4"
+		"jspdf": "^2.5.2",
+		"jspdf-autotable": "^3.8.4",
+		"uuid": "^11.0.4",
+		"xlsx": "^0.18.5"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^5.0.0",

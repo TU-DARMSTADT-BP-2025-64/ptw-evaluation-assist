@@ -125,7 +125,7 @@
 			invalid={invalidName}
 			style="width: 100%;"
 			bind:value={name}
-			onkeydown={(e) => e.key === 'Enter' && saveNewComponent()}
+			onkeydown={(e: { key: string; }) => e.key === 'Enter' && saveNewComponent()}
 			label="Name"></Textfield>
 
 		<Select
