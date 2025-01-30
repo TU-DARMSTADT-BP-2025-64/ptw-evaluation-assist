@@ -2,9 +2,7 @@ import { AssemblyComponentTreeViewModel } from '$lib/models/assembly-component.m
 import { AssemblyGroupTreeViewModel } from '$lib/models/assembly-group.model';
 import { ProductTreeViewModel } from '$lib/models/product.model';
 import { WearCriterionTreeViewModel } from '$lib/models/wear-criterion.model';
-import {
-	WearThresholdFixStrategy,
-	WearThresholdTreeViewModel
+import {WearThresholdTreeViewModel
 } from '$lib/models/wear-threshold.model';
 
 export class EvaluatedProductTreeViewModel extends ProductTreeViewModel {
@@ -101,7 +99,7 @@ export class EvaluatedAssemblyComponentTreeViewModel extends AssemblyComponentTr
 	public evaluatedParent: EvaluatedAssemblyGroupTreeViewModel;
 	public evaluate: boolean = $state(true);
 	public finishedEvaluation: boolean = $state(false);
-	public evaluatedFixStrategy: WearThresholdFixStrategy | null = $state(null);
+	public evaluatedFixStrategy: string | null = $state(null);
 	public skippedEvaluation: boolean = $state(false);
 
 	constructor(

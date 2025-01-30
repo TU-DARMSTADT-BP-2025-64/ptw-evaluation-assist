@@ -38,47 +38,47 @@
 	});
 
 	function checkFinishedEvaluation(): void {
+
+		console.log('checkFinishedEvaluation');
 		if (!selectedComponent) {
 			return;
 		}
 
-		const noWearCriteria = selectedComponent.wearCriteria.length === 0;
-		const onlyNonEvaluable = selectedComponent.wearCriteria.every((wearCriterion) => {
-			return !wearCriterion.canBeEvaluated();
-		});
+		const fixStrategyPriority = selectedComponent.evaluatedProduct.fixStrategies
+				.sort((a, b) => a.priority - b.priority)
+				.map((fixStrategy) => fixStrategy.name);
 
-		const allSelected = selectedComponent!.wearCriteria.every((wearCriterion) => {
+		const noWearCriteria = selectedComponent.wearCriteria.length === 0;
+		const noEvaluableCriteria = evaluatedCriteria.length === 0;
+
+		const allSelected = evaluatedCriteria.every((wearCriterion) => {
 			return wearCriterion.selectedThreshold !== null;
 		});
 
-		const anySelectedRecycled = selectedComponent!.wearCriteria.some((wearCriterion) => {
-			return wearCriterion.selectedThreshold?.fixStrategy === WearThresholdFixStrategy.Recycle;
+		const anyMaxPrioritySelected = selectedComponent!.wearCriteria.some((wearCriterion) => {
+			return wearCriterion.selectedThreshold?.fixStrategy === fixStrategyPriority[fixStrategyPriority.length - 1];
 		});
 
 		selectedComponent.finishedEvaluation =
-			noWearCriteria || onlyNonEvaluable || allSelected || anySelectedRecycled;
+			noWearCriteria || noEvaluableCriteria || allSelected || anyMaxPrioritySelected;
 
 		if (selectedComponent.finishedEvaluation) {
-			const fixStrategyPriority = [
-				WearThresholdFixStrategy.Recycle,
-				WearThresholdFixStrategy.Repair,
-				WearThresholdFixStrategy.Reuse
-			];
+			console.log('fixStrategyPriority', fixStrategyPriority);
 
 			const selectedThresholds = selectedComponent.wearCriteria
 				.map((wearCriterion) => wearCriterion.selectedThreshold)
 				.filter((threshold) => threshold !== null) as EvaluatedWearThresholdTreeViewModel[];
 
 			console.log('selectedThresholds', selectedThresholds);
-			const fixStrategy = Math.min(
-				...selectedThresholds.map((threshold) =>
-					fixStrategyPriority.indexOf(threshold.fixStrategy as WearThresholdFixStrategy)
-				).filter((index) => index !== -1)
+			const fixStrategyIndex = Math.max(
+				...selectedThresholds
+					.map((threshold) => fixStrategyPriority.indexOf(threshold.fixStrategy))
+					.filter((index) => index !== -1)
 			);
 
-			console.log('fix strategy', fixStrategy);
+			console.log('fix strategy', fixStrategyIndex);
 
-			selectedComponent.evaluatedFixStrategy = fixStrategyPriority[fixStrategy];
+			selectedComponent.evaluatedFixStrategy = fixStrategyPriority[fixStrategyIndex];
 
 			selectedComponent.evaluatedProduct.checkIfCanFinishEvaluation();
 
@@ -105,15 +105,9 @@
 			return '';
 		}
 
-		const fixStrategyText = {
-			[WearThresholdFixStrategy.Recycle]: 'Komponente recyceln',
-			[WearThresholdFixStrategy.Repair]: 'Komponente reparieren',
-			[WearThresholdFixStrategy.Reuse]: 'Komponente wiederverwenden'
-		};
-
 		const measures = selectedComponent.getEvaluatedMeasures();
-		
-		return fixStrategyText[selectedComponent.evaluatedFixStrategy] + (measures.length > 0 ? `: ${measures}` : '');
+
+		return selectedComponent.evaluatedFixStrategy + (measures.length > 0 ? `: ${measures}` : '');
 	}
 </script>
 
@@ -129,7 +123,7 @@
 						>Keine Verschleißkriterien für diese Komponente gefunden!</span>
 				{:else}
 					{#each evaluatedCriteria as wearCriterion, i}
-						<WearCriterionEvaluation	
+						<WearCriterionEvaluation
 							bind:wearCriterion={evaluatedCriteria[i]}
 							onSelectionChanged={wearCriterionSelectionChanged} />
 					{/each}
@@ -175,11 +169,11 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-    overflow-y: auto;
-    max-height: 400px;
+		overflow-y: auto;
+		height: 100%;
 	}
 
-  .component-name {
+	.component-name {
 		font-size: 1.3rem;
 		font-weight: bold;
 		margin-bottom: 2rem;
@@ -202,7 +196,7 @@
 		width: 100%;
 		display: flex;
 		justify-content: flex-end;
-		gap: 8px;		
+		gap: 8px;
 	}
 
 	.evaluation-result {
@@ -215,10 +209,9 @@
 		margin-right: 8px;
 		display: flex;
 		align-items: center;
-      flex-wrap: wrap;
-      white-space: normal;
-      word-break: break-word;
-
+		flex-wrap: wrap;
+		white-space: normal;
+		word-break: break-word;
 	}
 
 	.no-wear-criteria-found-msg {

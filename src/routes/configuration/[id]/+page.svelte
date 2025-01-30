@@ -75,37 +75,40 @@
 		</Button>
 	</div>
 
-	<div class="name-field">
-		<Textfield variant="filled" bind:value={product.name} label="Produktname"></Textfield>
-	</div>
-
-	<h3>Baugruppenstruktur</h3>
-
-	<div class="assembly-group-structure">
-		<div class="children-groups-container">
-			<div class="vertical-border">&nbsp;</div>
-			<div class="children-groups">
-				{#each assemblyGroups as group, i}
-					<AssemblyGroupForm
-						bind:assemblyGroup={assemblyGroups[i]}
-						strategies={strategies}
-						level={1}
-						lastChild={i === assemblyGroups.length - 1}
-						onDeleteAssemblyGroup={() => removeAssemblyGroup(i)} />
-				{/each}
-			</div>
+	<div style="flex: 1; overflow: auto;">
+		<div class="name-field">
+			<Textfield variant="filled" bind:value={product.name} label="Produktname"></Textfield>
 		</div>
-		<AssemblyGroupStructureAddButton
-			onAddAssemblyGroup={() => (addAssemblyGroupDialogOpen = true)}
-			showAddAssemblyComponent={false} />
+	
+		<h3>Baugruppenstruktur</h3>
+	
+		<div class="assembly-group-structure">
+			<div class="children-groups-container">
+				<div class="vertical-border">&nbsp;</div>
+				<div class="children-groups">
+					{#each assemblyGroups as group, i}
+						<AssemblyGroupForm
+							bind:assemblyGroup={assemblyGroups[i]}
+							strategies={strategies}
+							level={1}
+							lastChild={i === assemblyGroups.length - 1}
+							onDeleteAssemblyGroup={() => removeAssemblyGroup(i)} />
+					{/each}
+				</div>
+			</div>
+			<AssemblyGroupStructureAddButton
+				onAddAssemblyGroup={() => (addAssemblyGroupDialogOpen = true)}
+				showAddAssemblyComponent={false} />
+		</div>
+	
+		<AddAssemblyGroupDialog
+			bind:open={addAssemblyGroupDialogOpen}
+			onSave={(group) => addAssemblyGroup(group)} />
+	
+		<h3 style="margin-top: 32px">Fix Strategien</h3>
+		<ThresholdStrategyForm bind:strategies={strategies} product={productTreeView}/>
 	</div>
-
-	<AddAssemblyGroupDialog
-		bind:open={addAssemblyGroupDialogOpen}
-		onSave={(group) => addAssemblyGroup(group)} />
-
-	<h3 style="margin-top: 32px">Fix Strategien</h3>
-	<ThresholdStrategyForm bind:strategies={strategies} product={productTreeView}/>
+	
 </section>
 
 <style>
