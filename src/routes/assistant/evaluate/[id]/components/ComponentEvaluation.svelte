@@ -137,7 +137,7 @@
 			</div>
 
 			<div class="evaluation-footer">
-				{#if selectedComponent.finishedEvaluation}
+				{#if selectedComponent.finishedEvaluation && selectedComponent.evaluatedFixStrategy}
 					<div class="evaluation-result">
 						{getEvaluationResultText()}
 					</div>
