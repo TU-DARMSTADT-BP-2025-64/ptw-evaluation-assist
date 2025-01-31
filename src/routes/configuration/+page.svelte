@@ -5,9 +5,7 @@
 	import { goto } from '$app/navigation';
 	import ProductTable from '$lib/components/ProductTable/ProductTable.svelte';
 	import type { ProductViewModel } from '$lib/models/product.model';
-	import { onMount } from 'svelte';
-	import ProductImportDialog from '$lib/components/ProductImportDialog/ProductImportDialog.svelte';
-	import { ProductImporter } from '$lib/components/ProductImportDialog/ProductImporter';
+	import { ProductImporter } from './ProductImporter';
 	import { getElementsFromProductTreeView } from '$lib/util/ProductTreeViewUtil';
 
 	HeaderService.Instance.setTitle('Konfiguration');
@@ -59,7 +57,7 @@
 				body: JSON.stringify(elements)
 			});
 
-			products = [...products, {id: importedProduct.id, name: importedProduct.name}];
+			products = [...products, {id: importedProduct.id, name: importedProduct.name, createdAt: importedProduct.createdAt}];
 		};
 
 		reader.readAsArrayBuffer(file);
