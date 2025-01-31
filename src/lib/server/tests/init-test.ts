@@ -13,9 +13,11 @@ export function initTestEnvironment() {
 }
 
 function initTestProduct(id: string) {
+
 	Repository.Instance.addProduct({
 		id: id,
-		name: 'Test Product'
+		name: 'Test Product',
+		createdAt: Date.now(),
 	});
 
 	Repository.Instance.addAssemblyGroup({
@@ -55,6 +57,28 @@ function initTestProduct(id: string) {
 		fixStrategy: WearThresholdFixStrategy.Reuse,
 		label: 'Test Wear Threshold',
 		measures: 'Test Measures',
-		type: WearThresholdType.OpticalError
+		type: WearThresholdType.OpticalError,
+		image: undefined
+	});
+
+	Repository.Instance.addThresholdStrategy({
+		id: id,
+		name: 'Reuse',
+		priority: 1,
+		productId: id
+	});
+
+	Repository.Instance.addThresholdStrategy({
+		id: id + '1',
+		name: 'Repair',
+		priority: 2,
+		productId: id
+	});
+
+	Repository.Instance.addThresholdStrategy({
+		id: id + '2',
+		name: 'Recycle',
+		priority: 3,
+		productId: id
 	});
 }

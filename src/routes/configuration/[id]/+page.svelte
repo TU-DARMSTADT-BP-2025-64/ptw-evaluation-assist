@@ -41,6 +41,7 @@
 	function saveProduct() {
 		product.assemblyGroups = assemblyGroups;
 		product.fixStrategies = strategies;
+		product.createdAt = product.createdAt ?? new Date();
 
 		const elements = getElementsFromProductTreeView(product);
 
