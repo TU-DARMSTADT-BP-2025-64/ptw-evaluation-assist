@@ -47,7 +47,7 @@ export async function PUT({ params, request, url }: { params: { id: string }; re
 
         // If we are updating an existing product, we do not want to update the creation date
         if (!existingProduct) {
-            productElements.product.createdAt = new Date();
+            productElements.product.createdAt = Date.now();
         }
 
         const newProduct = repository.addProduct(productElements.product);

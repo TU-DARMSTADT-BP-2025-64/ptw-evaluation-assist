@@ -12,6 +12,7 @@ export async function POST({request}: {request: Request}) {
 
 export async function GET() {
     const repository = Repository.Instance;
-    const result = repository.getProducts();
+    console.log('GetProducts');
+    const result = repository.getProducts().sort((a, b) => a.createdAt - b.createdAt);
     return new Response(JSON.stringify(result));
 }

@@ -17,7 +17,7 @@ export class ProductViewModel {
     id: string = uuidv4();
     name: string = '';
 
-    createdAt: Date | undefined;
+    createdAt: number = Date.now();
 
     constructor(options: Partial<ProductViewModel> = {}) {
         Object.assign(this, options);
@@ -31,7 +31,7 @@ export class ProductViewModel {
         return {
             id: databaseModel.id,
             name: databaseModel.name,
-            createdAt: new Date(databaseModel.createdAt)
+            createdAt: databaseModel.createdAt
         };
     }
 
@@ -39,7 +39,7 @@ export class ProductViewModel {
         return {
             id: viewModel.id,
             name: viewModel.name,
-            createdAt: viewModel.createdAt?.getTime() || Date.now()
+            createdAt: viewModel.createdAt
         };
     }
 }
@@ -49,7 +49,7 @@ export class ProductTreeViewModel {
     name: string = '';
     assemblyGroups: AssemblyGroupTreeViewModel[] = [];
     fixStrategies: ThresholdStrategyTreeViewModel[] = [];
-    createdAt: Date | undefined;
+    createdAt: number = Date.now();
     constructor(options: Partial<ProductTreeViewModel> = {}) {
         Object.assign(this, options);
     }
