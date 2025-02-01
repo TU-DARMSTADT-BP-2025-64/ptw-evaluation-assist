@@ -189,6 +189,7 @@ function buildWearThresholdTreeView(
 	treeView.fixStrategy = wearThreshold.fixStrategy;
 	treeView.measures = wearThreshold.measures;
 	treeView.criterion = parent;
+	treeView.image = wearThreshold.image;
 	return treeView;
 }
 
@@ -266,7 +267,8 @@ function getElementsFromWearThresholdTreeView(
 		label: treeView.label,
 		type: treeView.type,
 		fixStrategy: treeView.fixStrategy,
-		measures: treeView.measures
+		measures: treeView.measures,
+		image: treeView.image
 	});
 
 	elements.wearThresholds.push(wearThreshold);
