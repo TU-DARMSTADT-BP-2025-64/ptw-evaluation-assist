@@ -7,7 +7,7 @@
 	import Button from '@smui/button';
 	import {jsPDF} from 'jspdf';
 	import 'jspdf-autotable';
-	
+
 
 
 
