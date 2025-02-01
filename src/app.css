@@ -10,6 +10,7 @@
 	--mdc-theme-primary: #b81018;
 	--mdc-theme-secondary: #767676;
 	--mdc-theme-background: rgb(238, 238, 238);
+	--mdc-theme-background-rgb: 238, 238, 238;
 	--mdc-theme-surface: white;
 	--mdc-theme-on-surface: #000;
 	--mdc-theme-on-surface-rgb: 0, 0, 0;
@@ -20,7 +21,8 @@
 	color: var(--color-text);
 }
 body.dark {
-	--mdc-theme-background: #151b23;
+	--mdc-theme-background: rgb(21, 27, 35);
+	--mdc-theme-background-rgb: 21, 27, 35;
 	--mdc-theme-primary: #b81018;
 	--mdc-theme-secondary: #676778;
 	--mdc-theme-on-surface: #fff;

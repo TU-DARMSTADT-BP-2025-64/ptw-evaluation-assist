@@ -23,9 +23,15 @@
 	let errorMessage: string | null = $state(null);
 
 	async function fileSelected(event: Event) {
+        console.log('File selected', event)
+        if (!event.target) return;
+
 		const target = event.target as HTMLInputElement;
+
 		if (target.files && target.files.length > 0) {
 			const file = target.files[0];
+
+            console.log('File', file);
 
 			const options = {
 				maxWidthOrHeight: 256,
@@ -46,7 +52,16 @@
 				}
 			}
 		}
+
+        target.value = '';
 	}
+
+    function deleteImage(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
+        selectedImage = undefined;
+        wearThreshold.image = undefined;
+    }
 
 	function blobToBase64(blob: Blob) {
 		return new Promise((resolve, reject) => {
@@ -87,7 +102,10 @@
 		tabindex="0"
 		onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && imageInput?.click()}>
 		{#if selectedImage}
-			<img src={selectedImage} alt="Bild" style="width: 80px; height: 80px; border-radius: 4px" />
+            <div class="image-delete-button">
+                <i class="material-icons " onclick={deleteImage} role="button" tabindex=0 onkeydown={() => {}}>delete</i>
+            </div>
+			<img src={selectedImage} alt="Bild" style="width: 120px; height: 80px; border-radius: 4px; object-fit: contain" />
 		{:else}
 			<i class="material-icons">photo_camera</i>
 		{/if}
@@ -128,18 +146,42 @@
 	}
 
 	.threshold-image {
-		width: 80px;
+		width: 120px;
 		height: 80px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: #f5f5f5;
+		background-color: rgb(var(--mdc-theme-background-rgb));
 		border-radius: 4px;
-		border: 1px solid #e0e0e0;
 		cursor: pointer;
+        position: relative;
+        border: 1px solid rgb(var(--mdc-theme-background-rgb));
 	}
 
 	.threshold-image:hover {
-		background-color: #e0e0e0;
+		background-color: rgb(var(--mdc-theme-background-rgb) + 10);
 	}
+
+    .image-delete-button {
+        position: absolute;
+        display: none;
+        top: 4px;
+        right: 4px;
+        z-index: 2;
+        width: 24px;
+        height: 24px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: var(--mdc-theme-surface)
+    }
+
+    .image-delete-button i {
+        font-size: 16px;
+        color: var(--mdc-theme-text-primary-on-background);
+    }
+
+    .threshold-image:hover .image-delete-button {
+        display: flex;
+    }
 </style>

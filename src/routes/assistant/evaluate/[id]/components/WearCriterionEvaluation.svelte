@@ -52,7 +52,7 @@
 				tabindex="0"
 				onkeydown="{(e) => e.key === 'Enter' && toggleSelected(wearCriterion.wearThresholds[i])}"
 				onclick={() => toggleSelected(wearCriterion.wearThresholds[i])}>
-				<img src={threshold.image} alt="Bild" style="width: 120px; height: 120px" />
+				<img src={threshold.image} alt="Bild" style="width: 210px; height: 140px; object-fit: contain;" />
 				<div class="threshold-label">{threshold.label}</div>
 			</div>
 		{/each}
@@ -80,7 +80,7 @@
 		border-radius: 4px;
 		min-height: 60px;
 		padding: 8px;
-		gap: 4px;
+		gap: 6px;
 		cursor: pointer;
 		background-color: var(--mdc-theme-surface);
 
