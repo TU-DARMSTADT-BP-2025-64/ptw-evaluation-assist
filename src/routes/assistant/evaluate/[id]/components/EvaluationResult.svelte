@@ -86,8 +86,10 @@
 
 		});
 		doc.addPage();
+		doc.addImage(logoBase64, "PNG", 138, 5, 100, 20); // Adjust position and size
+		doc.setFontSize(16);
 		doc.text('Übersicht zur Baugruppenstruktur', 10, 10); // Überschrift hinzufügen
-
+		doc.setFontSize(12);
 		names.forEach((name, index) => {
 			doc.text(name, 10, 20 + index * 5); // Namen unter der Überschrift platzieren
 		});
