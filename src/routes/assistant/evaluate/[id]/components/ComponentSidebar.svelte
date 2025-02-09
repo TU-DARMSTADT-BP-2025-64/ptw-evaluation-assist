@@ -49,7 +49,7 @@
 
 
 	.components-container{
-      max-height: 400px;
+      height: 100%;
       overflow-y: auto;
 	}
 
