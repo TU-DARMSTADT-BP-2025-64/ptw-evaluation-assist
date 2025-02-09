@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { HeaderService } from '../../HeaderService.svelte';
 	import Textfield from '@smui/textfield';
+	import Dialog, { Title, Content, Actions } from '@smui/dialog';
 	import Ripple from '@smui/ripple';
 	import Button from '@smui/button';
 	import { ProductTreeViewModel } from '$lib/models/product.model';
@@ -8,7 +9,7 @@
 	import AssemblyGroupForm from './components/AssemblyGroupForm.svelte';
 	import AssemblyGroupStructureAddButton from './components/AssemblyGroupStructureAddButton.svelte';
 	import AddAssemblyGroupDialog from './components/AddAssemblyGroupDialog.svelte';
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import { getElementsFromProductTreeView } from '$lib/util/ProductTreeViewUtil';
 	import ThresholdStrategyForm from './components/ThresholdStrategyForm.svelte';
 
@@ -16,6 +17,10 @@
 
 	let { data }: { data: { id: string; productTreeView: ProductTreeViewModel } } = $props();
 	let { id, productTreeView, ...rest } = data;
+
+	let intercept = true;
+	let saveDialogOpen = $state(false);
+
 
 	console.log('props', id, productTreeView, rest);
 
@@ -53,12 +58,28 @@
 			},
 			body: JSON.stringify(elements)
 		});
+
+		intercept = false;
+
 		goto('/configuration');
 	}
 
 	function goBack() {
 		goto('/configuration');
 	}
+
+	function leave() {
+		intercept = false;
+		goto('/configuration');
+	}
+
+	beforeNavigate(navigation => {
+		if(intercept) {
+			navigation.cancel();
+			saveDialogOpen = true;
+		}
+	})
+
 </script>
 
 <section class="product-form">
@@ -75,40 +96,49 @@
 		</Button>
 	</div>
 
-	<div style="flex: 1; overflow: auto;">
-		<div class="name-field">
-			<Textfield variant="filled" bind:value={product.name} label="Produktname"></Textfield>
-		</div>
-	
-		<h3>Baugruppenstruktur</h3>
-	
-		<div class="assembly-group-structure">
-			<div class="children-groups-container">
-				<div class="vertical-border">&nbsp;</div>
-				<div class="children-groups">
-					{#each assemblyGroups as group, i}
-						<AssemblyGroupForm
-							bind:assemblyGroup={assemblyGroups[i]}
-							strategies={strategies}
-							level={1}
-							lastChild={i === assemblyGroups.length - 1}
-							onDeleteAssemblyGroup={() => removeAssemblyGroup(i)} />
-					{/each}
-				</div>
-			</div>
-			<AssemblyGroupStructureAddButton
-				onAddAssemblyGroup={() => (addAssemblyGroupDialogOpen = true)}
-				showAddAssemblyComponent={false} />
-		</div>
-	
-		<AddAssemblyGroupDialog
-			bind:open={addAssemblyGroupDialogOpen}
-			onSave={(group) => addAssemblyGroup(group)} />
-	
-		<h3 style="margin-top: 32px">Fix Strategien</h3>
-		<ThresholdStrategyForm bind:strategies={strategies} product={productTreeView}/>
+	<div class="name-field">
+		<Textfield variant="filled" bind:value={product.name} label="Produktname"></Textfield>
 	</div>
-	
+
+	<h3>Baugruppenstruktur</h3>
+
+	<div class="assembly-group-structure">
+		<div class="children-groups-container">
+			<div class="vertical-border">&nbsp;</div>
+			<div class="children-groups">
+				{#each assemblyGroups as group, i}
+					<AssemblyGroupForm
+						bind:assemblyGroup={assemblyGroups[i]}
+						strategies={strategies}
+						level={1}
+						lastChild={i === assemblyGroups.length - 1}
+						onDeleteAssemblyGroup={() => removeAssemblyGroup(i)} />
+				{/each}
+			</div>
+		</div>
+		<AssemblyGroupStructureAddButton
+			onAddAssemblyGroup={() => (addAssemblyGroupDialogOpen = true)}
+			showAddAssemblyComponent={false} />
+	</div>
+
+	<AddAssemblyGroupDialog
+		bind:open={addAssemblyGroupDialogOpen}
+		onSave={(group) => addAssemblyGroup(group)} />
+
+	<h3 style="margin-top: 32px">Fix Strategien</h3>
+	<ThresholdStrategyForm bind:strategies={strategies} product={productTreeView}/>
+
+	<Dialog bind:open={saveDialogOpen} class="dialog">
+	<Title> Änderungen speichern </Title>
+	<Content>
+		<p> Möchten Sie die Änderungen vor dem Verlassen speichern oder verwerfen? </p>
+	</Content>
+	<Actions>
+		<Button onclick={leave}> Verwerfen</Button>
+		<Button onclick={saveProduct}> Speichern</Button>
+	</Actions>
+	</Dialog>
+
 </section>
 
 <style>
