@@ -5,7 +5,6 @@
 	import IconButton from '@smui/icon-button';
 	import Button from '@smui/button';
 	import { Label } from '@smui/common';
-	import { goto } from '$app/navigation';
 	import type { ProductViewModel } from '$lib/models/product.model';
 	import { Icon } from '@smui/common';
 	import Dialog, { Title, Content, Actions } from '@smui/dialog';

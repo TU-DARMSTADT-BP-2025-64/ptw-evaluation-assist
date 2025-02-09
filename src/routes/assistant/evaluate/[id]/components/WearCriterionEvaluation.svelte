@@ -15,6 +15,9 @@
 		onSelectionChanged: (wearCriterion: EvaluatedWearCriterionTreeViewModel) => void;
 	} = $props();
 
+	
+	console.log(wearCriterion);
+
 
 	let selectedThreshold: EvaluatedWearThresholdTreeViewModel | null = $state(null);
 
@@ -49,6 +52,7 @@
 				tabindex="0"
 				onkeydown="{(e) => e.key === 'Enter' && toggleSelected(wearCriterion.wearThresholds[i])}"
 				onclick={() => toggleSelected(wearCriterion.wearThresholds[i])}>
+				<img src={threshold.image} alt="Bild" style="width: 210px; height: 140px; object-fit: contain;" />
 				<div class="threshold-label">{threshold.label}</div>
 			</div>
 		{/each}
@@ -72,10 +76,14 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		flex-direction: column;
 		border-radius: 4px;
-		height: 60px;
+		min-height: 60px;
+		padding: 8px;
+		gap: 6px;
 		cursor: pointer;
 		background-color: var(--mdc-theme-surface);
+
 	}
 
 	:global(.wear-threshold.selected) {

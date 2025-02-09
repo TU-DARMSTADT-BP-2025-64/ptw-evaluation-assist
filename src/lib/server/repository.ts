@@ -12,7 +12,6 @@ import type { ThresholdStrategyViewModel } from '$lib/models/threshold-strategy.
 dotenv.config(); // Lädt die Umgebungsvariablen aus der .env-Datei
 // Stellen Sie sicher, dass DEV_ADMIN_PASSWORD in der .env-Datei gesetzt ist
 
-
 export class Repository {
 	public static Instance: Repository;
 
@@ -27,7 +26,7 @@ export class Repository {
 		console.log('Initializing database');
 		const db = this.databaseClient.createDatabase();
 		db.pragma('foreign_keys = ON');
-		
+
 		this._initTables();
 		this._initAdminUser();
 	}
@@ -36,7 +35,9 @@ export class Repository {
 		const database = this.databaseClient.getDatabase();
 		const products = database.prepare('SELECT * FROM products').all() as ProductDatabaseModel[];
 
-		return products.map((product) => ProductViewModel.fromDatabaseModel(product)).filter((product) => product !== null) as ProductViewModel[];
+		return products
+			.map((product) => ProductViewModel.fromDatabaseModel(product))
+			.filter((product) => product !== null) as ProductViewModel[];
 	}
 
 	public getProduct(id: string): ProductViewModel | null {
@@ -51,7 +52,9 @@ export class Repository {
 		const database = this.databaseClient.getDatabase();
 		const databaseModel = ProductViewModel.toDatabaseModel(product);
 
-		const statement = database.prepare('INSERT INTO products (id, name, createdAt) VALUES (?, ?, ?)');
+		const statement = database.prepare(
+			'INSERT INTO products (id, name, createdAt) VALUES (?, ?, ?)'
+		);
 		statement.run(databaseModel.id, databaseModel.name, databaseModel.createdAt);
 		return product;
 	}
@@ -61,11 +64,10 @@ export class Repository {
 
 		const statement = database.prepare('UPDATE products SET name = ?, createdAt = ? WHERE id = ?');
 		const databaseModel = ProductViewModel.toDatabaseModel(product);
-		
+
 		statement.run(databaseModel.name, databaseModel.createdAt, databaseModel.id);
 		return product;
 	}
-
 
 	public deleteProduct(id: string): boolean {
 		const database = this.databaseClient.getDatabase();
@@ -86,7 +88,12 @@ export class Repository {
 		const statement = database.prepare(
 			'INSERT INTO assembly_groups (id, productId, parentId, name) VALUES (?, ?, ?, ?)'
 		);
-		statement.run(assemblyGroup.id, assemblyGroup.productId, assemblyGroup.parentId, assemblyGroup.name);
+		statement.run(
+			assemblyGroup.id,
+			assemblyGroup.productId,
+			assemblyGroup.parentId,
+			assemblyGroup.name
+		);
 		return assemblyGroup;
 	}
 
@@ -173,7 +180,12 @@ export class Repository {
 		const statement = database.prepare(
 			'INSERT INTO wear_criteria (id, productId, componentId, label) VALUES (?, ?, ?, ?)'
 		);
-		statement.run(wearCriterion.id, wearCriterion.productId, wearCriterion.componentId, wearCriterion.label);
+		statement.run(
+			wearCriterion.id,
+			wearCriterion.productId,
+			wearCriterion.componentId,
+			wearCriterion.label
+		);
 		return wearCriterion;
 	}
 
@@ -208,7 +220,7 @@ export class Repository {
 	public addWearThreshold(wearThreshold: WearThresholdViewModel): WearThresholdViewModel {
 		const database = this.databaseClient.getDatabase();
 		const statement = database.prepare(
-			'INSERT INTO wear_thresholds (id, productId, criterionId, label, type, fixStrategy, measures) VALUES (?, ?, ?, ?, ?, ?, ?)'
+			'INSERT INTO wear_thresholds (id, productId, criterionId, label, type, fixStrategy, measures, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
 		);
 		statement.run(
 			wearThreshold.id,
@@ -217,15 +229,16 @@ export class Repository {
 			wearThreshold.label,
 			wearThreshold.type,
 			wearThreshold.fixStrategy,
-			wearThreshold.measures
+			wearThreshold.measures,
+			wearThreshold.image
 		);
-		return wearThreshold
+		return wearThreshold;
 	}
 
 	public updateWearThreshold(wearThreshold: WearThresholdViewModel): WearThresholdViewModel {
 		const database = this.databaseClient.getDatabase();
 		const statement = database.prepare(
-			'UPDATE wear_thresholds SET productId = ?, criterionId = ?, label = ?, type = ?, fixStrategy = ?, measures = ? WHERE id = ?'
+			'UPDATE wear_thresholds SET productId = ?, criterionId = ?, label = ?, type = ?, fixStrategy = ?, measures = ?, image = ? WHERE id = ?'
 		);
 		statement.run(
 			wearThreshold.productId,
@@ -234,6 +247,7 @@ export class Repository {
 			wearThreshold.type,
 			wearThreshold.fixStrategy,
 			wearThreshold.measures,
+			wearThreshold.image,
 			wearThreshold.id
 		);
 		return wearThreshold;
@@ -253,8 +267,9 @@ export class Repository {
 		return thresholdStrategies as ThresholdStrategyViewModel[];
 	}
 
-	public addThresholdStrategy(thresholdStrategy: ThresholdStrategyViewModel): ThresholdStrategyViewModel {
-
+	public addThresholdStrategy(
+		thresholdStrategy: ThresholdStrategyViewModel
+	): ThresholdStrategyViewModel {
 		const database = this.databaseClient.getDatabase();
 		const statement = database.prepare(
 			'INSERT INTO threshold_strategies (id, productId, name, priority) VALUES (?, ?, ?, ?)'
@@ -276,7 +291,6 @@ export class Repository {
 		statement.run(id);
 		return true;
 	}
-
 
 	public async userExists(username: string, password: string): Promise<boolean> {
 		const database = this.databaseClient.getDatabase();
@@ -347,6 +361,7 @@ export class Repository {
 						type TEXT NOT NULL, 
 						fixStrategy TEXT,
 						measures TEXT,
+						image TEXT,
 						FOREIGN KEY(productId) REFERENCES products(id) ON DELETE CASCADE, 
 						FOREIGN KEY(criterionId) REFERENCES wear_criteria(id)
 					)`
@@ -362,7 +377,7 @@ export class Repository {
 				FOREIGN KEY(productId) REFERENCES products(id) ON DELETE CASCADE
 			)`
 		).run();
-			
+
 		// Users table
 		db.prepare(
 			`CREATE TABLE users (
@@ -387,7 +402,7 @@ export class Repository {
 
 		const password = process.env.DEV_ADMIN_PASSWORD;
 
-		console.log('Initialisiere Admin-Benutzer: '+ password);
+		console.log('Initialisiere Admin-Benutzer: ' + password);
 
 		if (!password) {
 			throw new Error('DEV_ADMIN_PASSWORD ist nicht gesetzt! Setze es in der .env-Datei.');

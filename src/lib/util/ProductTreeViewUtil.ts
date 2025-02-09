@@ -33,6 +33,7 @@ export function createProductTreeView(elements: ProductTreeViewElements): Produc
 	const treeView = new ProductTreeViewModel();
 	treeView.id = elements.product.id;
 	treeView.name = elements.product.name;
+	treeView.createdAt = elements.product.createdAt;
 
 	treeView.fixStrategies = elements.strategies.map(
 		(strategy) =>
@@ -84,7 +85,7 @@ export function getElementsFromProductTreeView(
 	treeView: ProductTreeViewModel
 ): ProductTreeViewElements {
 	const elements: ProductTreeViewElements = {
-		product: new ProductViewModel({ id: treeView.id, name: treeView.name }),
+		product: new ProductViewModel({ id: treeView.id, name: treeView.name, createdAt: treeView.createdAt }),
 		groups: [],
 		components: [],
 		wearCriteria: [],
@@ -188,6 +189,7 @@ function buildWearThresholdTreeView(
 	treeView.fixStrategy = wearThreshold.fixStrategy;
 	treeView.measures = wearThreshold.measures;
 	treeView.criterion = parent;
+	treeView.image = wearThreshold.image;
 	return treeView;
 }
 
@@ -265,7 +267,8 @@ function getElementsFromWearThresholdTreeView(
 		label: treeView.label,
 		type: treeView.type,
 		fixStrategy: treeView.fixStrategy,
-		measures: treeView.measures
+		measures: treeView.measures,
+		image: treeView.image
 	});
 
 	elements.wearThresholds.push(wearThreshold);
