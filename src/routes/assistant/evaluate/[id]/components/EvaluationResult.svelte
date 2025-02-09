@@ -11,8 +11,34 @@
 
 
 
+
 	const { evaluatedProductTreeView }: { evaluatedProductTreeView: EvaluatedProductTreeViewModel } =
 		$props();
+
+
+	const names = [];
+
+	function traverseArrayWithNames(group, depth) {
+		let indent = ' '.repeat(depth * 2);
+		names.push(indent + group.name);
+
+		group.children.forEach(child => {
+			if (child.type === 'assembly-group') {
+				traverseArrayWithNames(child, depth + 1);
+			}
+			else {
+				let indent = ' '.repeat(depth * 2 + 2);
+				names.push(indent + child.name);
+			}
+		})
+	}
+
+	evaluatedProductTreeView.assemblyGroups.forEach(assemblyGroup => {
+		traverseArrayWithNames(assemblyGroup, 0);
+	})
+
+
+
 
 	const components = $derived.by(() => {
 		return getEvaluatedComponents(evaluatedProductTreeView);
@@ -59,7 +85,14 @@
 			}
 
 		});
-
+		doc.addPage();
+		doc.addImage(logoBase64, "PNG", 138, 5, 100, 20); // Adjust position and size
+		doc.setFontSize(16);
+		doc.text('Übersicht zur Baugruppenstruktur', 10, 10); // Überschrift hinzufügen
+		doc.setFontSize(12);
+		names.forEach((name, index) => {
+			doc.text(name, 10, 20 + index * 5); // Namen unter der Überschrift platzieren
+		});
 		doc.save(`Befundung_${productName.replace(/\s+/g, '_')}.pdf`);
 	}
 
