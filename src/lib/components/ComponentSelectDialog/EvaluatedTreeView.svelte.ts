@@ -35,6 +35,7 @@ export class EvaluatedAssemblyGroupTreeViewModel extends AssemblyGroupTreeViewMo
 		| EvaluatedAssemblyComponentTreeViewModel
 	)[] = [];
 	public evaluate: boolean = $state(true);
+	public expanded: boolean = $state(true);
 
 	constructor(
 		assemblyGroupTreeViewModel: AssemblyGroupTreeViewModel,
@@ -89,6 +90,13 @@ export class EvaluatedAssemblyGroupTreeViewModel extends AssemblyGroupTreeViewMo
 
 		if (this.parent instanceof EvaluatedAssemblyGroupTreeViewModel) {
 			this.parent.checkForEvaluate();
+		}
+	}
+
+	public expand(): void {
+		this.expanded = true;
+		if (this.evaluatedParent instanceof EvaluatedAssemblyGroupTreeViewModel) {
+			this.evaluatedParent.expand();
 		}
 	}
 }

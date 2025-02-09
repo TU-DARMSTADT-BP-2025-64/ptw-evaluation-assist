@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ComponentSelectDialog from '$lib/components/ComponentSelectDialog/ComponentSelectDialog.svelte';
 	import { ProductTreeViewModel } from '$lib/models/product.model';
-	import ComponentSidebar from './components/ComponentSidebar.svelte';
+	import ComponentSidebar from './components/EvaluationSidebar.svelte';
 	import {
 		EvaluatedAssemblyComponentTreeViewModel,
 		EvaluatedProductTreeViewModel,
@@ -13,6 +13,7 @@
 	import { HeaderService } from '../../../HeaderService.svelte';
 	import ComponentEvaluation from './components/ComponentEvaluation.svelte';
 	import EvaluationResult from './components/EvaluationResult.svelte';
+	import EvaluationSidebar from './components/EvaluationSidebar.svelte';
 
 	let { data }: { data: { id: string; productTreeView: ProductTreeViewModel } } = $props();
 	let { id, productTreeView } = data;
@@ -51,6 +52,10 @@
 			const nextIndex = currentIndex + 1;
 			if (nextIndex < evaluatedComponents.length) {
 				currentlySelectedComponent = evaluatedComponents[nextIndex];
+
+				if (currentlySelectedComponent) {
+					currentlySelectedComponent.evaluatedParent.expand();
+				}
 			}
 		}
 	}
@@ -67,8 +72,8 @@
 		{:else}
 			<div class="evaluation-container">
 				<div class="sidebar">
-					<ComponentSidebar
-						components={evaluatedComponents}
+					<EvaluationSidebar
+						productTreeView={evaluatedProductTreeView}
 						bind:selectedComponent={currentlySelectedComponent} />
 				</div>
 				<div class="evaluation">
