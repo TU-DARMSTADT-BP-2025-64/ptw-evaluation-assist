@@ -5,10 +5,10 @@
 	import { goto } from '$app/navigation';
 	import ProductTable from '$lib/components/ProductTable/ProductTable.svelte';
 	import type { ProductViewModel } from '$lib/models/product.model';
-	import { onMount } from 'svelte';
-	import ProductImportDialog from '$lib/components/ProductImportDialog/ProductImportDialog.svelte';
-	import { ProductImporter } from '$lib/components/ProductImportDialog/ProductImporter';
+	import { ProductImporter } from './ProductImporter';
 	import { getElementsFromProductTreeView } from '$lib/util/ProductTreeViewUtil';
+	import Snackbar, { Label, Actions as SnackbarActions } from '@smui/snackbar';
+	import IconButton from '@smui/icon-button';
 
 	HeaderService.Instance.setTitle('Konfiguration');
 	let props: { data: { products: ProductViewModel[] } } = $props();
@@ -16,7 +16,25 @@
 
 	let fileInput = $state<HTMLInputElement | null>(null);
 
-	let productImportDialogOpen = $state(false);
+	// Snackbar references
+	let snackbarSuccess: Snackbar | null = $state(null);
+	let snackbarError: Snackbar | null = $state(null);
+
+	/**
+	 * Zeigt eine Snackbar mit einer Nachricht an.
+	 */
+	function showSnackbar(snackbar: Snackbar | null, message: string) {
+		if (!snackbar) return;
+		snackbar.close(); // Schließe bestehende Snackbar
+		setTimeout(() => {
+			const element = snackbar.getElement(); // DOM-Element abrufen
+			const label = element.querySelector('.snackbar-label') as HTMLElement;
+			if (label) {
+				label.innerText = message; // Nachricht in der Snackbar anzeigen
+			}
+			snackbar.open(); // Snackbar öffnen
+		}, 10);
+	}
 
 	function editProduct(product: ProductViewModel) {
 		goto(`/configuration/${product.id}`);
@@ -30,36 +48,60 @@
 		products = products.filter((p) => p.id !== product.id);
 	}
 
+	/**
+	 * Datei ausgewählt
+	 */
 	function fileSelected() {
 		const file = fileInput?.files?.[0];
 
+		// Prüfen, ob die Datei eine .xlsm-Datei ist
 		if (!file || !file.name.endsWith('.xlsm')) {
+			showSnackbar(snackbarError, 'Ungültiger Dateityp. Nur .xlsm-Dateien sind erlaubt.');
 			return;
 		}
-		console.log(file);
 
 		const reader = new FileReader();
 
-		reader.onload = function (e) {
+		reader.onload = function(e) {
 			if (!e.target || !e.target.result) {
-				console.error('No file content');
+				showSnackbar(snackbarError, 'Fehler beim Lesen der Datei.');
 				return;
 			}
-			const data = new Uint8Array(e.target.result as ArrayBuffer);
 
-			const importedProduct = ProductImporter.getProductTreeViewFromXlsx(data);
+			try {
+				const data = new Uint8Array(e.target.result as ArrayBuffer);
+				const importedProduct = ProductImporter.getProductTreeViewFromXlsx(data);
 
-			const elements = getElementsFromProductTreeView(importedProduct);
+				const elements = getElementsFromProductTreeView(importedProduct);
 
-			fetch('/api/product/' + importedProduct.id + '?asTreeView=true', {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(elements)
-			});
+				// API-Aufruf zur Speicherung des Produkts
+				fetch('/api/product/' + importedProduct.id + '?asTreeView=true', {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(elements)
+				});
 
-			products = [...products, {id: importedProduct.id, name: importedProduct.name}];
+				// Füge das neue Produkt hinzu
+				products = [
+					...products,
+					{
+						id: importedProduct.id,
+						name: importedProduct.name,
+						createdAt: importedProduct.createdAt
+					}
+				];
+
+				// Erfolg anzeigen
+				showSnackbar(snackbarSuccess, 'Produkt erfolgreich importiert!');
+			} catch (error: any) {
+				console.error('Fehler beim Importieren der Datei:', error);
+				showSnackbar(
+					snackbarError,
+					error.message || 'Fehler beim Importieren der Datei. Bitte überprüfen Sie die Struktur.'
+				);
+			}
 		};
 
 		reader.readAsArrayBuffer(file);
@@ -105,42 +147,64 @@
 			<span>Produkt importieren</span>
 		</Button>
 
-		<input style="display: none" onchange={fileSelected} type="file" bind:this={fileInput} />
+		<!-- Datei-Input mit Einschränkung auf .xlsm -->
+		<input
+			style="display: none"
+			onchange={fileSelected}
+			type="file"
+			bind:this={fileInput}
+			accept=".xlsm"
+		/>
 	</div>
 </section>
 
-<!-- <ProductImportDialog bind:open={productImportDialogOpen}></ProductImportDialog> -->
+<!-- Snackbar für Erfolg -->
+<Snackbar bind:this={snackbarSuccess} class="snackbar-success">
+	<Label class="snackbar-label">Erfolg</Label>
+	<SnackbarActions>
+		<IconButton class="material-icons" title="Dismiss">close</IconButton>
+	</SnackbarActions>
+</Snackbar>
+
+<!-- Snackbar für Fehler -->
+<Snackbar bind:this={snackbarError} class="snackbar-error">
+	<Label class="snackbar-label">Fehler</Label>
+	<SnackbarActions>
+		<IconButton class="material-icons" title="Dismiss">close</IconButton>
+	</SnackbarActions>
+</Snackbar>
 
 <style>
-	.page {
-		position: relative;
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-	.back-button {
-		position: absolute;
-		top: 20px;
-		left: 20px;
-		z-index: 100;
-	}
+    .page {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-	.product-table {
-		max-height: 100%;
-		height: 100%;
-		overflow: auto;
-		width: 100%;
-		max-width: min(100%, 800px);
-	}
+    .back-button {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 100;
+    }
 
-	.product-action-buttons {
-		position: absolute;
-		top: 20px;
-		right: 20px;
-		display: flex;
-		flex-direction: column;
-		gap: 12px;
-	}
+    .product-table {
+        max-height: 100%;
+        height: 100%;
+        overflow: auto;
+        width: 100%;
+        max-width: min(100%, 800px);
+    }
+
+    .product-action-buttons {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
 </style>
