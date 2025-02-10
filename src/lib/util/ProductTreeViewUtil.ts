@@ -50,7 +50,7 @@ export function createProductTreeView(elements: ProductTreeViewElements): Produc
 	for (const assemblyGroup of assemblyGroups) {
 		const assemblyGroupTreeView = buildAssemblyGroupTreeView(
 			elements,
-			elements.product,
+			treeView,
 			assemblyGroup
 		);
 		treeView.assemblyGroups.push(assemblyGroupTreeView);
@@ -102,12 +102,13 @@ export function getElementsFromProductTreeView(
 
 function buildAssemblyGroupTreeView(
 	elements: ProductTreeViewElements,
-	parent: ProductViewModel | AssemblyGroupTreeViewModel,
+	parent: ProductTreeViewModel | AssemblyGroupTreeViewModel,
 	assemblyGroup: AssemblyGroupViewModel
 ): AssemblyGroupTreeViewModel {
 	const treeView = new AssemblyGroupTreeViewModel();
 	treeView.id = assemblyGroup.id;
 	treeView.name = assemblyGroup.name;
+	treeView.parent = parent;
 
 	const assemblyGroups = elements.groups.filter((group) => group.parentId === assemblyGroup.id);
 	const assemblyComponents = elements.components.filter(
