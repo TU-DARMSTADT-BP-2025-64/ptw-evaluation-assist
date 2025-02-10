@@ -21,14 +21,15 @@
 	let intercept = true;
 	let saveDialogOpen = $state(false);
 
-
 	console.log('props', id, productTreeView, rest);
 
 	let product = $state(!id ? new ProductTreeViewModel() : productTreeView);
 
 	let addAssemblyGroupDialogOpen = $state(false);
 
-	let strategies = $state(productTreeView.fixStrategies.sort((a, b) => a.priority - b.priority) ?? []);
+	let strategies = $state(
+		productTreeView.fixStrategies.sort((a, b) => a.priority - b.priority) ?? []
+	);
 
 	let assemblyGroups: AssemblyGroupTreeViewModel[] = $state(product.assemblyGroups);
 
@@ -52,7 +53,7 @@
 
 		console.log('elements', elements);
 
-		fetch('/api/product/' + id  + '?asTreeView=true', {
+		fetch('/api/product/' + id + '?asTreeView=true', {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json'
@@ -74,13 +75,12 @@
 		goto('/configuration');
 	}
 
-	beforeNavigate(navigation => {
-		if(intercept) {
+	beforeNavigate((navigation) => {
+		if (intercept) {
 			navigation.cancel();
 			saveDialogOpen = true;
 		}
-	})
-
+	});
 </script>
 
 <section class="product-form">
@@ -97,49 +97,49 @@
 		</Button>
 	</div>
 
-	<div class="name-field">
-		<Textfield variant="filled" bind:value={product.name} label="Produktname"></Textfield>
-	</div>
-
-	<h3>Baugruppenstruktur</h3>
-
-	<div class="assembly-group-structure">
-		<div class="children-groups-container">
-			<div class="vertical-border">&nbsp;</div>
-			<div class="children-groups">
-				{#each assemblyGroups as group, i}
-					<AssemblyGroupForm
-						bind:assemblyGroup={assemblyGroups[i]}
-						strategies={strategies}
-						level={1}
-						lastChild={i === assemblyGroups.length - 1}
-						onDeleteAssemblyGroup={() => removeAssemblyGroup(i)} />
-				{/each}
-			</div>
+	<div class="product-form-content">
+		<div class="name-field">
+			<Textfield variant="filled" bind:value={product.name} label="Produktname"></Textfield>
 		</div>
-		<AssemblyGroupStructureAddButton
-			onAddAssemblyGroup={() => (addAssemblyGroupDialogOpen = true)}
-			showAddAssemblyComponent={false} />
+
+		<h3>Baugruppenstruktur</h3>
+
+		<div class="assembly-group-structure">
+			<div class="children-groups-container">
+				<div class="vertical-border">&nbsp;</div>
+				<div class="children-groups">
+					{#each assemblyGroups as group, i}
+						<AssemblyGroupForm
+							bind:assemblyGroup={assemblyGroups[i]}
+							{strategies}
+							level={1}
+							lastChild={i === assemblyGroups.length - 1}
+							onDeleteAssemblyGroup={() => removeAssemblyGroup(i)} />
+					{/each}
+				</div>
+			</div>
+			<AssemblyGroupStructureAddButton
+				onAddAssemblyGroup={() => (addAssemblyGroupDialogOpen = true)}
+				showAddAssemblyComponent={false} />
+		</div>
+
+		<AddAssemblyGroupDialog
+			bind:open={addAssemblyGroupDialogOpen}
+			onSave={(group) => addAssemblyGroup(group)} />
+
+		<h3 style="margin-top: 32px">Fix Strategien</h3>
+		<ThresholdStrategyForm bind:strategies product={productTreeView} />
 	</div>
-
-	<AddAssemblyGroupDialog
-		bind:open={addAssemblyGroupDialogOpen}
-		onSave={(group) => addAssemblyGroup(group)} />
-
-	<h3 style="margin-top: 32px">Fix Strategien</h3>
-	<ThresholdStrategyForm bind:strategies={strategies} product={productTreeView}/>
-
 	<Dialog bind:open={saveDialogOpen} class="dialog">
-	<Title> Änderungen speichern </Title>
-	<Content>
-		<p> Möchten Sie die Änderungen vor dem Verlassen speichern oder verwerfen? </p>
-	</Content>
-	<Actions>
-		<Button onclick={leave}> Verwerfen</Button>
-		<Button onclick={saveProduct}> Speichern</Button>
-	</Actions>
+		<Title>Änderungen speichern</Title>
+		<Content>
+			<p>Möchten Sie die Änderungen vor dem Verlassen speichern oder verwerfen?</p>
+		</Content>
+		<Actions>
+			<Button onclick={leave}>Verwerfen</Button>
+			<Button onclick={saveProduct}>Speichern</Button>
+		</Actions>
 	</Dialog>
-
 </section>
 
 <style>
@@ -162,6 +162,11 @@
 		position: absolute;
 		left: 50%;
 		transform: translateX(-50%);
+	}
+
+	.product-form-content {
+		height: 100%;
+		overflow-y: auto;
 	}
 
 	.name-field {
