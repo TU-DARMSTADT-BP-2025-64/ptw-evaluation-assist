@@ -3,14 +3,14 @@
 	import Dialog, { Title, Content, Actions } from '@smui/dialog';
 	import Snackbar, { Label, Actions as SnackbarActions } from '@smui/snackbar';
 	import IconButton from '@smui/icon-button';
-    import Textfield from '@smui/textfield';
-    import Button from '@smui/button';
+	import Textfield from '@smui/textfield';
+	import Button from '@smui/button';
 
-	let {open = $bindable()} : {open: boolean}= $props();
+	let { open = $bindable() }: { open: boolean } = $props();
 	let currentPassword = $state('');
 	let newPassword = $state('');
 	let confirmPassword = $state('');
-	
+
 	let snackbarSuccess: Snackbar | null = $state(null);
 	let snackbarWarning: Snackbar | null = $state(null);
 	let snackbarError: Snackbar | null = $state(null);
@@ -20,14 +20,13 @@
 		snackbarSuccess?.close();
 		snackbarWarning?.close();
 		snackbarError?.close();
-		open = false;	
-    }
-
+		open = false;
+	}
 
 	// Funktion zum Ändern des Passworts
 	async function changePassword(event: Event) {
-        event.preventDefault();
-        event.stopPropagation();
+		event.preventDefault();
+		event.stopPropagation();
 		snackbarSuccess?.close();
 		snackbarWarning?.close();
 		snackbarError?.close();
@@ -78,12 +77,19 @@
 	<Content>
 		<form class="form-group">
 			<Textfield
+				id="currentPassword"
 				bind:value={currentPassword}
 				variant="filled"
 				type="password"
 				label="Aktuelles Passwort" />
-			<Textfield bind:value={newPassword} variant="filled" type="password" label="Neues Passwort" />
 			<Textfield
+				id="newPassword"
+				bind:value={newPassword}
+				variant="filled"
+				type="password"
+				label="Neues Passwort" />
+			<Textfield
+				id="confirmPassword"
 				bind:value={confirmPassword}
 				variant="filled"
 				type="password"
@@ -91,8 +97,8 @@
 		</form>
 	</Content>
 	<Actions>
-		<Button class="default-button" onclick={closeDialog}>Abbrechen</Button>
-		<Button onclick={changePassword}>Passwort ändern</Button>
+		<Button id="closePasswordChangeDialogButton" class="default-button" onclick={closeDialog}>Abbrechen</Button>
+		<Button id="passwordChangeButton" onclick={changePassword}>Passwort ändern</Button>
 	</Actions>
 </Dialog>
 

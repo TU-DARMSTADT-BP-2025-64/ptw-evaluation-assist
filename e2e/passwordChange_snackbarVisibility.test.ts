@@ -8,7 +8,7 @@ test.describe('Password Change Dialog Snackbar Test', () => {
 		await page.goto('/');
 
 		// Öffne die Einstellungen
-		await page.click('button:has-text("settings")');
+		await page.click('#settingsButton');
 		await expect(page.locator('.settings-menu')).toBeVisible();
 
 		// Öffne den Dialog
@@ -21,7 +21,7 @@ test.describe('Password Change Dialog Snackbar Test', () => {
 		await page.fill('#confirmPassword', '123password');
 
 		// Klicke auf "Passwort ändern", um die Snackbar zu triggern
-		await page.click('button:has-text("Passwort ändern")');
+		await page.click('#passwordChangeButton');
 
 		// Warte auf die Snackbar
 		const snackbar = page.locator('.snackbar-warning .mdc-snackbar__surface');
@@ -34,11 +34,8 @@ test.describe('Password Change Dialog Snackbar Test', () => {
 		expect(snackbarText).toContain('Das neue Passwort und die Bestätigung stimmen nicht überein.');
 
 		// Schließe den Dialog durch Klick auf "Abbrechen"
-		await page.click('button:has-text("Abbrechen")');
+		await page.click('#closePasswordChangeDialogButton');
 
-		// Öffne die Einstellungen erneut
-		await page.click('button:has-text("settings")');
-		await page.click('button:has-text("settings")');
 		await expect(page.locator('.settings-menu')).toBeVisible();
 
 		// Öffne den Dialog erneut
@@ -51,7 +48,7 @@ test.describe('Password Change Dialog Snackbar Test', () => {
 		await page.fill('#confirmPassword', '123password');
 
 		// Klicke auf "Passwort ändern", um die Snackbar erneut zu triggern
-		await page.click('button:has-text("Passwort ändern")');
+		await page.click('#passwordChangeButton');
 
 		// Warte ernaut auf die Snackbar
 		const snackbar2 = page.locator('.snackbar-warning .mdc-snackbar__surface');
@@ -68,7 +65,7 @@ test.describe('Password Change Dialog Snackbar Test', () => {
 		await page.goto('/');
 
 		// Öffne die Einstellungen
-		await page.click('button:has-text("settings")');
+		await page.click('#settingsButton');
 		await expect(page.locator('.settings-menu')).toBeVisible();
 
 		// Öffne den Dialog
@@ -81,7 +78,7 @@ test.describe('Password Change Dialog Snackbar Test', () => {
 		await page.fill('#confirmPassword', 'password123');
 
 		// Klicke auf "Passwort ändern", um die Snackbar zu triggern
-		await page.click('button:has-text("Passwort ändern")');
+		await page.click('#passwordChangeButton');
 
 		// Warte auf die Snackbar
 		const snackbar = page.locator('.snackbar-error .mdc-snackbar__surface');
@@ -94,11 +91,8 @@ test.describe('Password Change Dialog Snackbar Test', () => {
 		expect(snackbarText).toContain('Das aktuelle Passwort ist falsch!');
 
 		// Schließe den Dialog durch Klick auf "Abbrechen"
-		await page.click('button:has-text("Abbrechen")');
+		await page.click('#closePasswordChangeDialogButton');
 
-		// Öffne die Einstellungen erneut
-		await page.click('button:has-text("settings")');
-		await page.click('button:has-text("settings")');
 		await expect(page.locator('.settings-menu')).toBeVisible();
 
 		// Öffne den Dialog erneut
@@ -111,7 +105,7 @@ test.describe('Password Change Dialog Snackbar Test', () => {
 		await page.fill('#confirmPassword', '123password');
 
 		// Klicke auf "Passwort ändern", um die Snackbar erneut zu triggern
-		await page.click('button:has-text("Passwort ändern")');
+		await page.click('#passwordChangeButton');
 
 		// Warte ernaut auf die Snackbar
 		const snackbar2 = page.locator('.snackbar-error .mdc-snackbar__surface');
@@ -128,7 +122,7 @@ test.describe('Password Change Dialog Snackbar Test', () => {
 		await page.goto('/');
 
 		// Öffne die Einstellungen
-		await page.click('button:has-text("settings")');
+		await page.click('#settingsButton');
 		await expect(page.locator('.settings-menu')).toBeVisible();
 
 		// Öffne den Dialog
@@ -141,7 +135,7 @@ test.describe('Password Change Dialog Snackbar Test', () => {
 		await page.fill('#currentPassword', process.env.DEV_TEST_ADMIN_PASSWORD || '');
 
 		// Klicke auf "Passwort ändern", um die Snackbar zu triggern
-		await page.click('button:has-text("Passwort ändern")');
+		await page.click('#passwordChangeButton');
 
 		// Warte auf die Snackbar
 		const snackbar = page.locator('.snackbar-success .mdc-snackbar__surface');
@@ -154,11 +148,8 @@ test.describe('Password Change Dialog Snackbar Test', () => {
 		expect(snackbarText).toContain('Passwort erfolgreich geändert!');
 
 		// Schließe den Dialog durch Klick auf "Abbrechen"
-		await page.click('button:has-text("Abbrechen")');
+		await page.click('#closePasswordChangeDialogButton');
 
-		// Öffne die Einstellungen erneut
-		await page.click('button:has-text("settings")');
-		await page.click('button:has-text("settings")');
 		await expect(page.locator('.settings-menu')).toBeVisible();
 
 		// Öffne den Dialog erneut
@@ -171,7 +162,7 @@ test.describe('Password Change Dialog Snackbar Test', () => {
 		await page.fill('#currentPassword', process.env.DEV_ADMIN_PASSWORD || '');
 
 		// Klicke auf "Passwort ändern", um die Snackbar erneut zu triggern
-		await page.click('button:has-text("Passwort ändern")');
+		await page.click('#passwordChangeButton');
 
 		// Warte ernaut auf die Snackbar
 		const snackbar2 = page.locator('.snackbar-success .mdc-snackbar__surface');

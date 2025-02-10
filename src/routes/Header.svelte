@@ -46,6 +46,17 @@
 		document.body.classList.toggle('dark', isDarkMode);
 	});
 
+	$effect(() => {
+		console.log('Fontsize', fontSize);
+		if (fontSize === 'small') {
+			document.documentElement.style.fontSize = '12px';	
+		} else if (fontSize === 'large') {
+			document.documentElement.style.fontSize = '20px';	
+		} else {
+			document.documentElement.style.fontSize = 'unset';	
+		}
+	})
+
 	function toggleDarkMode() {
 		isDarkMode = !isDarkMode;
 	}
@@ -117,7 +128,7 @@
 		</div>
 		<div class="actions">
 			<IconButton class="material-icons" onclick={() => toggleDarkMode()}>dark_mode</IconButton>
-			<IconButton class="material-icons" onclick={() => toggleSettings()}>settings</IconButton>
+			<IconButton id="settingsButton" class="material-icons" onclick={() => toggleSettings()}>settings</IconButton>
 			{#if $page.data.isLoggedIn}
 				<IconButton id="logoutButton" class="material-icons" onclick={logout}>logout</IconButton>
 			{/if}
@@ -126,6 +137,7 @@
 </header>
 {#if showSettings}
 	<div
+		id="settingsMenuBackground"
 		class="settings-menu-background"
 		role="button"
 		onkeypress={() => {}}
@@ -138,8 +150,7 @@
 
 		<SegmentedButton segments={fontSizeChoices} singleSelect bind:selected={fontSize}>
 			{#snippet segment(segment)}
-			  <!-- Note: the `segment` property is required! -->
-			  <Segment {segment}>
+			  <Segment {segment} id={segment + 'FontSizeButton'}>
 				<Label>{segment}</Label>
 			  </Segment>
 			{/snippet}
@@ -156,8 +167,7 @@
 <!-- Passwort ändern Dialog -->
 {#if passwordChangeDialogOpen}
 	<PasswordChangeDialog
-		bind:open={passwordChangeDialogOpen}
-		on:close={() => (passwordChangeDialogOpen = false)} />
+		bind:open={passwordChangeDialogOpen}/>
 {/if}
 
 <style>

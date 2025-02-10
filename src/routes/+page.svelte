@@ -76,7 +76,7 @@
     }
 
     .card-btn .label {
-        font-size: 28px;
+        font-size: 2rem;
         margin-left: 28px;
     }
 </style>
