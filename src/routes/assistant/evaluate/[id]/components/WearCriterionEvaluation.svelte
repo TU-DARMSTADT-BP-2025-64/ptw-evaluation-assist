@@ -52,7 +52,10 @@
 				tabindex="0"
 				onkeydown="{(e) => e.key === 'Enter' && toggleSelected(wearCriterion.wearThresholds[i])}"
 				onclick={() => toggleSelected(wearCriterion.wearThresholds[i])}>
-				<img src={threshold.image} alt="Bild" style="width: 210px; height: 140px; object-fit: contain;" />
+				{#if threshold.image}
+					<img src={threshold.image} alt="Bild" style="width: 210px; height: 140px; object-fit: contain;" />
+				{/if}
+				
 				<div class="threshold-label">{threshold.label}</div>
 			</div>
 		{/each}
