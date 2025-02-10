@@ -211,7 +211,7 @@
 		align-items: center;
 		flex-wrap: wrap;
 		white-space: normal;
-		word-break: break-word;
+		word-break: normal;
 	}
 
 	.no-wear-criteria-found-msg {
