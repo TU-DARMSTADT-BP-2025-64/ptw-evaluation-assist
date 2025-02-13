@@ -48,7 +48,6 @@ export class ProductImporter {
 
 		this.addAssemblyGroupsToProduct(structureData, productTreeViewModel);
 
-		console.log('PRODUCT TREE VIEW MODEL', productTreeViewModel);
 
 		const components = getComponents(productTreeViewModel);
 
@@ -59,8 +58,6 @@ export class ProductImporter {
 		const strategies = this.getStrategies(categoryData, productTreeViewModel);
 
 		productTreeViewModel.fixStrategies = strategies;
-
-		console.log(productTreeViewModel);
 
 		return productTreeViewModel;
 	}
@@ -163,7 +160,7 @@ export class ProductImporter {
 		for (let i = 1; i < thresholdData.length; i++) {
 			if (thresholdData[i][0] == component.name) {
 				i += 2;
-				while (i < thresholdData.length && !thresholdData[i + 1][0]?.includes('→')) {
+				while (i < thresholdData.length && !thresholdData[i + 4]?.[0]?.includes('Verschleiß des Bauteils')) {
 					const wearCriteria = this.getWearCriteria(thresholdData, component, i);
 					if (!wearCriteria) {
 						break;
@@ -171,6 +168,8 @@ export class ProductImporter {
 					component.wearCriteria.push(wearCriteria);
 					i += 3;
 				}
+
+				break;
 			}
 		}
 	}
@@ -180,7 +179,6 @@ export class ProductImporter {
 		component: AssemblyComponentTreeViewModel,
 		currentRowIndex: number
 	): WearCriterionTreeViewModel | null {
-		console.log('GET WEAR CRITERIA', thresholdData[currentRowIndex], component, currentRowIndex);
 
 		const label = thresholdData[currentRowIndex + 1][0];
 		if (!label || label.trim().length == 0) {
