@@ -48,7 +48,6 @@ export class ProductImporter {
 
 		this.addAssemblyGroupsToProduct(structureData, productTreeViewModel);
 
-
 		const components = getComponents(productTreeViewModel);
 
 		for (const component of components) {
@@ -70,32 +69,52 @@ export class ProductImporter {
 
 		const maxGroupDepth = this.getAssemblyGroupDepth(structureData[8]);
 
-		console.log(maxGroupDepth);
-
-		let previousGroup: AssemblyGroupTreeViewModel | null = null;
+		let currentPath: AssemblyGroupTreeViewModel[] = [];
+		
 		for (let i = 9; i < structureData.length; i++) {
-			const groupNames = this.getAssemblyGroupNames(structureData[i], maxGroupDepth);
+			const {groupNames, level: groupLevel} = this.getAssemblyGroupNames(structureData[i], maxGroupDepth);
 			console.log('GROUP NAMES', groupNames);
 
 			if (groupNames.length == 0) {
 				if (
-					previousGroup &&
+					currentPath &&
 					structureData[i][maxGroupDepth] &&
 					structureData[i][maxGroupDepth].trim().length > 0
 				) {
+					const previousGroup = currentPath[currentPath.length - 1];
 					this.addComponentToGroup(structureData, maxGroupDepth, i, previousGroup);
 				} else {
 					continue;
 				}
 			} else {
-				previousGroup = this.addGroupToParent(
-					structureData,
-					maxGroupDepth,
-					i,
-					groupNames,
-					productTreeView
-				);
-				this.addComponentToGroup(structureData, maxGroupDepth, i, previousGroup);
+				if (groupLevel == 0) {
+					currentPath = this.addGroupToParent(
+						structureData,
+						maxGroupDepth,
+						i,
+						groupNames,
+						productTreeView,
+						[]
+					);
+					assemblyGroups.push(currentPath[0]);
+				} else if (groupLevel > 0 && currentPath) {
+					currentPath = this.addGroupToParent(
+						structureData,
+						maxGroupDepth - groupLevel,
+						i,
+						groupNames,
+						currentPath[groupLevel - 1],
+						currentPath.slice(0, groupLevel)
+					);
+				} else {
+					throw new Error('Group Level not found');
+				}
+
+				console.log('CURRENT PATH', currentPath);
+				
+
+				this.addComponentToGroup(structureData, maxGroupDepth, i, currentPath[currentPath.length - 1]);
+				
 			}
 		}
 
@@ -107,8 +126,9 @@ export class ProductImporter {
 		maxGroupDepth: number,
 		currentRowIndex: number,
 		groupNames: string[],
-		parent: AssemblyGroupTreeViewModel | ProductTreeViewModel
-	): AssemblyGroupTreeViewModel {
+		parent: AssemblyGroupTreeViewModel | ProductTreeViewModel,
+		path: AssemblyGroupTreeViewModel[]
+	): AssemblyGroupTreeViewModel[] {
 		const currentName = groupNames.splice(0, 1)[0];
 
 		const group = new AssemblyGroupTreeViewModel({
@@ -116,6 +136,8 @@ export class ProductImporter {
 			parent: parent,
 			name: currentName
 		});
+
+		path.push(group);
 
 		if (parent instanceof ProductTreeViewModel) {
 			parent.assemblyGroups.push(group);
@@ -129,10 +151,11 @@ export class ProductImporter {
 				maxGroupDepth,
 				currentRowIndex,
 				groupNames,
-				group
+				group,
+				path
 			);
 		} else {
-			return group;
+			return path;
 		}
 	}
 
@@ -160,7 +183,10 @@ export class ProductImporter {
 		for (let i = 1; i < thresholdData.length; i++) {
 			if (thresholdData[i][0] == component.name) {
 				i += 2;
-				while (i < thresholdData.length && !thresholdData[i + 4]?.[0]?.includes('Verschleiß des Bauteils')) {
+				while (
+					i < thresholdData.length &&
+					!thresholdData[i + 4]?.[0]?.includes('Verschleiß des Bauteils')
+				) {
 					const wearCriteria = this.getWearCriteria(thresholdData, component, i);
 					if (!wearCriteria) {
 						break;
@@ -179,7 +205,6 @@ export class ProductImporter {
 		component: AssemblyComponentTreeViewModel,
 		currentRowIndex: number
 	): WearCriterionTreeViewModel | null {
-
 		const label = thresholdData[currentRowIndex + 1][0];
 		if (!label || label.trim().length == 0) {
 			return null;
@@ -267,17 +292,26 @@ export class ProductImporter {
 		return depth;
 	}
 
-	private static getAssemblyGroupNames(row: string[], maxDepth: number): string[] {
+	private static getAssemblyGroupNames(row: string[], maxDepth: number): {groupNames: string[], level: number} {
 		const groupNames: string[] = [];
 
+		let firstGroupFound = false;
+		let level = 0;
+
 		for (let i = 0; i < maxDepth; i++) {
+			if (!firstGroupFound && (!row[i] || row[i].trim() == '')) {
+				level++;
+				continue;
+			}
+
 			if (row[i] && row[i].trim() != '' && row[i].trim() != 'X') {
 				groupNames.push(row[i]);
+				firstGroupFound = true;
 			} else {
 				break;
 			}
 		}
 
-		return groupNames;
+		return {groupNames, level};
 	}
 }
