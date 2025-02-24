@@ -33,13 +33,19 @@
 	let editedCriterion: MachineElementCriteriaViewModel | null = $state(null);
 	let criterionName = $state('');
 
-    function editCategory(category: MachineElementCategoryTreeViewModel) {
+    function editCategory(category: MachineElementCategoryTreeViewModel, event: MouseEvent) {
+		event.stopPropagation();
+		event.preventDefault();
+
         editedCategory = category;
         categoryName = category.name;
         categoryDialogOpen = true;
     }
 
-    function editElement(element: MachineElementTreeViewModel) {
+    function editElement(element: MachineElementTreeViewModel, event: MouseEvent) {
+		event.stopPropagation();
+		event.preventDefault();
+
         editedElement = element;
         elementName = element.name;
         addElementDialogOpen = true;
@@ -52,16 +58,24 @@
     }
 
 
-    function deleteCategory(index: number) {
-        if (selectedCategory === treeView[index]) {
+    function deleteCategory(index: number, event: MouseEvent) {
+		event.stopPropagation();
+		event.preventDefault();
+
+        if (selectedCategory?.id === treeView[index].id) {
             selectedCategory = null;
         }
 
         treeView.splice(index, 1);
     }
 
-    function deleteElement(index: number) {
-        if (selectedElement === selectedCategory!.elements[index]) {
+    function deleteElement(index: number, event: MouseEvent) {
+
+		event.stopPropagation();
+		event.preventDefault();
+
+        if (selectedElement?.id === selectedCategory!.elements[index].id) {
+			console.log('clear selected element');
             selectedElement = null;
         }
 
@@ -86,6 +100,7 @@
 
 		categoryDialogOpen = false;
 		editedCategory = null;
+		categoryName = '';
 	}
 
     
@@ -104,6 +119,7 @@
 
 		addElementDialogOpen = false;
 		editedElement = null;
+		elementName = '';
 	}
 
 	function saveCriterion() {
@@ -119,6 +135,7 @@
 
 		addCriterionDialogOpen = false;
 		editedCriterion = null;
+		criterionName = '';
 	}
 
     function goBack() {
@@ -159,7 +176,7 @@
     </div>
 	<div class="categories-container">
 		<div class="categories">
-			<div class="title">Kategorien</div>
+			<div class="title">Maschinenelement Kategorien</div>
 			<div>
 				{#each treeView as category, i}
 					<div
@@ -172,8 +189,8 @@
 						onclick={() => (selectedCategory = category)}>
 						<div class="label">{category.name}</div>
 						<div class="actions">
-							<IconButton class="material-icons small-icon-button" onclick={() => editCategory(category)}>edit</IconButton>
-							<IconButton class="material-icons small-icon-button" onclick={() => deleteCategory(i)}>delete</IconButton>
+							<IconButton class="material-icons small-icon-button" onclick={(e) => editCategory(category, e)}>edit</IconButton>
+							<IconButton class="material-icons small-icon-button" onclick={(e) => deleteCategory(i, e)}>delete</IconButton>
 						</div>
 					</div>
 				{/each}
@@ -185,10 +202,10 @@
 			</div>
 		</div>
 		<div class="elements">
-			<div class="title">Elemente</div>
+			<div class="title">Maschinenelement</div>
 
 			<div>
-				{#if selectedCategory}
+				{#if selectedCategory != null}
 					{#each selectedCategory.elements as element, i}
 						<div
 							class={'category-btn ' + (selectedElement === element ? 'selected' : '')}
@@ -201,8 +218,8 @@
 							<div class="label">{element.name}</div>
 
 							<div class="actions">
-								<IconButton class="material-icons small-icon-button" onclick={() => editElement(element)}>edit</IconButton>
-								<IconButton class="material-icons small-icon-button" onclick={() => deleteElement(i)}>delete</IconButton>
+								<IconButton class="material-icons small-icon-button" onclick={(e) => editElement(element, e )}>edit</IconButton>
+								<IconButton class="material-icons small-icon-button" onclick={(e) => deleteElement(i, e)}>delete</IconButton>
 							</div>
 						</div>
 					{/each}
@@ -217,14 +234,14 @@
 			<div class="title">Kriterien</div>
 
 			<div>
-				{#if selectedElement}
+				{#if selectedElement != null}
 					{#each selectedElement.criteria as criterion, i}
 						<div class="category-btn">
 							<div class="label">{criterion.name}</div>
 
 							<div class="actions">
 								<IconButton class="material-icons small-icon-button" onclick={() => editCriterion(criterion)}>edit</IconButton>
-								<IconButton class="material-icons small-icon-button" onclick={() => deleteElement(i)}>delete</IconButton>
+								<IconButton class="material-icons small-icon-button" onclick={() => deleteCriterion(i)}>delete</IconButton>
 							</div>
 						</div>
 					{/each}
