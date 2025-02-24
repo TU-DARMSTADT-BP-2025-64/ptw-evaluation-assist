@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { DatabaseClient } from './database-client';
 import { Logger } from './logger';
+import { initMachineElementCategories } from './machine-element-category-initializer';
 import { Repository } from './repository';
 import { ServerConstants } from './server-constants';
 import { initTestEnvironment } from './tests/init-test';
@@ -24,5 +25,5 @@ export function init() {
 
 	const dbClient = new DatabaseClient(ServerConstants.DATABASE_NAME);
 	Logger.Instance = new Logger();
-	Repository.Instance = new Repository(dbClient);
+	Repository.Instance = new Repository(dbClient, [initMachineElementCategories]);
 }

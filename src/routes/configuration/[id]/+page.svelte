@@ -12,16 +12,17 @@
 	import { beforeNavigate, goto } from '$app/navigation';
 	import { getElementsFromProductTreeView } from '$lib/util/ProductTreeViewUtil';
 	import ThresholdStrategyForm from './components/ThresholdStrategyForm.svelte';
+		import type { CategoriesTreeView } from '$lib/util/CategoriesTreeViewUtil.svelte';
 
 	HeaderService.Instance.setTitle('Konfiguration');
 
-	let { data }: { data: { id: string; productTreeView: ProductTreeViewModel } } = $props();
-	let { id, productTreeView, ...rest } = data;
+	let { data }: { data: { id: string; productTreeView: ProductTreeViewModel, categoriesTreeView: CategoriesTreeView } } = $props();
+	let { id, productTreeView, categoriesTreeView, ...rest } = data;
 
 	let intercept = true;
 	let saveDialogOpen = $state(false);
 
-	console.log('props', id, productTreeView, rest);
+	console.log('props', id, productTreeView, categoriesTreeView, rest);
 
 	let product = $state(!id ? new ProductTreeViewModel() : productTreeView);
 
@@ -114,6 +115,7 @@
 							{strategies}
 							level={1}
 							lastChild={i === assemblyGroups.length - 1}
+							categoriesTreeView={categoriesTreeView}
 							onDeleteAssemblyGroup={() => removeAssemblyGroup(i)} />
 					{/each}
 				</div>

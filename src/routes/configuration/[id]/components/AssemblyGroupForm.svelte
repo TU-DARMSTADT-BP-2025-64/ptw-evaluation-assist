@@ -11,19 +11,22 @@
 	import AddAssemblyGroupDialog from './AddAssemblyGroupDialog.svelte';
 	import AssemblyComponentDialog from './AssemblyComponentDialog.svelte';
 	import type { ThresholdStrategyTreeViewModel } from '$lib/models/threshold-strategy.model';
+	import type { CategoriesTreeView } from '$lib/util/CategoriesTreeViewUtil.svelte';
 
 	let {
 		assemblyGroup = $bindable(),
 		onDeleteAssemblyGroup,
 		level,
 		lastChild,
-		strategies
+		strategies,
+		categoriesTreeView,
 	}: {
 		assemblyGroup: AssemblyGroupTreeViewModel;
 		onDeleteAssemblyGroup: () => void;
 		level: number;
 		lastChild: boolean;
 		strategies: ThresholdStrategyTreeViewModel[];
+		categoriesTreeView: CategoriesTreeView;
 	} = $props();
 
 	let name = $state(assemblyGroup.name);
@@ -109,6 +112,7 @@
 									level={level + 1}
 									strategies={strategies}
 									lastChild={i === children.length - 1}
+									categoriesTreeView={categoriesTreeView}
 									onDeleteAssemblyGroup={() => deleteAssemblyGroupFromChildren(i)} />
 							{/if}
 						{/each}
@@ -131,6 +135,7 @@
 				<AssemblyComponentDialog
 					bind:open={addAssemblyComponentDialogOpen}
 					strategies={strategies}
+					categoriesTreeView={categoriesTreeView}
 					onSave={(component) => addAssemblyComponent(component)} />
 			{/if}
 		{/if}

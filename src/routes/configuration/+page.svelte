@@ -146,6 +146,14 @@
 			<Icon class="material-icons">file_upload</Icon>
 			<span>Produkt importieren</span>
 		</Button>
+		<Button
+			id="categories-button"
+			variant="raised"
+			color="secondary"
+			onclick={() => goto('/configuration/categories')}>
+			<Icon class="material-icons">list</Icon>
+			<span>Kategorien editieren</span>
+		</Button>
 
 		<!-- Datei-Input mit Einschränkung auf .xlsm -->
 		<input

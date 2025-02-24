@@ -13,15 +13,18 @@
 	import { WearThresholdTreeViewModel, WearThresholdType } from '$lib/models/wear-threshold.model';
 	import Autocomplete from '@smui-extra/autocomplete';
 	import { ThresholdStrategyTreeViewModel } from '$lib/models/threshold-strategy.model';
+	import type { CategoriesTreeView } from '$lib/util/CategoriesTreeViewUtil.svelte';
 
 	let {
 		open = $bindable(),
 		strategies,
+		categoriesTreeView,
 		onSave,
-		assemblyComponent = new AssemblyComponentTreeViewModel()
+		assemblyComponent = new AssemblyComponentTreeViewModel(),
 	}: {
 		open: boolean;
 		strategies: ThresholdStrategyTreeViewModel[];
+		categoriesTreeView: CategoriesTreeView;
 		onSave: (group: AssemblyComponentTreeViewModel) => void;
 		assemblyComponent?: AssemblyComponentTreeViewModel;
 	} = $props();
@@ -36,34 +39,7 @@
 		addWearCriterion();
 	}
 
-	let category_elements = $derived.by(() => {
-		switch (machineElementCategory) {
-			case PredefinedComponentCategory.Lagerungselemente:
-				return ['Gleitlager', 'Wälzlager'];
-			case PredefinedComponentCategory.Übertragungselemente:
-				return ['Achsen/Wellen', 'Zahnräder', 'Riemen- und Kettentriebe'];
-			case PredefinedComponentCategory.Verbindungselemente:
-				return [
-					'Schraube',
-					'Niete',
-					'Schweißverbindungen',
-					'Federn',
-					'Stifte_Bolzen',
-					'Lötverbindungen',
-					'Klebverbindungen'
-				];
-			case PredefinedComponentCategory.Dichtungselemente:
-				return ['Statische Dichtungen', 'Dynamische Dichtungen'];
-			case PredefinedComponentCategory.Bau_und_Gehäuseteile:
-				return ['Gehäuse', 'Rahmen', 'Kerne'];
-			case PredefinedComponentCategory.Elemente_zum_Transport_von_Flüssigkeiten_und_Gasen:
-				return ['Ventile', 'Rohre'];
-			case PredefinedComponentCategory.Elektronisches_Bauteile:
-				return ['Platine'];
-			default:
-				return [];
-		}
-	});
+	
 
 	console.log('AssemblyComponent', assemblyComponent);
 	let name = $state(assemblyComponent.name); // Für gleichen Dialog bzw fürs editieren
@@ -72,7 +48,21 @@
 
 	let invalidName = $state(false);
 
-	let predefinedCategories = Object.keys(PredefinedComponentCategory);
+	let predefinedCategories = categoriesTreeView.map((category) => category.name);
+
+	let selectedCategory = $derived.by(() => {
+		return categoriesTreeView.find((category) => category.name === machineElementCategory);
+	});
+
+	let predefinedElements = $derived.by(() => {
+		if (!selectedCategory) return [];
+		return selectedCategory.elements.map((element) => element.name);
+	});
+
+	let selectedElement = $derived.by(() => {
+		if (!selectedCategory) return null;
+		return selectedCategory.elements.find((element) => element.name === machineElement);
+	});
 
 	function addWearCriterion() {
 		const wearCriterion = new WearCriterionTreeViewModel();
@@ -136,13 +126,13 @@
 
 		<Autocomplete style="margin-top: 12px" combobox bind:value={machineElementCategory} options={predefinedCategories} label="Kategorie Maschinenelement"></Autocomplete>
 
-		<Autocomplete style="margin-top: 12px" combobox bind:value={machineElement} options={category_elements} label="Maschinenelement"></Autocomplete>
+		<Autocomplete style="margin-top: 12px" combobox bind:value={machineElement} options={predefinedElements} label="Maschinenelement"></Autocomplete>
 
 		<div class="wear-criterion-title">Verschleißkriterien</div>
 
 		<div class="wear-criteria">
 			{#each wearCriteria as verschleißkrit, index}
-				<WearCriterionForm bind:wearCriterion={wearCriteria[index]} machineElement={machineElement} strategies={strategies} ondelete={() => removeWearCriterion(index)} />
+				<WearCriterionForm bind:wearCriterion={wearCriteria[index]} machineElement={selectedElement} strategies={strategies} ondelete={() => removeWearCriterion(index)} />
 			{/each}
 		</div>
 
