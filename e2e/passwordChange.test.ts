@@ -9,7 +9,7 @@ test.describe('Passwort ändern', () => {
 		await page.goto('/');
 
 		// Klicke auf das Einstellungen-Symbol
-		await page.locator('button:has-text("settings")').click();
+		await page.locator('#settingsButton').click();
 
 		// Überprüfe, ob das Einstellungsmenü sichtbar ist
 		const settingsMenu = page.locator('.settings-menu');
@@ -25,7 +25,7 @@ test.describe('Passwort ändern', () => {
 		await page.goto('/');
 
 		// Klicke auf das Einstellungen-Symbol
-		await page.locator('button:has-text("settings")').click();
+		await page.locator('#settingsButton').click();
 
 		// Klicke auf die Schaltfläche "Passwort ändern"
 		const passwordChangeButton = page.locator('#PasswordChange');
@@ -41,7 +41,7 @@ test.describe('Passwort ändern', () => {
 		await page.goto('/');
 
 		// Öffne die Einstellungen
-		await page.click('button:has-text("settings")');
+		await page.click('#settingsButton');
 		await expect(page.locator('.settings-menu')).toBeVisible();
 
 		// Öffne den Dialog zum Passwort ändern
@@ -55,11 +55,11 @@ test.describe('Passwort ändern', () => {
 		await page.fill('#confirmPassword', process.env.TEST_DEV_ADMIN_PASSWORD || '');
 
 		// Klicke auf 'Passwort ändern'
-		await page.click('button:has-text("Passwort ändern")');
+		await page.click('#passwordChangeButton');
 
 		// Logge dich mit dem neuen Passwort ein
 		await page.reload();
-		await page.click('button:has-text("settings")');
+		await page.click('#settingsButton');
 		await page.click('#PasswordChange');
 
 		const newDialog = page.locator('.dialog');
@@ -68,11 +68,11 @@ test.describe('Passwort ändern', () => {
 		await page.fill('#currentPassword', process.env.TEST_DEV_ADMIN_PASSWORD || '');
 		await page.fill('#newPassword', process.env.DEV_ADMIN_PASSWORD || '');
 		await page.fill('#confirmPassword', process.env.DEV_ADMIN_PASSWORD || '');
-		await page.click('button:has-text("Passwort ändern")');
+		await page.click('#passwordChangeButton');
 
 		// Stelle sicher, dass das ursprüngliche Passwort wieder funktioniert
 		await page.reload();
-		await page.click('button:has-text("settings")');
+		await page.click('#settingsButton');
 		await expect(page.locator('#PasswordChange')).toBeVisible();
 	});
 
@@ -84,7 +84,7 @@ test.describe('Passwort ändern', () => {
 		const baseUrl = new URL(page.url()).origin;
 
 		// Öffne die Einstellungen
-		await page.click('button:has-text("settings")');
+		await page.click('#settingsButton');
 		await expect(page.locator('.settings-menu')).toBeVisible();
 
 		// Öffne den Dialog zum Passwort ändern
@@ -98,7 +98,7 @@ test.describe('Passwort ändern', () => {
 		await page.fill('#confirmPassword', 'wrongConfirmation');
 
 		// Klicke auf 'Passwort ändern'
-		await page.click('button:has-text("Passwort ändern")');
+		await page.click('#passwordChangeButton');
 
 	// Gehe zur Login-Seite oder öffne den Login-Dialog
 		await page.goto('/');
