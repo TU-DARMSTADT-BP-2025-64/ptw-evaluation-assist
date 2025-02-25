@@ -8,6 +8,9 @@ import type { WearCriterionViewModel } from '$lib/models/wear-criterion.model';
 import type { WearThresholdViewModel } from '$lib/models/wear-threshold.model';
 import type { AssemblyComponentViewModel } from '$lib/models/assembly-component.model';
 import type { ThresholdStrategyViewModel } from '$lib/models/threshold-strategy.model';
+import type { MachineElementCategoryViewModel } from '$lib/models/machine-element-category.model';
+import type { MachineElementViewModel } from '$lib/models/machine-element.model';
+import type { MachineElementCriteriaViewModel } from '$lib/models/machine-element-criteria.model';
 
 dotenv.config(); // Lädt die Umgebungsvariablen aus der .env-Datei
 // Stellen Sie sicher, dass DEV_ADMIN_PASSWORD in der .env-Datei gesetzt ist
@@ -15,10 +18,11 @@ dotenv.config(); // Lädt die Umgebungsvariablen aus der .env-Datei
 export class Repository {
 	public static Instance: Repository;
 
-	constructor(private databaseClient: DatabaseClient) {
+	constructor(private databaseClient: DatabaseClient, afterInitActions: ((repository: Repository) => void)[] = []) {
 		console.log('Repository constructor', databaseClient);
 		if (!this.databaseClient.databaseExists()) {
 			this.init();
+			afterInitActions.forEach((action) => action(this));
 		}
 	}
 
@@ -292,6 +296,72 @@ export class Repository {
 		return true;
 	}
 
+	public getMachineElementCategories(): MachineElementCategoryViewModel[] {
+		const database = this.databaseClient.getDatabase();
+		const machineElementCategories = database.prepare('SELECT * FROM machine_element_categories').all();
+		return machineElementCategories as MachineElementCategoryViewModel[];
+	}
+
+	public addMachineElementCategory(machineElementCategory: MachineElementCategoryViewModel): MachineElementCategoryViewModel {
+		const database = this.databaseClient.getDatabase();
+		const statement = database.prepare(
+			'INSERT INTO machine_element_categories (id, name) VALUES (?, ?)'
+		);
+		statement.run(machineElementCategory.id, machineElementCategory.name);
+		return machineElementCategory;
+	}
+
+	public deleteMachineElementCategories(): boolean {
+		const database = this.databaseClient.getDatabase();
+		const statement = database.prepare('DELETE FROM machine_element_categories');
+		statement.run();
+		return true;
+	}
+
+	public getMachineElements(): MachineElementViewModel[] {
+		const database = this.databaseClient.getDatabase();
+		const machineElements = database.prepare('SELECT * FROM machine_elements').all();
+		return machineElements as MachineElementViewModel[];
+	}
+
+	public addMachineElement(machineElement: MachineElementViewModel): MachineElementViewModel {
+		const database = this.databaseClient.getDatabase();
+		const statement = database.prepare(
+			'INSERT INTO machine_elements (id, name, machineElementCategoryId) VALUES (?, ?, ?)'
+		);
+		statement.run(machineElement.id, machineElement.name, machineElement.machineElementCategoryId);
+		return machineElement;
+	}
+
+	public deleteMachineElements(): boolean {
+		const database = this.databaseClient.getDatabase();
+		const statement = database.prepare('DELETE FROM machine_elements');
+		statement.run();
+		return true;
+	}
+
+	public getMachineElementCriteria(): MachineElementCriteriaViewModel[] {
+		const database = this.databaseClient.getDatabase();
+		const machineElementCriteria = database.prepare('SELECT * FROM machine_element_criteria').all();
+		return machineElementCriteria as MachineElementCriteriaViewModel[];
+	}
+
+	public addMachineElementCriteria(machineElementCriteria: MachineElementCriteriaViewModel): MachineElementCriteriaViewModel {
+		const database = this.databaseClient.getDatabase();
+		const statement = database.prepare(
+			'INSERT INTO machine_element_criteria (id, name, machineElementId) VALUES (?, ?, ?)'
+		);
+		statement.run(machineElementCriteria.id, machineElementCriteria.name, machineElementCriteria.machineElementId);
+		return machineElementCriteria;
+	}
+
+	public deleteMachineElementCriteria(): boolean {
+		const database = this.databaseClient.getDatabase();
+		const statement = database.prepare('DELETE FROM machine_element_criteria');
+		statement.run();
+		return true;
+	}
+
 	public async userExists(username: string, password: string): Promise<boolean> {
 		const database = this.databaseClient.getDatabase();
 		const statement = database.prepare('SELECT * FROM users WHERE username = ?');
@@ -376,6 +446,33 @@ export class Repository {
 				priority INTEGER NOT NULL,
 				FOREIGN KEY(productId) REFERENCES products(id) ON DELETE CASCADE
 			)`
+		).run();
+
+		// MachineElementCategory tablek
+		db.prepare(
+			`CREATE TABLE machine_element_categories (
+				id TEXT PRIMARY KEY,
+				name TEXT NOT NULL
+				)`
+		).run();
+		// MachineElement table
+		db.prepare(
+			`CREATE TABLE machine_elements (
+				id TEXT PRIMARY KEY,
+				name TEXT NOT NULL,
+				machineElementCategoryId TEXT NOT NULL,
+				FOREIGN KEY(machineElementCategoryId) REFERENCES machine_element_categories(id)
+				)`
+		).run();
+
+		// MachineElementCriteria table
+		db.prepare(
+			`CREATE TABLE machine_element_criteria (
+				id TEXT PRIMARY KEY,
+				name TEXT NOT NULL,
+				machineElementId TEXT NOT NULL,
+				FOREIGN KEY(machineElementId) REFERENCES machine_elements(id)
+				)`
 		).run();
 
 		// Users table
