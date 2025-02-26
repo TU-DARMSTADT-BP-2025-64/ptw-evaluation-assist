@@ -16,6 +16,10 @@
 	let {
 		assemblyGroup = $bindable(),
 		onDeleteAssemblyGroup,
+		onMoveUp,
+		onMoveDown,
+		canMoveUp,
+		canMoveDown,
 		level,
 		lastChild,
 		strategies,
@@ -23,6 +27,10 @@
 	}: {
 		assemblyGroup: AssemblyGroupTreeViewModel;
 		onDeleteAssemblyGroup: () => void;
+		onMoveUp: () => void;
+		onMoveDown: () => void;
+		canMoveUp: boolean;
+		canMoveDown: boolean;
 		level: number;
 		lastChild: boolean;
 		strategies: ThresholdStrategyTreeViewModel[];
@@ -61,6 +69,24 @@
 		children.splice(index, 1);
 	}
 
+	function moveGroupUp(index: number) {
+		if (index === 0) return;
+
+		const group = children[index];
+
+		children[index] = children[index - 1];
+		children[index - 1] = group;
+	}
+
+	function moveGroupDown(index: number) {
+		if (index === children.length - 1) return;
+
+		const group = children[index];
+
+		children[index] = children[index + 1];
+		children[index + 1] = group;
+	}
+
 	$effect(() => {
 		assemblyGroup.children = children;
 		assemblyGroup.name = name;
@@ -77,6 +103,13 @@
 	<div class="group-form-content">
 		<div class="assembly-header">
 			<Textfield variant="filled" bind:value={assemblyGroup.name} label="Name"></Textfield>
+			<IconButton class="material-icons" disabled={!canMoveUp} onclick={() => onMoveUp()}>
+				keyboard_arrow_up
+			</IconButton>
+			<IconButton class="material-icons" disabled={!canMoveDown} onclick={() => onMoveDown()}>
+				keyboard_arrow_down
+			</IconButton>
+
 			<IconButton onclick={() => onDeleteAssemblyGroup()}>
 				<i class="material-icons">delete</i>
 			</IconButton>
@@ -97,13 +130,18 @@
 				<div class="children-groups-container">
 					<div class="vertical-border">&nbsp;</div>
 					<div class="children-groups">
-						{#each children as child, i}
+						{#each children as child, i (child.id)}
 							{#if child.type === 'assembly-component'}
 								<AssemblyComponentForm
 									bind:assemblyComponent={children[i] as AssemblyComponentTreeViewModel}
 									strategies={strategies}
 									level={level + 1}
 									lastChild={i === children.length - 1}
+									canMoveUp={i > 0}
+									canMoveDown={i !== children.length - 1}
+									onMoveUp={() => moveGroupUp(i)}
+									onMoveDown={() => moveGroupDown(i)}
+									categoriesTreeView={categoriesTreeView}
 									onDeleteAssemblyComponent={() => deleteAssemblyGroupFromChildren(i)}
 									onUpdateComponent={updateAssemblyComponent} />
 							{:else}
@@ -111,7 +149,11 @@
 									bind:assemblyGroup={children[i] as AssemblyGroupTreeViewModel}
 									level={level + 1}
 									strategies={strategies}
-									lastChild={i === children.length - 1}
+									lastChild={i !== children.length - 1}
+									canMoveUp={i > 0}
+									canMoveDown={i === children.length - 1}
+									onMoveUp={() => moveGroupUp(i)}
+									onMoveDown={() => moveGroupDown(i)}
 									categoriesTreeView={categoriesTreeView}
 									onDeleteAssemblyGroup={() => deleteAssemblyGroupFromChildren(i)} />
 							{/if}

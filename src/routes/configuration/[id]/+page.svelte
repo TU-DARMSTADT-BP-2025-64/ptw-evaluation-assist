@@ -45,6 +45,24 @@
 		assemblyGroups.splice(index, 1);
 	}
 
+	function moveGroupUp(index: number) {
+		if (index === 0) return;
+
+		const group = assemblyGroups[index];
+
+		assemblyGroups[index] = assemblyGroups[index - 1];
+		assemblyGroups[index - 1] = group;
+	}
+
+	function moveGroupDown(index: number) {
+		if (index === assemblyGroups.length - 1) return;
+
+		const group = assemblyGroups[index];
+
+		assemblyGroups[index] = assemblyGroups[index + 1];
+		assemblyGroups[index + 1] = group;
+	}
+
 	function saveProduct() {
 		product.assemblyGroups = assemblyGroups;
 		product.fixStrategies = strategies;
@@ -109,11 +127,15 @@
 			<div class="children-groups-container">
 				<div class="vertical-border">&nbsp;</div>
 				<div class="children-groups">
-					{#each assemblyGroups as group, i}
+					{#each assemblyGroups as group, i (group.id)}
 						<AssemblyGroupForm
 							bind:assemblyGroup={assemblyGroups[i]}
 							{strategies}
 							level={1}
+							canMoveUp={i > 0}
+							canMoveDown={i !== assemblyGroups.length - 1}
+							onMoveUp={() => moveGroupUp(i)}
+							onMoveDown={() => moveGroupDown(i)}
 							lastChild={i === assemblyGroups.length - 1}
 							categoriesTreeView={categoriesTreeView}
 							onDeleteAssemblyGroup={() => removeAssemblyGroup(i)} />

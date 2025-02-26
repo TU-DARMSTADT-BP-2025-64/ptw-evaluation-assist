@@ -4,16 +4,27 @@
 	import IconButton from '@smui/icon-button';
 	import AssemblyComponentDialog from './AssemblyComponentDialog.svelte';
 	import type { ThresholdStrategyTreeViewModel } from '$lib/models/threshold-strategy.model';
+	import type { CategoriesTreeView } from '$lib/util/CategoriesTreeViewUtil.svelte';
 
 	let {
 		assemblyComponent = $bindable(),
 		strategies,
+		categoriesTreeView,
+		canMoveUp,
+		canMoveDown,
+		onMoveUp,
+		onMoveDown,
 		level,
 		lastChild,
 		onDeleteAssemblyComponent
 	}: {
 		assemblyComponent: AssemblyComponentTreeViewModel;
 		strategies: ThresholdStrategyTreeViewModel[];
+		categoriesTreeView: CategoriesTreeView;
+		canMoveUp: boolean;
+		canMoveDown: boolean;
+		onMoveUp: () => void;
+		onMoveDown: () => void;
 		level: number;
 		lastChild: boolean;
 		onDeleteAssemblyComponent: () => void;
@@ -31,6 +42,12 @@
 
 <div class="component-name">
 	<Textfield variant="filled" bind:value={assemblyComponent.name} label="Name"></Textfield>
+	<IconButton class="material-icons" disabled={!canMoveUp} onclick={() => onMoveUp()}>
+		keyboard_arrow_up
+	</IconButton>
+	<IconButton class="material-icons" disabled={!canMoveDown} onclick={() => onMoveDown()}>
+		keyboard_arrow_down
+	</IconButton>
 	<IconButton onclick={openEditDialog}>
 		<i class="material-icons">edit</i>
 	</IconButton>
@@ -43,6 +60,7 @@
 	<AssemblyComponentDialog
 		bind:open={editDialogOpen}
 		strategies={strategies}
+		categoriesTreeView={categoriesTreeView}
 		assemblyComponent={assemblyComponent}
 		onSave={(component) => {
 			assemblyComponent = component;
