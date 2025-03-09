@@ -1,27 +1,56 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-const { app, BrowserWindow } = require('electron');
-const path = require('node:path');
-const url = require('url');
+import { app, BrowserWindow, utilityProcess } from 'electron';
+import * as path from 'path';
+import * as fs from 'fs';
+import { fileURLToPath } from 'url';
 
-const { fork } = require('child_process');
+
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+
 let server;
-let mainWindow;
+
+function getServerFilePath() {
+  const serverFilePath = path.join(__dirname, './build/index.js');
+  if (fs.existsSync(serverFilePath)) {
+    return serverFilePath;
+  } else {
+    // Adjust the path for the packaged application
+    return path.join(process.resourcesPath, 'build', 'index.js');
+  }
+}
 
 function startServer() {
+  const serverFilePath = getServerFilePath();
+  console.log('Server file path:', serverFilePath);
+  if (!fs.existsSync(serverFilePath)) {
+    console.error('Server file not found:', serverFilePath);
+    app.quit();
+    return;
+  }
+
   // Start the SvelteKit server (built with adapter-node)
-  server = fork(path.join(__dirname, '../../build/index.js'), [], {
-    stdio: 'inherit'
+  server = utilityProcess.fork(serverFilePath, [], {
+    stdio: 'inherit', // Pipe the server's output to the main process
+    env: { ...process.env,
+      NODE_ENV: 'production', // Set the NODE_ENV to 'production
+      PORT: '3000', // Set the port to 3000
+      DEV_ADMIN_PASSWORD: 'admin', // Set the admin password,
+      JWT_SECRET: 'jwt_secret' // Set the JWT secret
+      
+     } // Pass the environment variables to the server process
   });
   
   // Give the server some time to start up
   return new Promise(resolve => setTimeout(resolve, 1000));
 }
 
-
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-  app.quit();
-}
 
 const createWindow = async () => {
 
@@ -29,8 +58,9 @@ const createWindow = async () => {
 
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    show: false, // Create the window hidden initially
+    title: 'Inspection Assistant',
+    icon: path.join(__dirname, 'assets', 'icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
@@ -38,12 +68,28 @@ const createWindow = async () => {
     },
   });
 
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.maximize(); // Maximize the window once it's ready to show
+    mainWindow.show(); // Show the window
+  });
+
+  mainWindow.webContents.on('page-title-updated', (event) => {
+    event.preventDefault(); // Stops Electron from updating the title
+  });
+
   // Point to the built SvelteKit app
   mainWindow.loadURL('http://localhost:3000')
 
+  mainWindow.setMenuBarVisibility(false);
+
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 };
+
+// Handle creating/removing shortcuts on Windows when installing/uninstalling.
+if (require('electron-squirrel-startup')) {
+  app.quit();
+}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -69,9 +115,10 @@ app.on('window-all-closed', () => {
   }
 });
 
-
 app.on('before-quit', () => {
-  server.kill();
+  if (server) {
+    server.kill();
+  }
 });
 
 // In this file you can include the rest of your app's specific main process

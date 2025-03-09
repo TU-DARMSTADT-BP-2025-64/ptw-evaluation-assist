@@ -1,9 +1,11 @@
 {
-  "name": "electron",
-  "productName": "electron",
+  "name": "inspection-assist",
+  "productName": "inspection-assist",
+  "icon": "src/assets/icon.ico",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Tool to evaluate products for circular economy",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -18,7 +20,16 @@
   },
   "license": "MIT",
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.1"
+    "bcrypt": "^5.1.1",
+    "better-sqlite3": "^11.8.1",
+    "dotenv": "^16.4.7",
+    "electron-squirrel-startup": "^1.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^11.1.0",
+		"browser-image-compression": "^2.0.2",
+		"jspdf": "^2.5.2",
+		"jspdf-autotable": "^3.8.4",
+		"xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.7.0",
@@ -29,6 +40,9 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.7.0",
     "@electron-forge/plugin-fuses": "^7.7.0",
     "@electron/fuses": "^1.8.0",
-    "electron": "34.3.0"
+    "electron": "35.0.0"
+  },
+  "config": {
+    "forge": "./forge.config.js"
   }
 }

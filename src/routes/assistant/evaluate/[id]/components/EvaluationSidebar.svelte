@@ -10,12 +10,16 @@
 		selectedComponent: EvaluatedAssemblyComponentTreeViewModel | null;
 		
 	} = $props();
+
+	let enabledGroups = $derived.by(() => {
+		return productTreeView.assemblyGroups.filter(group => group.evaluate);
+	});
 </script>
 
 <div class="sidebar">
 	<div class="title">Komponenten</div>
 	<div class="components-container">
-		{#each productTreeView.assemblyGroups as group, i}
+		{#each enabledGroups as group, i}
 			<SidebarAssemblyGroup
 				level={0}
 				assemblyGroup={group}

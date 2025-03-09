@@ -15,6 +15,10 @@
 		selectedComponent: EvaluatedAssemblyComponentTreeViewModel | null;
         level: number;
 	} = $props();
+
+	let enabledChildren = $derived.by(() => {
+		return assemblyGroup.children.filter(child => child.evaluate);
+	});
 </script>
 
 <div>
@@ -36,7 +40,7 @@
 
 	<div class="assembly-group-children">
 		{#if assemblyGroup.expanded}
-			{#each assemblyGroup.children as child, i}
+			{#each enabledChildren as child, i}
 				{#if child.type === 'assembly-group'}
 					<SidebarAssemblyGroup
                         level={level + 1}
